@@ -1,6 +1,8 @@
 # Google Insights API Tools
 
-Get `GOOGLE_API_KEY`
+Google PageSpeed Insights can now report the aggregate pagespeed results of your entire `origin` domain as seen [here](https://community.centminmod.com/threads/your-sites-google-pagespeed-insights-result.15070/) and [here](https://www.seroundtable.com/google-pagespeed-insights-aggregated-speed-data-origin-25935.html).
+
+To be able to use `gitools.sh` script, you first you need to have a Google account to get `GOOGLE_API_KEY` to be able to query the [Google PageSpeed Insights v4 API](https://developers.google.com/speed/docs/insights/v4/getting-started).
 
 You can get API Key from https://console.developers.google.com/ by enabling PageSpeed Insights API and creating the  API key from Credentials page. If you don't want to set the `GOOGLE_API_KEY` variable within this script, you can set it in `gitools.ini` config file which resides in same directory as `gitools.sh`
 
@@ -9,6 +11,8 @@ GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
 ```
 
 ## Usage
+
+There are several paramters to pass on command line, desktop/mobile/all determines which type of site you want to test and origin/site determines if you want to test the entire domain and all pages (origin) or just the url page itself (site). The site domain you pass much have either `http://` or `https://` prefix.
 
 ```
 ./gitools.sh 
