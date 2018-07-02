@@ -78,6 +78,16 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3
  }
 }
 
+https://www.google.com FCP median: 409 ms DCL median: 872 ms
+Page Load Distributions
+84.50 % loads for this page have a fast FCP (less than 984 milliseconds)
+10.40 % loads for this page have an average FCP (less than 2073 milliseconds)
+5.00 % loads for this page have an slow FCP (over 2073 milliseconds)
+80.70 % loads for this page have a fast FCP (less than 1366 milliseconds)
+14.40 % loads for this page have an average FCP (less than 2787 milliseconds)
+4.90 % loads for this page have an slow FCP (over 2787 milliseconds)
+
+
 --------------------------------------------------------------------------------
 curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3Ahttps%3A%2F%2Fwww.google.com%2F&screenshot=false&snapshots=false&strategy=mobile&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)&key=YOUR_GOOGLE_API_KEY
 {
@@ -128,6 +138,15 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3
   "initial_url": "https://www.google.com/"
  }
 }
+
+https://www.google.com FCP median: 469 ms DCL median: 883 ms
+Page Load Distributions
+91.30 % loads for this page have a fast FCP (less than 1567 milliseconds)
+5.30 % loads for this page have an average FCP (less than 2963 milliseconds)
+3.30 % loads for this page have an slow FCP (over 2963 milliseconds)
+91.50 % loads for this page have a fast FCP (less than 2120 milliseconds)
+5.70 % loads for this page have an average FCP (less than 4226 milliseconds)
+2.70 % loads for this page have an slow FCP (over 4226 milliseconds)
 ```
 
 ### Desktop Test origin
@@ -135,7 +154,7 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3
 Desktop test `origin:` of a domain - all pages scanned for the domain = [https://www.google.com](https://developers.google.com/speed/pagespeed/insights/?url=origin%3Ahttps%3A%2F%2Fwww.google.com%2F)
 
 ```
-./gitools.sh desktop https://www.google.com origin              
+./gitools.sh desktop https://www.google.com origin      
 
 --------------------------------------------------------------------------------
 curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3Ahttps%3A%2F%2Fwww.google.com%2F&screenshot=false&snapshots=false&strategy=desktop&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)&key=YOUR_GOOGLE_API_KEY
@@ -187,6 +206,15 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3
   "initial_url": "https://www.google.com/"
  }
 }
+
+https://www.google.com FCP median: 409 ms DCL median: 872 ms
+Page Load Distributions
+84.50 % loads for this page have a fast FCP (less than 984 milliseconds)
+10.40 % loads for this page have an average FCP (less than 2073 milliseconds)
+5.00 % loads for this page have an slow FCP (over 2073 milliseconds)
+80.70 % loads for this page have a fast FCP (less than 1366 milliseconds)
+14.40 % loads for this page have an average FCP (less than 2787 milliseconds)
+4.90 % loads for this page have an slow FCP (over 2787 milliseconds)
 ```
 
 ### Desktop Test site only
@@ -253,12 +281,12 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=https%3A
  "pageStats": {
   "numberResources": 15,
   "numberHosts": 6,
-  "totalRequestBytes": "2284",
+  "totalRequestBytes": "2292",
   "numberStaticResources": 9,
-  "htmlResponseBytes": "227070",
-  "overTheWireResponseBytes": "434583",
-  "imageResponseBytes": "37282",
-  "javascriptResponseBytes": "824662",
+  "htmlResponseBytes": "227196",
+  "overTheWireResponseBytes": "435090",
+  "imageResponseBytes": "37281",
+  "javascriptResponseBytes": "825917",
   "otherResponseBytes": "41770",
   "numberJsResources": 4,
   "numTotalRoundTrips": 10,
@@ -440,4 +468,13 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=https%3A
   }
  }
 }
+
+https://www.google.com FCP median: 653 ms DCL median: 728 ms
+Page Load Distributions
+66.50 % loads for this page have a fast FCP (less than 984 milliseconds)
+17.10 % loads for this page have an average FCP (less than 2073 milliseconds)
+16.40 % loads for this page have an slow FCP (over 2073 milliseconds)
+73.10 % loads for this page have a fast FCP (less than 1366 milliseconds)
+13.50 % loads for this page have an average FCP (less than 2787 milliseconds)
+13.50 % loads for this page have an slow FCP (over 2787 milliseconds)
 ```
