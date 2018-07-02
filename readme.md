@@ -86,7 +86,7 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3
  }
 }
 
-https://www.google.com FCP median: 409 ms DCL median: 872 ms
+https://www.google.com FCP median: 409 (FAST) ms DCL median: 872 ms (FAST)
 Page Load Distributions
 84.50 % loads for this page have a fast FCP (less than 984 milliseconds)
 10.40 % loads for this page have an average FCP (less than 2073 milliseconds)
@@ -147,7 +147,7 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3
  }
 }
 
-https://www.google.com FCP median: 469 ms DCL median: 883 ms
+https://www.google.com FCP median: 469 (FAST) ms DCL median: 883 ms (FAST)
 Page Load Distributions
 91.30 % loads for this page have a fast FCP (less than 1567 milliseconds)
 5.30 % loads for this page have an average FCP (less than 2963 milliseconds)
@@ -215,7 +215,7 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=origin%3
  }
 }
 
-https://www.google.com FCP median: 409 ms DCL median: 872 ms
+https://www.google.com FCP median: 409 (FAST) ms DCL median: 872 ms (FAST)
 Page Load Distributions
 84.50 % loads for this page have a fast FCP (less than 984 milliseconds)
 10.40 % loads for this page have an average FCP (less than 2073 milliseconds)
@@ -289,12 +289,12 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=https%3A
  "pageStats": {
   "numberResources": 15,
   "numberHosts": 6,
-  "totalRequestBytes": "2284",
+  "totalRequestBytes": "2286",
   "numberStaticResources": 9,
-  "htmlResponseBytes": "227035",
-  "overTheWireResponseBytes": "434870",
+  "htmlResponseBytes": "227195",
+  "overTheWireResponseBytes": "435133",
   "imageResponseBytes": "37282",
-  "javascriptResponseBytes": "825509",
+  "javascriptResponseBytes": "826150",
   "otherResponseBytes": "41770",
   "numberJsResources": 4,
   "numTotalRoundTrips": 10,
@@ -477,7 +477,7 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=https%3A
  }
 }
 
-https://www.google.com FCP median: 653 ms DCL median: 728 ms
+https://www.google.com FCP median: 653 (FAST) ms DCL median: 728 ms (FAST)
 Page Load Distributions
 66.50 % loads for this page have a fast FCP (less than 984 milliseconds)
 17.10 % loads for this page have an average FCP (less than 2073 milliseconds)
