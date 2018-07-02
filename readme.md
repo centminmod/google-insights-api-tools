@@ -222,7 +222,7 @@ Page Load Distributions
 Desktop Test `site` default url only = [https://www.google.com](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fwww.google.com)
 
 ```
-./gitools.sh desktop https://www.google.com site  
+./gitools.sh desktop https://www.google.com site
 
 --------------------------------------------------------------------------------
 curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=https%3A%2F%2Fwww.google.com%2F&screenshot=false&snapshots=false&strategy=desktop&fields=formattedResults%2CloadingExperience(initial_url%2Cmetrics%2Coverall_category)%2CpageStats%2CruleGroups&key=YOUR_GOOGLE_API_KEY
@@ -281,12 +281,12 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=https%3A
  "pageStats": {
   "numberResources": 15,
   "numberHosts": 6,
-  "totalRequestBytes": "2292",
+  "totalRequestBytes": "2284",
   "numberStaticResources": 9,
-  "htmlResponseBytes": "227196",
-  "overTheWireResponseBytes": "435090",
-  "imageResponseBytes": "37281",
-  "javascriptResponseBytes": "825917",
+  "htmlResponseBytes": "227035",
+  "overTheWireResponseBytes": "434870",
+  "imageResponseBytes": "37282",
+  "javascriptResponseBytes": "825509",
   "otherResponseBytes": "41770",
   "numberJsResources": 4,
   "numTotalRoundTrips": 10,

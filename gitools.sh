@@ -93,12 +93,12 @@ gi_desktop() {
     echo "$fcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $fcl_distribution_min milliseconds)"
     echo "$fcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $fcl_distribution_max milliseconds)"
     echo "$fcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $fcl_distribution_max milliseconds)"
-    echo "$dcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $dcl_distribution_min milliseconds)"
-    echo "$dcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $dcl_distribution_max milliseconds)"
-    echo "$dcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $dcl_distribution_max milliseconds)"
+    echo "$dcl_distribution_proportiona_perc % loads for this page have a fast DCL (less than $dcl_distribution_min milliseconds)"
+    echo "$dcl_distribution_proportionb_perc % loads for this page have an average DCL (less than $dcl_distribution_max milliseconds)"
+    echo "$dcl_distribution_proportionc_perc % loads for this page have an slow DCL (over $dcl_distribution_max milliseconds)"
     echo
+    rm -rf /tmp/gitool-${strategy}.log
   done
-  rm -rf /tmp/gitool-${strategy}.log
 }
 
 gi_mobile() {
@@ -154,12 +154,12 @@ gi_mobile() {
     echo "$fcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $fcl_distribution_min milliseconds)"
     echo "$fcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $fcl_distribution_max milliseconds)"
     echo "$fcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $fcl_distribution_max milliseconds)"
-    echo "$dcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $dcl_distribution_min milliseconds)"
-    echo "$dcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $dcl_distribution_max milliseconds)"
-    echo "$dcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $dcl_distribution_max milliseconds)"
+    echo "$dcl_distribution_proportiona_perc % loads for this page have a fast DCL (less than $dcl_distribution_min milliseconds)"
+    echo "$dcl_distribution_proportionb_perc % loads for this page have an average DCL (less than $dcl_distribution_max milliseconds)"
+    echo "$dcl_distribution_proportionc_perc % loads for this page have an slow DCL (over $dcl_distribution_max milliseconds)"
     echo
+    rm -rf /tmp/gitool-${strategy}.log
   done
-  rm -rf /tmp/gitool-${strategy}.log
 }
 
 gi_both() {
