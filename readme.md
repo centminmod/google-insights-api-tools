@@ -28,6 +28,10 @@ Usage:
 
 Both Desktop & Mobile test `origin:` of a domain - all pages scanned for the domain = [https://www.google.com](https://developers.google.com/speed/pagespeed/insights/?url=origin%3Ahttps%3A%2F%2Fwww.google.com%2F)
 
+![](/images/google-pagespeed-insight-api-gitool-desktop-01b.png)
+
+![](/images/google-pagespeed-insight-api-gitool-mobile-01b.png)
+
 ```
 ./gitools.sh all https://www.google.com origin
 
