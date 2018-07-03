@@ -8,7 +8,7 @@ You can get API Key from https://console.developers.google.com/ by enabling Page
 GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
 ```
 
-Metrics from [Chrome User Experience Report](https://developers.google.com/web/tools/chrome-user-experience-report/)
+Notes from [Chrome User Experience Report](https://developers.google.com/web/tools/chrome-user-experience-report/)
 
 **Consider population differences across origins**
 
@@ -23,6 +23,8 @@ Metrics from [Chrome User Experience Report](https://developers.google.com/web/t
 > The Chrome User Experience report is powered by real user measurement aggregated from Chrome users who have opted-in to syncing their browsing history, have not set up a Sync passphrase, and have usage statistic reporting enabled. This population may not be representative of the broader user base for a particular origin and many origins may have population differences among each other. Further, this data does not account for users with different browsers and differences in browser adoption in different geographic regions.
 > 
 > As a result, be careful with the types of conclusions being drawn when looking at a cross-section of origins, and when comparing individual origins: avoid using absolute comparisons and consider other population factors outlined in the sections above.
+
+Metrics from [Chrome User Experience Report](https://developers.google.com/web/tools/chrome-user-experience-report/)
 
 **First Contentful Paint**
 
