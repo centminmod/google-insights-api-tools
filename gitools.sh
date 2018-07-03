@@ -6,7 +6,7 @@
 #########################################################
 # variables
 #############
-VER='0.2'
+VER='0.3'
 DT=$(date +"%d%m%y-%H%M%S")
 
 # GET API Key from https://console.developers.google.com/
@@ -62,8 +62,8 @@ slacksend() {
   curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"text\": \"$message\", \"icon_emoji\": \":$icon:\"}" $webhook_url
 }
 
-gi_desktop() {
-  strategy=desktop
+gi_run() {
+  strategy=$3
   fulldomain=$1
   origin_check=$2
   prefix=$(echo $fulldomain | awk -F '://' '{print $1}')
@@ -152,112 +152,17 @@ gi_desktop() {
   done
 }
 
-gi_mobile() {
-  strategy=mobile
-  fulldomain=$1
-  origin_check=$2
-  prefix=$(echo $fulldomain | awk -F '://' '{print $1}')
-  domain=$(echo $fulldomain | awk -F '://' '{print $2}')
-  if [[ "$origin_check" = 'origin' ]]; then
-    origins='origin%3A'
-  elif [[ "$origin_check" = 'site' ]]; then
-    origins='site%3A'
-  elif [[ "$origin_check" = 'default' ]]; then
-    origins='default'
-  else
-    origins='default site%3A origin%3A'
-  fi
-  for o in $origins; do
-    if [[ "$o" = 'default' ]]; then
-      o=""
-      metric_opt='&fields=formattedResults%2CloadingExperience(initial_url%2Cmetrics%2Coverall_category)%2CpageStats%2CruleGroups'
-    elif [[ "$o" = 'site%3A' ]]; then
-      metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)'
-    elif [[ "$o" = 'origin%3A' ]]; then
-      metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)'
-    fi
-    turl_echo="https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=${o}${prefix}%3A%2F%2F${domain}%2F&screenshot=${screenshot_state}&snapshots=${snapshots_state}&strategy=${strategy}${metric_opt}&key=YOUR_GOOGLE_API_KEY"
-    turl="https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=${o}${prefix}%3A%2F%2F${domain}%2F&screenshot=${screenshot_state}&snapshots=${snapshots_state}&strategy=${strategy}${metric_opt}&key=${GOOGLE_API_KEY}"
-    echo
-    echo "--------------------------------------------------------------------------------"
-    if [[ "$CMD_OUTPUT" = [yY] ]]; then
-      echo "curl -4s $turl_echo"
-    fi
-    if [[ "$JSON_OUTPUT" = [yY] ]]; then
-      curl -4s $turl | tee /tmp/gitool-${strategy}.log
-    else
-      curl -4s $turl > /tmp/gitool-${strategy}.log
-    fi
-    err=$?
-    if [[ "$err" -ne '0' || "$(wc -l < /tmp/gitool-${strategy}.log)" -lt '2' ]]; then
-      echo
-      echo "error: aborting..."
-      exit
-    fi
-
-    # echo
-    fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.median")
-    fcp_cat=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.category" | sed -e 's|\"||g')
-    dcl_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.median")
-    dcl_cat=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.category" | sed -e 's|\"||g')
-    fcl_distribution_min=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.distributions" | jq '.[1] | .min')
-    fcl_distribution_max=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.distributions" | jq '.[1] | .max')
-    fcl_distribution_proportiona=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.distributions" | jq '.[0] | .proportion')
-    fcl_distribution_proportionb=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.distributions" | jq '.[1] | .proportion')
-    fcl_distribution_proportionc=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.distributions" | jq '.[2] | .proportion')
-    if [[ "$fcp_median" != 'null' ]]; then
-      fcl_distribution_proportiona_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fcl_distribution_proportiona)*100" | bc))
-      fcl_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fcl_distribution_proportionb)*100" | bc))
-      fcl_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fcl_distribution_proportionc)*100" | bc))
-    fi
-    dcl_distribution_min=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.distributions" | jq '.[1] | .min')
-    dcl_distribution_max=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.distributions" | jq '.[1] | .max')
-    dcl_distribution_proportiona=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.distributions" | jq '.[0] | .proportion')
-    dcl_distribution_proportionb=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.distributions" | jq '.[1] | .proportion')
-    dcl_distribution_proportionc=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.distributions" | jq '.[2] | .proportion')
-    if [[ "$dcl_median" != 'null' ]]; then
-      dcl_distribution_proportiona_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportiona)*100" | bc))
-      dcl_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportionb)*100" | bc))
-      dcl_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportionc)*100" | bc))
-    fi
-    if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
-      echo "${prefix}://$domain FCP median: $fcp_median ($fcp_cat) ms DCL median: $dcl_median ms ($dcl_cat)" | tee /tmp/gitool-${strategy}-summary.log
-      echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "$fcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $fcl_distribution_min milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "$fcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $fcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "$fcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $fcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "$dcl_distribution_proportiona_perc % loads for this page have a fast DCL (less than $dcl_distribution_min milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "$dcl_distribution_proportionb_perc % loads for this page have an average DCL (less than $dcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "$dcl_distribution_proportionc_perc % loads for this page have an slow DCL (over $dcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-    fi
-    echo
-    if [[ "$SLACK" = [yY] ]]; then
-      if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
-        send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
-        slacksend "${strategy}\n$send_message"
-      fi
-    fi
-    rm -rf /tmp/gitool-${strategy}.log
-    rm -rf /tmp/gitool-${strategy}-summary.log
-  done
-}
-
-gi_both() {
-  _fulldomain=$1
-  _origin_check=$2
-  gi_desktop $_fulldomain $_origin_check
-  gi_mobile $_fulldomain $_origin_check
-}
 #########################################################
 case $1 in
   desktop )
-    gi_desktop $2 $3
+    gi_run $2 $3 desktop
     ;;
   mobile )
-    gi_mobile $2 $3
+    gi_run $2 $3 mobile
     ;;
   all )
-    gi_both $2 $3
+    gi_run $2 $3 desktop
+    gi_run $2 $3 mobile
     ;;
   pattern )
     ;;
