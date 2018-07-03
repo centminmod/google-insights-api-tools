@@ -103,6 +103,24 @@ Page Load Distributions
 2.70 % loads for this page have an slow DCL (over 4226 milliseconds)
 ```
 
+### Command Output
+
+You can optionally turn off the displaying the curl command & JSON output and only display the summary results as well by setting `JSON_OUTPUT='n'` & `CMD_OUTPUT='n'` variable in `gitools.ini` config file which resides in same directory as `gitools.sh`
+
+```
+./gitools.sh mobile https://www.google.com origin
+
+--------------------------------------------------------------------------------
+https://www.google.com FCP median: 469 (FAST) ms DCL median: 883 ms (FAST)
+Page Load Distributions
+91.30 % loads for this page have a fast FCP (less than 1567 milliseconds)
+5.30 % loads for this page have an average FCP (less than 2963 milliseconds)
+3.30 % loads for this page have an slow FCP (over 2963 milliseconds)
+91.50 % loads for this page have a fast DCL (less than 2120 milliseconds)
+5.70 % loads for this page have an average DCL (less than 4226 milliseconds)
+2.70 % loads for this page have an slow DCL (over 4226 milliseconds)
+```
+
 ### Slack Channel
 
 You can send results to a Slack Channel via incoming webhooks by setting `SLACK='y'` and other listed variables in `gitools.ini` config file which resides in same directory as `gitools.sh`

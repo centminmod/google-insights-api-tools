@@ -6,7 +6,7 @@
 #########################################################
 # variables
 #############
-VER='0.1'
+VER='0.2'
 DT=$(date +"%d%m%y-%H%M%S")
 
 # GET API Key from https://console.developers.google.com/
@@ -16,6 +16,7 @@ DT=$(date +"%d%m%y-%H%M%S")
 # gitools.ini config file which resides in same directory as gitools.sh
 GOOGLE_API_KEY=''
 
+CMD_OUTPUT='y'
 JSON_OUTPUT='y'
 SNAPSHOTS='n'
 SCREENSHOT='n'
@@ -89,7 +90,9 @@ gi_desktop() {
     turl="https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=${o}${prefix}%3A%2F%2F${domain}%2F&screenshot=${screenshot_state}&snapshots=${snapshots_state}&strategy=${strategy}${metric_opt}&key=${GOOGLE_API_KEY}"
     echo
     echo "--------------------------------------------------------------------------------"
-    echo "curl -4s $turl_echo"
+    if [[ "$CMD_OUTPUT" = [yY] ]]; then
+      echo "curl -4s $turl_echo"
+    fi
     if [[ "$JSON_OUTPUT" = [yY] ]]; then
       curl -4s $turl | tee /tmp/gitool-${strategy}.log
     else
@@ -102,7 +105,7 @@ gi_desktop() {
       exit
     fi
 
-    echo
+    # echo
     fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.median")
     fcp_cat=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.category" | sed -e 's|\"||g')
     dcl_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.median")
@@ -169,7 +172,9 @@ gi_mobile() {
     turl="https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=${o}${prefix}%3A%2F%2F${domain}%2F&screenshot=${screenshot_state}&snapshots=${snapshots_state}&strategy=${strategy}${metric_opt}&key=${GOOGLE_API_KEY}"
     echo
     echo "--------------------------------------------------------------------------------"
-    echo "curl -4s $turl_echo"
+    if [[ "$CMD_OUTPUT" = [yY] ]]; then
+      echo "curl -4s $turl_echo"
+    fi
     if [[ "$JSON_OUTPUT" = [yY] ]]; then
       curl -4s $turl | tee /tmp/gitool-${strategy}.log
     else
@@ -182,7 +187,7 @@ gi_mobile() {
       exit
     fi
 
-    echo
+    # echo
     fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.median")
     fcp_cat=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.category" | sed -e 's|\"||g')
     dcl_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.median")
