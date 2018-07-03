@@ -1,12 +1,31 @@
-# Google Insights API Tools
+# Google PageSpeed Insights API Tools
 
 Google PageSpeed Insights can now report the aggregate pagespeed results from [Chrome User Experience Report](https://developers.google.com/web/tools/chrome-user-experience-report/) for your entire `origin` domain as seen [here](https://community.centminmod.com/threads/your-sites-google-pagespeed-insights-result.15070/) and [here](https://www.seroundtable.com/google-pagespeed-insights-aggregated-speed-data-origin-25935.html). To be able to use `gitools.sh` script, you first you need to have a Google account to get `GOOGLE_API_KEY` to be able to query the [Google PageSpeed Insights v4 API](https://developers.google.com/speed/docs/insights/v4/getting-started).
+
+## Google PageSpeed Insights API Key
 
 You can get API Key from https://console.developers.google.com/ by enabling PageSpeed Insights API and creating the  API key from Credentials page. If you don't want to set the `GOOGLE_API_KEY` variable within this script, you can set it in `gitools.ini` config file which resides in same directory as `gitools.sh`
 
 ```
 GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
 ```
+
+### Steps to creating API Key Credentials
+
+1. Create a Google Account if you don't have one https://accounts.google.com/SignUp
+2. Login to Google API Console http://code.google.com/apis/console
+3. Create a new project
+4. Enable the PageSpeed Insights API you can find it in API library
+5. Create an API Key via Credentials Page
+
+![](/images/google-console-api-02.png)
+
+![](/images/google-console-api-06.png)
+
+![](/images/google-console-api-09.png) ![](/images/google-console-api-10.png)
+
+
+## Notes
 
 Notes from [Chrome User Experience Report](https://developers.google.com/web/tools/chrome-user-experience-report/)
 
@@ -48,6 +67,20 @@ Usage:
 ./gitools.sh all https://domain.com {default|origin|site}
 ```
 
+## Errors
+
+If site's traffic is too low and not added to Chrome User Experience Report, you will not be able to get an data, in which case you will see the following
+
+```
+./gitools.sh desktop https://domain.com site               
+
+--------------------------------------------------------------------------------
+curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=site%3Ahttps%3A%2F%2Fdomain.com%2F&screenshot=false&snapshots=false&strategy=desktop&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)&key=YOUR_GOOGLE_API_KEY
+{}
+
+error: aborting...
+```
+
 ## Configuration
 
 ### Slack Channel
@@ -64,20 +97,6 @@ icon="ghost"         # Default emoji to post messages. Don't wrap it with ':'. S
 
 ![](/images/google-pagespeed-insight-api-gitool-slack-01.png)
 
-
-## Errors
-
-If site's traffic is too low and not added to Chrome User Experience Report, you will not be able to get an data, in which case you will see the following
-
-```
-./gitools.sh desktop https://domain.com site               
-
---------------------------------------------------------------------------------
-curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=site%3Ahttps%3A%2F%2Fdomain.com%2F&screenshot=false&snapshots=false&strategy=desktop&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)&key=YOUR_GOOGLE_API_KEY
-{}
-
-error: aborting...
-```
 
 ### Both Desktop & Mobile Test origin
 
