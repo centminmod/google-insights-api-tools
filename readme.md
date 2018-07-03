@@ -13,7 +13,7 @@ GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
 ### Steps to creating API Key Credentials
 
 1. Create a Google Account if you don't have one https://accounts.google.com/SignUp
-2. Login to Google API Console http://code.google.com/apis/console
+2. Login to Google API Console https://console.developers.google.com/
 3. Create a new project
 4. Enable the PageSpeed Insights API you can find it in API library
 5. Create an API Key via Credentials Page
