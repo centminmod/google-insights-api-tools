@@ -1,4 +1,24 @@
-# Google PageSpeed Insights API Tools
+# Contents
+
+* [Google PageSpeed Insights API Tools](#google-pagespeed-insights-api-tools)
+* [Google PageSpeed Insights API Key](#google-pagespeed-insights-api-key)
+  * [Steps to creating API Key Credentials](#steps-to-creating-api-key-credentials)
+* [Notes](#notes)
+* [Install](#install)
+* [Usage](#usage)
+  * [Both Desktop & Mobile Test origin](#both-desktop--mobile-test-origin)
+  * [Desktop Test origin](#desktop-test-origin)
+  * [Desktop Test site only](#desktop-test-site-only)
+  * [Desktop Test default url only](#desktop-test-default-url-only)
+* [Errors](#errors)
+* [Configuration](#configuration)
+  * [JSON Output](#json-output)
+  * [Command Output](#command-output)
+  * [Slack Channel](#slack-channel)
+  * [Cronjob Scheduled Runs](#cronjob-scheduled-runs)
+
+
+## Google PageSpeed Insights API Tools
 
 Google PageSpeed Insights can now report the aggregate pagespeed results from [Chrome User Experience Report](https://developers.google.com/web/tools/chrome-user-experience-report/) for your entire `origin` domain as seen [here](https://community.centminmod.com/threads/your-sites-google-pagespeed-insights-result.15070/) and [here](https://www.seroundtable.com/google-pagespeed-insights-aggregated-speed-data-origin-25935.html). To be able to use `gitools.sh` script, you first you need to have a Google account to get `GOOGLE_API_KEY` to be able to query the [Google PageSpeed Insights v4 API](https://developers.google.com/speed/docs/insights/v4/getting-started).
 
