@@ -53,6 +53,30 @@ Metrics from [Chrome User Experience Report](https://developers.google.com/web/t
 
 > “The DOMContentLoaded reports the time when the initial HTML document has been completely loaded and parsed, without waiting for stylesheets, images, and subframes to finish loading.” 
 
+## Install
+
+To install `gitools.sh` and create persistent config file `gitools.ini` within same directory.
+
+```
+mkdir -p /root/tools
+cd /root/tools
+git clone https://github.com/centminmod/google-insights-api-tools
+cd google-insights-api-tools
+touch gitools.ini
+```
+
+To set variables in `gitools.ini` that override `gitools.sh` default
+
+```
+GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
+CMD_OUTPUT='y'
+JSON_OUTPUT='y'
+SLACK='y'
+webhook_url='YOUR_SLACK_WEBHOOK_URL'
+channel='YOUR_SLACK_CHANNEL_NAME'
+icon='ghost'
+```
+
 ## Usage
 
 There are several parameters to pass on command line, desktop/mobile/all determines which type of site you want to test and default/origin/site determines if you want to test the entire domain and all pages (origin) or just the url page itself (default) or just the pages on specific site (site). The site domain you pass must have either `http://` or `https://` prefix.
@@ -133,8 +157,39 @@ username="psi-bot"   # Default username to post messages.
 icon="ghost"         # Default emoji to post messages. Don't wrap it with ':'. See http://www.emoji-cheat-sheet.com; can be a url too.
 ```
 
-![](/images/google-pagespeed-insight-api-gitool-slack-01.png)
+![](/images/google-pagespeed-insight-api-gitool-slack-01b.png)
 
+### Cronjob Scheduled Runs
+
+You can create a cronjob script to schedule `gitools.sh` runs for mobile domain name origin checks. Useful, if you have enabled [Slack Channel](#slack-channel) integration so can monitor your Google PageSpeed Insight results over time.
+
+i.e. create a file called `cron.sh` at `/root/tools/google-insights-api-tools/cron.sh` containing the following - replacing the domains with your domains you want to check. Add as many domains you want - one per new line.
+
+```
+#!/bin/bash
+cd /root/tools/google-insights-api-tools
+./gitools.sh all https://www.google.com origin
+./gitools.sh all https://centminmod.com origin
+./gitools.sh all https://community.centminmod.com origin
+```
+
+ensure permissions are executeable
+
+```
+chmod +x /root/tools/google-insights-api-tools/cron.sh
+```
+
+do manual script run to check that it's working
+
+```
+/root/tools/google-insights-api-tools/cron.sh
+```
+
+setup cronjob to run every Monday once a week at 5:19 AM
+
+```
+19 5 * * MON /root/tools/google-insights-api-tools/cron.sh >/dev/null 2>&1
+```
 
 ### Both Desktop & Mobile Test origin
 
