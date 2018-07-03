@@ -6,6 +6,7 @@
 #########################################################
 # variables
 #############
+VER='0.1'
 DT=$(date +"%d%m%y-%H%M%S")
 
 # GET API Key from https://console.developers.google.com/
@@ -15,6 +16,7 @@ DT=$(date +"%d%m%y-%H%M%S")
 # gitools.ini config file which resides in same directory as gitools.sh
 GOOGLE_API_KEY=''
 
+JSON_OUTPUT='y'
 SNAPSHOTS='n'
 SCREENSHOT='n'
 
@@ -88,7 +90,11 @@ gi_desktop() {
     echo
     echo "--------------------------------------------------------------------------------"
     echo "curl -4s $turl_echo"
-    curl -4s $turl | tee /tmp/gitool-${strategy}.log
+    if [[ "$JSON_OUTPUT" = [yY] ]]; then
+      curl -4s $turl | tee /tmp/gitool-${strategy}.log
+    else
+      curl -4s $turl > /tmp/gitool-${strategy}.log
+    fi
     err=$?
     if [[ "$err" -ne '0' || "$(wc -l < /tmp/gitool-${strategy}.log)" -lt '2' ]]; then
       echo
@@ -164,7 +170,11 @@ gi_mobile() {
     echo
     echo "--------------------------------------------------------------------------------"
     echo "curl -4s $turl_echo"
-    curl -4s $turl | tee /tmp/gitool-${strategy}.log
+    if [[ "$JSON_OUTPUT" = [yY] ]]; then
+      curl -4s $turl | tee /tmp/gitool-${strategy}.log
+    else
+      curl -4s $turl > /tmp/gitool-${strategy}.log
+    fi
     err=$?
     if [[ "$err" -ne '0' || "$(wc -l < /tmp/gitool-${strategy}.log)" -lt '2' ]]; then
       echo
