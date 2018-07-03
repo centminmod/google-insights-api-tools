@@ -70,6 +70,12 @@ gi_desktop() {
     echo "--------------------------------------------------------------------------------"
     echo "curl -4s $turl_echo"
     curl -4s $turl | tee /tmp/gitool-${strategy}.log
+    err=$?
+    if [[ "$err" -ne '0' || "$(wc -l < /tmp/gitool-${strategy}.log)" -lt '2' ]]; then
+      echo
+      echo "error: aborting..."
+      exit
+    fi
 
     echo
     fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.median")
@@ -135,6 +141,12 @@ gi_mobile() {
     echo "--------------------------------------------------------------------------------"
     echo "curl -4s $turl_echo"
     curl -4s $turl | tee /tmp/gitool-${strategy}.log
+    err=$?
+    if [[ "$err" -ne '0' || "$(wc -l < /tmp/gitool-${strategy}.log)" -lt '2' ]]; then
+      echo
+      echo "error: aborting..."
+      exit
+    fi
 
     echo
     fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.median")

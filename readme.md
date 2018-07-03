@@ -22,6 +22,20 @@ Usage:
 ./gitools.sh all https://domain.com {default|origin|site}
 ```
 
+## Errors
+
+If site's traffic is too low and not added to Chrome User Experience Report, you will not be able to get an data, in which case you will see the following
+
+```
+./gitools.sh desktop https://domain.com site               
+
+--------------------------------------------------------------------------------
+curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=site%3Ahttps%3A%2F%2Fdomain.com%2F&screenshot=false&snapshots=false&strategy=desktop&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)&key=YOUR_GOOGLE_API_KEY
+{}
+
+error: aborting...
+```
+
 ### Both Desktop & Mobile Test origin
 
 Both Desktop & Mobile test `origin:` of a domain - all pages scanned for the domain = [https://www.google.com](https://developers.google.com/speed/pagespeed/insights/?url=origin%3Ahttps%3A%2F%2Fwww.google.com%2F)
