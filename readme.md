@@ -10,16 +10,16 @@ GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
 
 ## Usage
 
-There are several parameters to pass on command line, desktop/mobile/all determines which type of site you want to test and origin/site determines if you want to test the entire domain and all pages (origin) or just the url page itself (site). The site domain you pass much have either `http://` or `https://` prefix.
+There are several parameters to pass on command line, desktop/mobile/all determines which type of site you want to test and default/origin/site determines if you want to test the entire domain and all pages (origin) or just the url page itself (default) or just the pages on specific site (site). The site domain you pass much have either `http://` or `https://` prefix.
 
 ```
 ./gitools.sh 
 
 Usage:
 
-./gitools.sh desktop https://domain.com {origin|site}
-./gitools.sh mobile https://domain.com {origin|site}
-./gitools.sh all https://domain.com {origin|site}
+./gitools.sh desktop https://domain.com {default|origin|site}
+./gitools.sh mobile https://domain.com {default|origin|site}
+./gitools.sh all https://domain.com {default|origin|site}
 ```
 
 ### Both Desktop & Mobile Test origin
@@ -225,10 +225,78 @@ Page Load Distributions
 
 ### Desktop Test site only
 
-Desktop Test `site` default url only = [https://www.google.com](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fwww.google.com)
+Desktop Test `site` only = [https://www.google.com](https://developers.google.com/speed/pagespeed/insights/?url=site%3Ahttps%3A%2F%2Fwww.google.com)
 
 ```
 ./gitools.sh desktop https://www.google.com site
+
+--------------------------------------------------------------------------------
+curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=site%3Ahttps%3A%2F%2Fwww.google.com%2F&screenshot=false&snapshots=false&strategy=desktop&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)&key=YOUR_GOOGLE_API_KEY
+{
+ "loadingExperience": {
+  "metrics": {
+   "FIRST_CONTENTFUL_PAINT_MS": {
+    "median": 409,
+    "distributions": [
+     {
+      "min": 0,
+      "max": 984,
+      "proportion": 0.8454713690354932
+     },
+     {
+      "min": 984,
+      "max": 2073,
+      "proportion": 0.10403871224107414
+     },
+     {
+      "min": 2073,
+      "proportion": 0.0504899187234326
+     }
+    ],
+    "category": "FAST"
+   },
+   "DOM_CONTENT_LOADED_EVENT_FIRED_MS": {
+    "median": 872,
+    "distributions": [
+     {
+      "min": 0,
+      "max": 1366,
+      "proportion": 0.806970519946481
+     },
+     {
+      "min": 1366,
+      "max": 2787,
+      "proportion": 0.1438260280157439
+     },
+     {
+      "min": 2787,
+      "proportion": 0.04920345203777508
+     }
+    ],
+    "category": "FAST"
+   }
+  },
+  "overall_category": "FAST",
+  "initial_url": "https://www.google.com/"
+ }
+}
+
+https://www.google.com FCP median: 409 (FAST) ms DCL median: 872 ms (FAST)
+Page Load Distributions
+84.50 % loads for this page have a fast FCP (less than 984 milliseconds)
+10.40 % loads for this page have an average FCP (less than 2073 milliseconds)
+5.00 % loads for this page have an slow FCP (over 2073 milliseconds)
+80.70 % loads for this page have a fast DCL (less than 1366 milliseconds)
+14.40 % loads for this page have an average DCL (less than 2787 milliseconds)
+4.90 % loads for this page have an slow DCL (over 2787 milliseconds)
+```
+
+### Desktop Test default url only
+
+Desktop Test `default` url only = [https://www.google.com](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fwww.google.com)
+
+```
+./gitools.sh desktop https://www.google.com default
 
 --------------------------------------------------------------------------------
 curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=https%3A%2F%2Fwww.google.com%2F&screenshot=false&snapshots=false&strategy=desktop&fields=formattedResults%2CloadingExperience(initial_url%2Cmetrics%2Coverall_category)%2CpageStats%2CruleGroups&key=YOUR_GOOGLE_API_KEY
@@ -289,10 +357,10 @@ curl -4s https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=https%3A
   "numberHosts": 6,
   "totalRequestBytes": "2286",
   "numberStaticResources": 9,
-  "htmlResponseBytes": "227195",
-  "overTheWireResponseBytes": "435133",
+  "htmlResponseBytes": "227045",
+  "overTheWireResponseBytes": "434876",
   "imageResponseBytes": "37282",
-  "javascriptResponseBytes": "826150",
+  "javascriptResponseBytes": "825514",
   "otherResponseBytes": "41770",
   "numberJsResources": 4,
   "numTotalRoundTrips": 10,

@@ -49,14 +49,18 @@ gi_desktop() {
   if [[ "$origin_check" = 'origin' ]]; then
     origins='origin%3A'
   elif [[ "$origin_check" = 'site' ]]; then
+    origins='site%3A'
+  elif [[ "$origin_check" = 'default' ]]; then
     origins='default'
   else
-    origins='default origin%3A'
+    origins='default site%3A origin%3A'
   fi
   for o in $origins; do
     if [[ "$o" = 'default' ]]; then
       o=""
       metric_opt='&fields=formattedResults%2CloadingExperience(initial_url%2Cmetrics%2Coverall_category)%2CpageStats%2CruleGroups'
+    elif [[ "$o" = 'site%3A' ]]; then
+      metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)'
     elif [[ "$o" = 'origin%3A' ]]; then
       metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)'
     fi
@@ -110,14 +114,18 @@ gi_mobile() {
   if [[ "$origin_check" = 'origin' ]]; then
     origins='origin%3A'
   elif [[ "$origin_check" = 'site' ]]; then
+    origins='site%3A'
+  elif [[ "$origin_check" = 'default' ]]; then
     origins='default'
   else
-    origins='default origin%3A'
+    origins='default site%3A origin%3A'
   fi
   for o in $origins; do
     if [[ "$o" = 'default' ]]; then
       o=""
       metric_opt='&fields=formattedResults%2CloadingExperience(initial_url%2Cmetrics%2Coverall_category)%2CpageStats%2CruleGroups'
+    elif [[ "$o" = 'site%3A' ]]; then
+      metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)'
     elif [[ "$o" = 'origin%3A' ]]; then
       metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)'
     fi
@@ -187,9 +195,9 @@ case $1 in
   echo
   echo "Usage:"
   echo
-  echo "$0 desktop https://domain.com {origin|site}"
-  echo "$0 mobile https://domain.com {origin|site}"
-  echo "$0 all https://domain.com {origin|site}"
+  echo "$0 desktop https://domain.com {default|origin|site}"
+  echo "$0 mobile https://domain.com {default|origin|site}"
+  echo "$0 all https://domain.com {default|origin|site}"
   echo
     ;;
 esac
