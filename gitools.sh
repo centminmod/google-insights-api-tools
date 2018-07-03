@@ -32,7 +32,12 @@ if [ -f gitools.ini ]; then
 fi
 
 if [ ! -f /usr/bin/jq ]; then
-  yum -q -y install jq
+  if [ -d /etc/yum.repos.d ]; then
+    yum -q -y install jq
+  fi
+  if [ -f /usr/bin/apt ]; then
+    apt-get -y -q install jq
+  fi
 fi
 
 if [[ "$SNAPSHOTS" = [Yy] ]]; then
