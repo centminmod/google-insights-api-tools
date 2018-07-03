@@ -48,6 +48,23 @@ Usage:
 ./gitools.sh all https://domain.com {default|origin|site}
 ```
 
+## Configuration
+
+### Slack Channel
+
+You can send results to a Slack Channel via incoming webhooks by setting `SLACK='y'` and other listed variables in `gitools.ini` config file which resides in same directory as `gitools.sh`
+
+```
+SLACK='y'
+webhook_url=""       # Incoming Webhooks integration URL
+channel="general"    # Default channel to post messages. '#' is prepended
+username="psi-bot"   # Default username to post messages.
+icon="ghost"         # Default emoji to post messages. Don't wrap it with ':'. See http://www.emoji-cheat-sheet.com; can be a url too.
+```
+
+![](/images/google-pagespeed-insight-api-gitool-slack-01.png)
+
+
 ## Errors
 
 If site's traffic is too low and not added to Chrome User Experience Report, you will not be able to get an data, in which case you will see the following

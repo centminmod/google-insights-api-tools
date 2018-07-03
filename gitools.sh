@@ -17,6 +17,13 @@ GOOGLE_API_KEY=''
 
 SNAPSHOTS='n'
 SCREENSHOT='n'
+
+# slack channel
+SLACK='n'
+webhook_url=""       # Incoming Webhooks integration URL
+channel="general"    # Default channel to post messages. '#' is prepended
+username="psi-bot"   # Default username to post messages.
+icon="ghost"         # Default emoji to post messages. Don't wrap it with ':'. See http://www.emoji-cheat-sheet.com; can be a url too.
 #########################################################
 # functions
 #############
@@ -39,6 +46,13 @@ if [[ "$SCREENSHOT" = [Yy] ]]; then
 else
   screenshot_state='false'
 fi
+
+slacksend() {
+  dt=$DT
+  # message="$dt: This is posted to #$channel and comes from a bot named $username."
+  message="$1"
+  curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"text\": \"$message\", \"icon_emoji\": \":$icon:\"}" $webhook_url
+}
 
 gi_desktop() {
   strategy=desktop
@@ -98,16 +112,21 @@ gi_desktop() {
     dcl_distribution_proportiona_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportiona)*100" | bc))
     dcl_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportionb)*100" | bc))
     dcl_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportionc)*100" | bc))
-    echo "${prefix}://$domain FCP median: $fcp_median ($fcp_cat) ms DCL median: $dcl_median ms ($dcl_cat)"
-    echo "Page Load Distributions"
-    echo "$fcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $fcl_distribution_min milliseconds)"
-    echo "$fcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $fcl_distribution_max milliseconds)"
-    echo "$fcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $fcl_distribution_max milliseconds)"
-    echo "$dcl_distribution_proportiona_perc % loads for this page have a fast DCL (less than $dcl_distribution_min milliseconds)"
-    echo "$dcl_distribution_proportionb_perc % loads for this page have an average DCL (less than $dcl_distribution_max milliseconds)"
-    echo "$dcl_distribution_proportionc_perc % loads for this page have an slow DCL (over $dcl_distribution_max milliseconds)"
+    echo "${prefix}://$domain FCP median: $fcp_median ($fcp_cat) ms DCL median: $dcl_median ms ($dcl_cat)" | tee /tmp/gitool-${strategy}-summary.log
+    echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$fcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $fcl_distribution_min milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$fcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $fcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$fcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $fcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$dcl_distribution_proportiona_perc % loads for this page have a fast DCL (less than $dcl_distribution_min milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$dcl_distribution_proportionb_perc % loads for this page have an average DCL (less than $dcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$dcl_distribution_proportionc_perc % loads for this page have an slow DCL (over $dcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
     echo
+    if [[ "$SLACK" = [yY] ]]; then
+      send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
+      slacksend "${strategy}\n$send_message"
+    fi
     rm -rf /tmp/gitool-${strategy}.log
+    rm -rf /tmp/gitool-${strategy}-summary.log
   done
 }
 
@@ -169,16 +188,21 @@ gi_mobile() {
     dcl_distribution_proportiona_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportiona)*100" | bc))
     dcl_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportionb)*100" | bc))
     dcl_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportionc)*100" | bc))
-    echo "${prefix}://$domain FCP median: $fcp_median ($fcp_cat) ms DCL median: $dcl_median ms ($dcl_cat)"
-    echo "Page Load Distributions"
-    echo "$fcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $fcl_distribution_min milliseconds)"
-    echo "$fcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $fcl_distribution_max milliseconds)"
-    echo "$fcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $fcl_distribution_max milliseconds)"
-    echo "$dcl_distribution_proportiona_perc % loads for this page have a fast DCL (less than $dcl_distribution_min milliseconds)"
-    echo "$dcl_distribution_proportionb_perc % loads for this page have an average DCL (less than $dcl_distribution_max milliseconds)"
-    echo "$dcl_distribution_proportionc_perc % loads for this page have an slow DCL (over $dcl_distribution_max milliseconds)"
+    echo "${prefix}://$domain FCP median: $fcp_median ($fcp_cat) ms DCL median: $dcl_median ms ($dcl_cat)" | tee /tmp/gitool-${strategy}-summary.log
+    echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$fcl_distribution_proportiona_perc % loads for this page have a fast FCP (less than $fcl_distribution_min milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$fcl_distribution_proportionb_perc % loads for this page have an average FCP (less than $fcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$fcl_distribution_proportionc_perc % loads for this page have an slow FCP (over $fcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$dcl_distribution_proportiona_perc % loads for this page have a fast DCL (less than $dcl_distribution_min milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$dcl_distribution_proportionb_perc % loads for this page have an average DCL (less than $dcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$dcl_distribution_proportionc_perc % loads for this page have an slow DCL (over $dcl_distribution_max milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
     echo
+    if [[ "$SLACK" = [yY] ]]; then
+      send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
+      slacksend "${strategy}\n$send_message"
+    fi
     rm -rf /tmp/gitool-${strategy}.log
+    rm -rf /tmp/gitool-${strategy}-summary.log
   done
 }
 
