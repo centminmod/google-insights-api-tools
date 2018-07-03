@@ -10,7 +10,7 @@ GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
 
 ## Usage
 
-There are several parameters to pass on command line, desktop/mobile/all determines which type of site you want to test and default/origin/site determines if you want to test the entire domain and all pages (origin) or just the url page itself (default) or just the pages on specific site (site). The site domain you pass much have either `http://` or `https://` prefix.
+There are several parameters to pass on command line, desktop/mobile/all determines which type of site you want to test and default/origin/site determines if you want to test the entire domain and all pages (origin) or just the url page itself (default) or just the pages on specific site (site). The site domain you pass must have either `http://` or `https://` prefix.
 
 ```
 ./gitools.sh 
