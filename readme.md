@@ -847,7 +847,7 @@ WPT='y'
 WPT_APIKEY='YOUR_WPT_API_KEY'
 ```
 
-Currently, tests are done only from Dulles, VA location for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a 300 second delay until results are displayed.
+Currently, tests are done only from Dulles, VA location for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 30 seconds delay until results are displayed. If results are still not available, another 30 second delay and recheck is triggered and so on until results are available.
 
 ```
 cd /root/tools/google-insights-api-tools

@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='0.6'
+VER='0.7'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -49,6 +49,7 @@ GTBROWSER='3'
 # Webpagetest.org API Tests
 WPT_LABEL=$(date +"%d%m%y-%H%M%S")
 WPT_DIR='/home/wptresults'
+WPT_RESULT_TESTSTATUS_LOG='/tmp/wpt-teststatus-check.log'
 WPT_RUNS='1'
 WPT_APIURL='https://www.webpagetest.org/runtest.php'
 WPT_APIKEY='YOUR_API_KEY'
@@ -56,7 +57,7 @@ WPT_LOCATION='Dulles:Chrome.Cable'
 WPT_DULLES='y'
 # wait time between API run and parsing
 # result log
-WPT_SLEEPTIME='300'
+WPT_SLEEPTIME='30'
 # define specific testers for specific locales
 # for more consistent repeated testing runs
 # https://www.webpagetest.org/getTesters.php
@@ -142,20 +143,34 @@ wpt_run() {
       echo "$WPT_USER_RESULTURL"
     fi
     echo "$WPT_RESULT_LOG"
+    WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_LOG")
     WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_LOG")
-    if [[ "$WPT_RESULT_STATUS" = 'Ok' ]]; then
-      echo "$WPT_RESULT_STATUS"
-      echo "----"
-      echo "curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
-      curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
-      cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
-      if [[ "$SLACK" = [yY] ]]; then
-        send_message="$(cat $WPT_SUMMARYRESULT_LOG)"
-        slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$send_message"
+    if [[ "$WPT_RESULT_STATUSCODE" -eq '100' || "$WPT_RESULT_STATUSCODE" -eq '200' ]]; then
+      # check test result xml result status if Ok 200, proceed otherwise if 
+      # Test Started 100 status is found wait WPT_SLEEPTIME more to proceed
+      while [[ "$WPT_RESULT_STATUSCODE" -eq '100' ]]; do
+        sleep "$WPT_SLEEPTIME"
+        curl -s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
+        WPT_RESULT_STATUS=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_TESTSTATUS_LOG")
+        WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_TESTSTATUS_LOG")
+      done
+      if [[ "$WPT_RESULT_STATUSCODE" -eq '200' ]]; then
+        WPT_USER_RESULTXMLURL=$(grep -oP '(?<=<xmlUrl>).*(?=</xmlUrl>)' "$WPT_RESULT_LOG")
+        echo "$WPT_RESULT_STATUS ($WPT_RESULT_STATUSCODE)"
+        echo "----"
+        echo "curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
+        curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
+        cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
+        if [[ "$SLACK" = [yY] ]]; then
+          send_message="$(cat $WPT_SUMMARYRESULT_LOG)"
+          slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$send_message"
+        fi
+        echo "----"
+      else
+        echo "$WPT_RESULT_STATUS ($WPT_RESULT_STATUSCODE)"
       fi
-      echo "----"
     else
-      echo "$WPT_RESULT_STATUS"
+      echo "Webpagetest failed..."
     fi
     echo "--------------------------------------------------------------------------------"
     echo
@@ -184,6 +199,7 @@ gt_run() {
     } | tee /tmp/gtmetrix-summary.log
   else
     {
+    result_state=$(curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.state'| sed -e 's|\"||g')
     if [[ "$result_state" = 'completed' ]]; then
       curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
     else
