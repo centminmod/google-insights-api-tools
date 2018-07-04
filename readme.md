@@ -20,6 +20,7 @@
   * [GTMetrix Slack Channel](#gtmetrix-slack-channel)
 * [WebpageTest.org API Tests](#webpagetestorg-api-tests)
   * [WebpageTest.org Slack Channel](#webpagetestorg-slack-channel)
+  * [WebpageTest.org Google Lighthouse](#webpagetestorg-google-lighthouse)
 
 
 ## Google PageSpeed Insights API Tools
