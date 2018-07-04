@@ -172,6 +172,8 @@ wpt_run() {
         curl -s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
         WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_TESTSTATUS_LOG")
         WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_TESTSTATUS_LOG")
+        echo "$WPT_RESULT_STATUS ($WPT_RESULT_STATUSCODE)"
+        echo "waiting on results..."
       done
       if [[ "$WPT_RESULT_STATUSCODE" -eq '200' ]]; then
         WPT_USER_RESULTXMLURL=$(grep -oP '(?<=<xmlUrl>).*(?=</xmlUrl>)' "$WPT_RESULT_LOG")
