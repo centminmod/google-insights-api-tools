@@ -18,8 +18,8 @@
   * [Cronjob Scheduled Runs](#cronjob-scheduled-runs)
 * [GTMetrix Report](#gtmetrix-report)
   * [GTMetrix Slack Channel](#gtmetrix-slack-channel)
-* [WebpageTest.org API Tests](#webpagetest-org-api-tests)
-  * [WebpageTest.org Slack Channel](#webpagetest-org-slack-channel)
+* [WebpageTest.org API Tests](#webpagetestorg-api-tests)
+  * [WebpageTest.org Slack Channel](#webpagetestorg-slack-channel)
 
 
 ## Google PageSpeed Insights API Tools
