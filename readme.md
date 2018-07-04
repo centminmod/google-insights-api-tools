@@ -187,7 +187,7 @@ icon="ghost"         # Default emoji to post messages. Don't wrap it with ':'. S
 
 You can create a cronjob script to schedule `gitools.sh` runs for mobile domain name origin checks. Useful, if you have enabled [Slack Channel](#slack-channel) integration so can monitor your Google PageSpeed Insight results over time.
 
-i.e. create a file called `cron.sh` at `/root/tools/google-insights-api-tools/cron.sh` containing the following - replacing the domains with your domains you want to check. Add as many domains you want - one per new line.
+i.e. create a file called `cron.sh` at `/root/tools/google-insights-api-tools/cron.sh` containing the following - replacing the domains with your domains you want to check. Add as many domains you want - one per new line. Also added [GTMetrix Report](#gtmetrix-report) & [WebpageTest.org API Tests](#webpagetestorg-api-tests).
 
 ```
 #!/bin/bash
@@ -195,6 +195,12 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh all https://www.google.com origin
 ./gitools.sh all https://centminmod.com origin
 ./gitools.sh all https://community.centminmod.com origin
+
+./gitools.sh gtmetrix https://centminmod.com
+./gitools.sh gtmetrix https://community.centminmod.com
+
+./gitools.sh wpt https://centminmod.com
+./gitools.sh wpt https://community.centminmod.com
 ```
 
 ensure permissions are executeable
