@@ -17,6 +17,7 @@
   * [Slack Channel](#slack-channel)
   * [Cronjob Scheduled Runs](#cronjob-scheduled-runs)
 * [GTMetrix Report](#gtmetrix-report)
+  * [GTMetrix Slack Channel](#gtmetrix-slack-channel)
 
 
 ## Google PageSpeed Insights API Tools
@@ -772,7 +773,9 @@ Run `gitools.sh` gtmetrix option passing site to test https://community.centminm
 
 ```
 cd /root/tools/google-insights-api-tools
+
 ./gitools.sh gtmetrix https://community.centminmod.com
+
 {"credits_left":60,"test_id":"EMhil9u9","poll_state_url":"https://gtmetrix.com/api/0.1/test/EMhil9u9"}
 waiting on results...
 {
@@ -823,3 +826,7 @@ Redirect: 0 ms Connect: 244 ms Backend: 221 ms
 TTFB: 465 ms DOM-int: 570 ms First-paint: 1010 ms
 Contentful-paint: 1010 ms DOM-loaded: 1029 ms Onload: 1083 ms
 ```
+
+### GTMetrix Slack Channel
+
+![](/images/gtmetrix-api-slack-01.png)

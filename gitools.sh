@@ -147,17 +147,25 @@ gt_run() {
 
   echo
   echo "--------------------------------------------------------------------------------"
-  echo "GTMetrix Test (Dallas Chrome Broadband 5Mbps): ${prefix}://${domain}"
-  echo "PageSpeed Score: $pagespeed_score YSlow Score: $yslow_score"
-  echo "Report: $report_url"
-  echo "Fully Loaded Time: $fully_loaded_time ms Total Page Size: $page_bytes (bytes) Requests: $page_elements"
-  echo "RUM Speed Index: $rum_speed_index"
-  echo "Redirect: $redirect_duration ms Connect: $connect_duration ms Backend: $backend_duration ms"
-  echo "TTFB: $html_load_time ms DOM-int: $dom_interactive_time ms First-paint: $first_paint_time ms"
-  echo "Contentful-paint: $first_contentful_paint_time ms DOM-loaded: $dom_content_loaded_time ms Onload: $onload_time ms"
+  echo "GTMetrix Test (Dallas Chrome Broadband 5Mbps): ${prefix}://${domain}" | tee /tmp/gitool-gtmetrix-slack-summary.log
+  echo "PageSpeed Score: $pagespeed_score YSlow Score: $yslow_score" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
+  echo "Report: $report_url" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
+  echo "Fully Loaded Time: $fully_loaded_time ms Total Page Size: $page_bytes (bytes) Requests: $page_elements" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
+  echo "RUM Speed Index: $rum_speed_index" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
+  echo "Redirect: $redirect_duration ms Connect: $connect_duration ms Backend: $backend_duration ms" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
+  echo "TTFB: $html_load_time ms DOM-int: $dom_interactive_time ms First-paint: $first_paint_time ms" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
+  echo "Contentful-paint: $first_contentful_paint_time ms DOM-loaded: $dom_content_loaded_time ms Onload: $onload_time ms" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
+
+  if [[ "$SLACK" = [yY] ]]; then
+    if [[ "$pagespeed_score" ]]; then
+      send_message="$(cat /tmp/gitool-gtmetrix-slack-summary.log)"
+      slacksend "$send_message"
+    fi
+  fi
 
   rm -rf /tmp/gtmetrix.log
   rm -rf /tmp/gtmetrix-summary.log
+  rm -rf /tmp/gitool-gtmetrix-slack-summary.log
 }
 
 gi_run() {
