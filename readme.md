@@ -846,34 +846,33 @@ Currently, tests are done only from Dulles, VA location for Chrome Cable 5Mbps s
 ```
 cd /root/tools/google-insights-api-tools
 
-./gitools.sh wpt https://community.centminmod.com
+./gitools.sh wpt https://community.centminmod.com             
 
----------------------------------------------
+--------------------------------------------------------------------------------
 Dulles:Chrome.Cable WPT Results
----------------------------------------------
-Test ID: 180704_H6_8c4685519452de69aadc5ecf8bc1bd94
-https://www.webpagetest.org/result/180704_H6_8c4685519452de69aadc5ecf8bc1bd94/
-/home/wptresults/wpt-dulles.chrome.cable.040718-072927.log
+--------------------------------------------------------------------------------
+Test ID: 180704_H8_23eed1d3922c72ddac94702865d442fb
+https://www.webpagetest.org/result/180704_H8_23eed1d3922c72ddac94702865d442fb/
+/home/wptresults/wpt-dulles.chrome.cable.040718-074351.log
 Ok
 ----
-firstPaint 1022 
-loadTime 1209 
-domInteractive 1022 
-fullyLoaded 2750 
+firstPaint 1065 
+loadTime 1270 
+domInteractive 1235 
+fullyLoaded 2536 
 requests 25 
-TTFB 441 
+TTFB 453 
 domElements 1983 
-visualComplete 2000 
+visualComplete 1900 
 render 1100 
-SpeedIndex 1117 
+SpeedIndex 1124 
 visualComplete85 1100 
 visualComplete90 1100 
-visualComplete95 1200 
-visualComplete99 1200 
-chromeUserTiming.domInteractive 1022 
+visualComplete95 1300 
+visualComplete99 1300 
+chromeUserTiming.firstPaint 1064 
 ok----
----------------------------------------------
-
+--------------------------------------------------------------------------------
 ```
 
 ### WebpageTest.org Slack Channel
