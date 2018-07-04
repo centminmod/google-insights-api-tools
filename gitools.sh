@@ -1,13 +1,17 @@
 #!/bin/bash
 #########################################################
 # quick Google PageSpeed Insights API tool
+# & gtmetrix api tool
 # written by George Liu (eva2000) https://centminmod.com
+# 
 # https://developers.google.com/speed/docs/insights/v4/getting-started
+# https://gtmetrix.com/api/
 #########################################################
 # variables
 #############
-VER='0.3'
+VER='0.4'
 DT=$(date +"%d%m%y-%H%M%S")
+
 
 # GET API Key from https://console.developers.google.com/
 # by enabling PageSpeed Insights API and creating the
@@ -20,6 +24,13 @@ CMD_OUTPUT='y'
 JSON_OUTPUT='y'
 SNAPSHOTS='n'
 SCREENSHOT='n'
+
+# Gtmetrix API settings
+GTMETRIX='n'
+GTEMAIL=''
+GTAPIKEY=''
+GTBROWSER_WIDTH='1366'
+GTBROWSER_HEIGHT='768'
 
 # slack channel
 SLACK='n'
@@ -60,6 +71,55 @@ slacksend() {
   # message="$dt: This is posted to #$channel and comes from a bot named $username."
   message="$1"
   curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"text\": \"$message\", \"icon_emoji\": \":$icon:\"}" $webhook_url
+}
+
+gt_run() {
+  fulldomain=$1
+  prefix=$(echo $fulldomain | awk -F '://' '{print $1}')
+  domain=$(echo $fulldomain | awk -F '://' '{print $2}')
+  # browser = 3 chrome
+  # location = 4 dallas
+  curl -s --user $GTEMAIL:$GTAPIKEY --form url=${prefix}://${domain} --form x-metrix-adblock=0 --form x-metrix-video=1 --form browser=3 --form location=4 --form x-metrix-browser-width=$GTBROWSER_WIDTH --form x-metrix-browser-height=$GTBROWSER_HEIGHT --form x-metrix-throttle='5000/1000/30' https://gtmetrix.com/api/0.1/test | tee /tmp/gtmetrix.log
+  echo "waiting on results..."
+  sleep 10s
+  gtmetrix_result=$(cat /tmp/gtmetrix.log | jq '.poll_state_url' | sed -e 's|\"||g')
+  {
+  curl -s --user $gtemail:$gtapikey $gtmetrix_result | jq '.'
+  } > /tmp/gtmetrix-summary.log
+  # waterfall=$(curl -s --user $gtemail:$gtapikey ${gtmetrix_result}/har | jq)
+  
+  onload_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.onload_time')
+  first_contentful_paint_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.first_contentful_paint_time')
+  page_elements=$(cat /tmp/gtmetrix-summary.log | jq '.results.page_elements')
+  report_url=$(cat /tmp/gtmetrix-summary.log | jq '.results.report_url')
+  redirect_duration=$(cat /tmp/gtmetrix-summary.log | jq '.results.redirect_duration')
+  first_paint_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.first_paint_time')
+  dom_content_loaded_duration=$(cat /tmp/gtmetrix-summary.log | jq '.results.dom_content_loaded_duration')
+  dom_content_loaded_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.dom_content_loaded_time')
+  dom_interactive_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.dom_interactive_time')
+  page_bytes=$(cat /tmp/gtmetrix-summary.log | jq '.results.page_bytes')
+  page_load_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.page_load_time')
+  html_bytes=$(cat /tmp/gtmetrix-summary.log | jq '.results.html_bytes')
+  fully_loaded_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.fully_loaded_time')
+  html_load_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.html_load_time')
+  rum_speed_index=$(cat /tmp/gtmetrix-summary.log | jq '.results.rum_speed_index')
+  yslow_score=$(cat /tmp/gtmetrix-summary.log | jq '.results.yslow_score')
+  pagespeed_score=$(cat /tmp/gtmetrix-summary.log | jq '.results.pagespeed_score')
+  backend_duration=$(cat /tmp/gtmetrix-summary.log | jq '.results.backend_duration')
+  onload_duration=$(cat /tmp/gtmetrix-summary.log | jq '.results.onload_duration')
+  connect_duration=$(cat /tmp/gtmetrix-summary.log | jq '.results.connect_duration')
+
+  echo
+  echo "--------------------------------------------------------------------------------"
+  echo "GTMetrix Test (Dallas Chrome Broadband 5Mbps): ${prefix}://${domain}"
+  echo "Fully Loaded Time: $fully_loaded_time ms Total Page Size: $page_bytes (bytes) Requests: $page_elements"
+  echo "RUM Speed Index: $rum_speed_index"
+  echo "Redirect: $redirect_duration ms Connect: $connect_duration ms Backend: $backend_duration ms"
+  echo "TTFB: $html_load_time ms DOM-int: $dom_interactive_time ms First-paint: $first_paint_time ms"
+  echo "Contentful-paint: $first_contentful_paint_time ms DOM-loaded: $dom_content_loaded_time ms Onload: $onload_time ms"
+
+  rm -rf /tmp/gtmetrix.log
+  rm -rf /tmp/gtmetrix-summary.log
 }
 
 gi_run() {
@@ -164,7 +224,12 @@ case $1 in
     gi_run $2 $3 desktop
     gi_run $2 $3 mobile
     ;;
-  pattern )
+  gtmetrix )
+    if [[ "$GTMETRIX" = [yY] ]]; then
+      gt_run $2 $3
+    else
+      echo "GTMETRIX='n' detected"
+    fi
     ;;
   pattern )
     ;;
