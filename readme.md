@@ -751,6 +751,21 @@ To run GTMetrix report, you need to have signed up for a GTMetrix account and  s
 GTMETRIX='y'
 GTEMAIL='YOUR_GTMETRIX_ACCOUNT_EMAIL'
 GTAPIKEY='YOUR_GTMETRIX_API_KEY'
+GTBROWSER_WIDTH='1366'
+GTBROWSER_HEIGHT='768'
+GTVIDEO='n'
+# 1 = Vancouver, CA
+# 2 = London, UK
+# 3 = Sydney, Australia
+# 4 = Dallas, USA
+# 5 = Mumbai, India
+# 6 = Sao Paulo, Brazil
+# 7 = Hong Kong, China
+GTLOCATION='4'
+# Browsers
+# 1 = Firefox
+# 3 = Chrome
+GTBROWSER='3'
 ```
 
 Run `gitools.sh` gtmetrix option passing site to test https://community.centminmod.com. The site domain you pass must have either `http://` or `https://` prefix.

@@ -31,6 +31,19 @@ GTEMAIL=''
 GTAPIKEY=''
 GTBROWSER_WIDTH='1366'
 GTBROWSER_HEIGHT='768'
+GTVIDEO='n'
+# 1 = Vancouver, CA
+# 2 = London, UK
+# 3 = Sydney, Australia
+# 4 = Dallas, USA
+# 5 = Mumbai, India
+# 6 = Sao Paulo, Brazil
+# 7 = Hong Kong, China
+GTLOCATION='4'
+# Browsers
+# 1 = Firefox
+# 3 = Chrome
+GTBROWSER='3'
 
 # slack channel
 SLACK='n'
@@ -66,6 +79,12 @@ else
   screenshot_state='false'
 fi
 
+if [[ "$GTVIDEO" = [Yy] ]]; then
+  gtvideo_state='1'
+else
+  gtvideo_state='0'
+fi
+
 slacksend() {
   dt=$DT
   # message="$dt: This is posted to #$channel and comes from a bot named $username."
@@ -79,17 +98,28 @@ gt_run() {
   domain=$(echo $fulldomain | awk -F '://' '{print $2}')
   # browser = 3 chrome
   # location = 4 dallas
-  curl -s --user $GTEMAIL:$GTAPIKEY --form url=${prefix}://${domain} --form x-metrix-adblock=0 --form x-metrix-video=1 --form browser=3 --form location=4 --form x-metrix-browser-width=$GTBROWSER_WIDTH --form x-metrix-browser-height=$GTBROWSER_HEIGHT --form x-metrix-throttle='5000/1000/30' https://gtmetrix.com/api/0.1/test | tee /tmp/gtmetrix.log
+  curl -s --user $GTEMAIL:$GTAPIKEY --form url=${prefix}://${domain} --form x-metrix-adblock=0 --form x-metrix-video=$gtvideo_state --form browser=$GTBROWSER --form location=$GTLOCATION --form x-metrix-browser-width=$GTBROWSER_WIDTH --form x-metrix-browser-height=$GTBROWSER_HEIGHT --form x-metrix-throttle='5000/1000/30' https://gtmetrix.com/api/0.1/test | tee /tmp/gtmetrix.log
   echo "waiting on results..."
   sleep 30s
   gtmetrix_result=$(cat /tmp/gtmetrix.log | jq '.poll_state_url' | sed -e 's|\"||g')
   if [[ "$JSON_OUTPUT" = [yY] ]]; then
     {
-    curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+    result_state=$(curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.state'| sed -e 's|\"||g')
+    if [[ "$result_state" = 'completed' ]]; then
+      curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+    else
+      sleep 15s
+      curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+    fi
     } | tee /tmp/gtmetrix-summary.log
   else
     {
-    curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+    if [[ "$result_state" = 'completed' ]]; then
+      curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+    else
+      sleep 15s
+      curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+    fi
     } > /tmp/gtmetrix-summary.log
   fi
   # waterfall=$(curl -s --user $gtemail:$gtapikey ${gtmetrix_result}/har | jq)
