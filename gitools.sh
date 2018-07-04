@@ -158,6 +158,15 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-7-201'
+  else
+    # default dulles
+    WPT_PROCEED='y'
+    WPT_LOCATION='Dulles:Chrome.Cable'
+    WPT_LOCATION_TXT='dulles.chrome.cable'
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='VM3-06'
   fi
   if [[ "$WPT_PROCEED" = [yY] ]]; then
     WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"
