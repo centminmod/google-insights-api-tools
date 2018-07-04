@@ -1096,12 +1096,12 @@ cd /root/tools/google-insights-api-tools
 --------------------------------------------------------------------------------
 Dulles:Chrome.Cable WPT Results
 --------------------------------------------------------------------------------
-Test ID: 180704_G9_340468241793a8c11e0f7360c8e30cf8
-https://www.webpagetest.org/result/180704_G9_340468241793a8c11e0f7360c8e30cf8/
-https://www.webpagetest.org/lighthouse.php?test=180704_G9_340468241793a8c11e0f7360c8e30cf8
-/home/wptresults/wpt-dulles.chrome.cable.040718-230307.log
-Test Started 28 seconds ago
-Test Started 28 seconds ago (100)
+Test ID: 180704_M6_1dc3d8b3c9e13e620146cb06b2fe9124
+https://www.webpagetest.org/result/180704_M6_1dc3d8b3c9e13e620146cb06b2fe9124/
+https://www.webpagetest.org/lighthouse.php?test=180704_M6_1dc3d8b3c9e13e620146cb06b2fe9124
+/home/wptresults/wpt-dulles.chrome.cable.040718-234013.log
+Test Started 29 seconds ago
+Test Started 29 seconds ago (100)
 waiting on results...
 Test Complete
 Test Complete (200)
@@ -1109,28 +1109,34 @@ waiting on results...
 Test Complete
 Test Complete (200)
 ----
-firstPaint 983 
-loadTime 1168 
-domInteractive 955 
-fullyLoaded 2500 
-requests 26 
-TTFB 439 
-domElements 1930 
-visualComplete 2100 
-render 1100 
-SpeedIndex 1125 
-visualComplete85 1100 
-visualComplete90 1100 
-visualComplete95 1300 
-visualComplete99 1300 
-chromeUserTiming.domInteractive 955 
-chromeUserTiming.firstPaint 983 
-lighthouse.Performance.first-contentful-paint 1729 
-lighthouse.Performance.estimated-input-latency 33 
-lighthouse.Performance.speed-index 1966 
-lighthouse.Performance.first-meaningful-paint 2105 
+firstPaint 899 
+loadTime 1115 
+domInteractive 1094 
+fullyLoaded 2504 
+requests 25 
+TTFB 402 
+domElements 1979 
+visualComplete 1900 
+render 1000 
+SpeedIndex 1023 
+visualComplete85 1000 
+visualComplete90 1000 
+visualComplete95 1200 
+visualComplete99 1200 
+chromeUserTiming.firstPaint 899 
+chromeUserTiming.firstContentfulPaint 899 
+chromeUserTiming.firstMeaningfulPaintCandidate 1032 
+chromeUserTiming.firstMeaningfulPaint 1032 
+chromeUserTiming.domInteractive 1094 
+chromeUserTiming.domComplete 1114 
+lighthouse.Performance.first-contentful-paint 1840 
+lighthouse.Performance.estimated-input-latency 41 
+lighthouse.Performance.speed-index 2089 
+lighthouse.Performance.first-meaningful-paint 2179 
+lighthouse.Performance.first-cpu-idle 4157 
 ok----
 --------------------------------------------------------------------------------
+
 ```
 
 Dulles test with Google Lighthouse report
