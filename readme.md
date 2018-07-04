@@ -18,6 +18,8 @@
   * [Cronjob Scheduled Runs](#cronjob-scheduled-runs)
 * [GTMetrix Report](#gtmetrix-report)
   * [GTMetrix Slack Channel](#gtmetrix-slack-channel)
+* [WebpageTest.org API Tests](#webpagetest-org-api-tests)
+  * [WebpageTest.org Slack Channel](#webpagetest-org-slack-channel)
 
 
 ## Google PageSpeed Insights API Tools
@@ -828,3 +830,52 @@ Contentful-paint: 687 ms DOM-loaded: 911 ms Onload: 916 ms
 ### GTMetrix Slack Channel
 
 ![](/images/gtmetrix-api-slack-01.png)
+
+
+## WebpageTest.org API Tests
+
+To run WebpageTest.org report via the [API](https://sites.google.com/a/webpagetest.org/docs/advanced-features/webpagetest-restful-apis), you need to have signed up for a [WebPageTest.org account](https://www.webpagetest.org/forums/member.php?action=register) to get API Key and set variables in `/root/tools/google-insights-api-tools/gitools.ini` that override `gitools.sh` default and set your WebpageTest.org API key from http://www.webpagetest.org/getkey.php. This routines code was borrowed from another one of my custom scripts which queried the WebpageTest.org API. I will be slowly porting the code over to `gitools.sh`.
+
+```
+WPT='y'
+WPT_APIKEY='YOUR_WPT_API_KEY'
+```
+
+Currently, tests are done only from Dulles, VA location for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a 300 second delay until results are displayed.
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com
+
+---------------------------------------------
+Dulles:Chrome.Cable WPT Results
+---------------------------------------------
+Test ID: 180704_H6_8c4685519452de69aadc5ecf8bc1bd94
+https://www.webpagetest.org/result/180704_H6_8c4685519452de69aadc5ecf8bc1bd94/
+/home/wptresults/wpt-dulles.chrome.cable.040718-072927.log
+Ok
+----
+firstPaint 1022 
+loadTime 1209 
+domInteractive 1022 
+fullyLoaded 2750 
+requests 25 
+TTFB 441 
+domElements 1983 
+visualComplete 2000 
+render 1100 
+SpeedIndex 1117 
+visualComplete85 1100 
+visualComplete90 1100 
+visualComplete95 1200 
+visualComplete99 1200 
+chromeUserTiming.domInteractive 1022 
+ok----
+---------------------------------------------
+
+```
+
+### WebpageTest.org Slack Channel
+
+![](/images/wpt-dulles-slack-01.png)

@@ -1,15 +1,16 @@
 #!/bin/bash
 #########################################################
 # quick Google PageSpeed Insights API tool
-# & gtmetrix api tool
+# & gtmetrix api tool & webpagetest.org api usage
 # written by George Liu (eva2000) https://centminmod.com
 #
 # https://developers.google.com/speed/docs/insights/v4/getting-started
 # https://gtmetrix.com/api/
+# https://sites.google.com/a/webpagetest.org/docs/advanced-features/webpagetest-restful-apis
 #########################################################
 # variables
 #############
-VER='0.5'
+VER='0.6'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -45,6 +46,25 @@ GTLOCATION='4'
 # 3 = Chrome
 GTBROWSER='3'
 
+# Webpagetest.org API Tests
+WPT_LABEL=$(date +"%d%m%y-%H%M%S")
+WPT_DIR='/home/wptresults'
+WPT_RUNS='1'
+WPT_APIURL='https://www.webpagetest.org/runtest.php'
+WPT_APIKEY='YOUR_API_KEY'
+WPT_LOCATION='Dulles:Chrome.Cable'
+WPT_DULLES='y'
+# wait time between API run and parsing
+# result log
+WPT_SLEEPTIME='300'
+# define specific testers for specific locales
+# for more consistent repeated testing runs
+# https://www.webpagetest.org/getTesters.php
+TESTER_DULLESCABLE='VM3-06'
+TESTER_CALICABLE='IP-AC1F07DF'
+
+
+
 # slack channel
 SLACK='n'
 webhook_url=""       # Incoming Webhooks integration URL
@@ -56,6 +76,10 @@ icon="ghost"         # Default emoji to post messages. Don't wrap it with ':'. S
 #############
 if [ -f gitools.ini ]; then
   . gitools.ini
+fi
+
+if [ ! -d "$WPT_DIR" ]; then
+  mkdir -p "$WPT_DIR"
 fi
 
 if [ ! -f /usr/bin/jq ]; then
@@ -90,6 +114,52 @@ slacksend() {
   # message="$dt: This is posted to #$channel and comes from a bot named $username."
   message="$1"
   curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"text\": \"$message\", \"icon_emoji\": \":$icon:\"}" $webhook_url
+}
+
+wpt_run() {
+  WPT_URL=$1
+  prefix=$(echo $WPT_URL | awk -F '://' '{print $1}')
+  domain=$(echo $WPT_URL | awk -F '://' '{print $2}')
+  if [[ "$WPT_DULLES" = [yY] ]]; then
+    WPT_LOCATION='Dulles:Chrome.Cable'
+    WPT_LOCATION_TXT='dulles.chrome.cable'
+    WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"
+    WPT_RESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}.log"
+    WPT_SUMMARYRESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}-summary.log"
+    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=1&medianMetric=loadTime&f=xml&tester=${TESTER_DULLESCABLE}")
+    echo "curl -s \"$WPT_TESTURL\"" > "$WPT_RESULT_LOG"
+    curl -s "$WPT_TESTURL" >> "$WPT_RESULT_LOG"
+    WPT_USER_RESULTURL=$(grep -oP '(?<=<userUrl>).*(?=</userUrl>)' "$WPT_RESULT_LOG")
+    WPT_USER_RESULTXMLURL=$(grep -oP '(?<=<xmlUrl>).*(?=</xmlUrl>)' "$WPT_RESULT_LOG")
+    WPT_TESTIDA=$(grep -oP '(?<=<testId>).*(?=</testId>)' "$WPT_RESULT_LOG")
+    echo
+    echo "--------------------------------------------------------------------------------"
+    echo "$WPT_LOCATION WPT Results"
+    echo "--------------------------------------------------------------------------------"
+    echo "Test ID: $WPT_TESTIDA"
+    if [[ "$WPT_TESTIDA" ]]; then
+      sleep "$WPT_SLEEPTIME"
+      echo "$WPT_USER_RESULTURL"
+    fi
+    echo "$WPT_RESULT_LOG"
+    WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_LOG")
+    if [[ "$WPT_RESULT_STATUS" = 'Ok' ]]; then
+      echo "$WPT_RESULT_STATUS"
+      echo "----"
+      echo "curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
+      curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
+      cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
+      if [[ "$SLACK" = [yY] ]]; then
+        send_message="$(cat $WPT_SUMMARYRESULT_LOG)"
+        slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$send_message"
+      fi
+      echo "----"
+    else
+      echo "$WPT_RESULT_STATUS"
+    fi
+    echo "--------------------------------------------------------------------------------"
+    echo
+  fi
 }
 
 gt_run() {
@@ -277,7 +347,12 @@ case $1 in
       echo "GTMETRIX='n' detected"
     fi
     ;;
-  pattern )
+  wpt )
+    if [[ "$WPT" = [yY] ]]; then
+      wpt_run $2 $3
+    else
+      echo "WPT='n' detected"
+    fi
     ;;
   * )
   echo
