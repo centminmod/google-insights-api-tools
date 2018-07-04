@@ -941,9 +941,33 @@ WPT_FRANKFURT='y'
 ```
 cd /root/tools/google-insights-api-tools
 
-./gitools.sh wpt https://community.centminmod.com          
+./gitools.sh wpt https://community.centminmod.com
 
-
+--------------------------------------------------------------------------------
+ec2-eu-central-1:Chrome.Cable WPT Results
+--------------------------------------------------------------------------------
+Test ID: 180704_F3_4a0be6f7e2c7ee3428da8fd714310cef
+https://www.webpagetest.org/result/180704_F3_4a0be6f7e2c7ee3428da8fd714310cef/
+/home/wptresults/wpt-frankfurt.ec2-eu-central-1.chrome.cable.040718-211129.log
+Ok (200)
+----
+firstPaint 1212 
+loadTime 1324 
+domInteractive 1300 
+fullyLoaded 3183 
+requests 29 
+TTFB 754 
+domElements 1982 
+visualComplete 2500 
+render 1300 
+SpeedIndex 1383 
+visualComplete85 1300 
+visualComplete90 1300 
+visualComplete95 2400 
+visualComplete99 2500 
+chromeUserTiming.firstPaint 1211 
+ok----
+--------------------------------------------------------------------------------
 ```
 
 ### WebpageTest.org Slack Channel
