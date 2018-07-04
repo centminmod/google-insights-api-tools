@@ -758,52 +758,53 @@ Run `gitools.sh` gtmetrix option passing site to test https://community.centminm
 ```
 cd /root/tools/google-insights-api-tools
 ./gitools.sh gtmetrix https://community.centminmod.com
-{"credits_left":75,"test_id":"EriKGqen","poll_state_url":"https://gtmetrix.com/api/0.1/test/EriKGqen"}
+{"credits_left":60,"test_id":"EMhil9u9","poll_state_url":"https://gtmetrix.com/api/0.1/test/EMhil9u9"}
 waiting on results...
 {
   "resources": {
-    "video": "https://gtmetrix.com/api/0.1/test/EriKGqen/video",
-    "filmstrip": "https://gtmetrix.com/api/0.1/test/EriKGqen/filmstrip",
-    "pagespeed_files": "https://gtmetrix.com/api/0.1/test/EriKGqen/pagespeed-files",
-    "report_pdf_full": "https://gtmetrix.com/api/0.1/test/EriKGqen/report-pdf?full=1",
-    "pagespeed": "https://gtmetrix.com/api/0.1/test/EriKGqen/pagespeed",
-    "report_pdf": "https://gtmetrix.com/api/0.1/test/EriKGqen/report-pdf",
-    "har": "https://gtmetrix.com/api/0.1/test/EriKGqen/har",
-    "screenshot": "https://gtmetrix.com/api/0.1/test/EriKGqen/screenshot",
-    "yslow": "https://gtmetrix.com/api/0.1/test/EriKGqen/yslow"
+    "video": "https://gtmetrix.com/api/0.1/test/EMhil9u9/video",
+    "filmstrip": "https://gtmetrix.com/api/0.1/test/EMhil9u9/filmstrip",
+    "pagespeed_files": "https://gtmetrix.com/api/0.1/test/EMhil9u9/pagespeed-files",
+    "report_pdf_full": "https://gtmetrix.com/api/0.1/test/EMhil9u9/report-pdf?full=1",
+    "pagespeed": "https://gtmetrix.com/api/0.1/test/EMhil9u9/pagespeed",
+    "report_pdf": "https://gtmetrix.com/api/0.1/test/EMhil9u9/report-pdf",
+    "har": "https://gtmetrix.com/api/0.1/test/EMhil9u9/har",
+    "screenshot": "https://gtmetrix.com/api/0.1/test/EMhil9u9/screenshot",
+    "yslow": "https://gtmetrix.com/api/0.1/test/EMhil9u9/yslow"
   },
   "error": "",
   "results": {
-    "onload_time": 1084,
-    "first_contentful_paint_time": 877,
-    "page_elements": 66,
-    "report_url": "https://gtmetrix.com/reports/community.centminmod.com/ge9XBRHL",
+    "onload_time": 1083,
+    "first_contentful_paint_time": 1010,
+    "page_elements": 45,
+    "report_url": "https://gtmetrix.com/reports/community.centminmod.com/gbsDci7b",
     "redirect_duration": 0,
-    "first_paint_time": 877,
+    "first_paint_time": 1010,
     "dom_content_loaded_duration": null,
-    "dom_content_loaded_time": 1078,
-    "dom_interactive_time": 834,
-    "page_bytes": 854050,
-    "page_load_time": 1084,
-    "html_bytes": 16634,
-    "fully_loaded_time": 4335,
-    "html_load_time": 367,
-    "rum_speed_index": 877,
-    "yslow_score": 87,
-    "pagespeed_score": 89,
-    "backend_duration": 208,
-    "onload_duration": 2,
-    "connect_duration": 159
+    "dom_content_loaded_time": 1029,
+    "dom_interactive_time": 570,
+    "page_bytes": 756837,
+    "page_load_time": 1083,
+    "html_bytes": 16615,
+    "fully_loaded_time": 3168,
+    "html_load_time": 465,
+    "rum_speed_index": 1010,
+    "yslow_score": 88,
+    "pagespeed_score": 93,
+    "backend_duration": 221,
+    "onload_duration": 5,
+    "connect_duration": 244
   },
   "state": "completed"
 }
 
 --------------------------------------------------------------------------------
 GTMetrix Test (Dallas Chrome Broadband 5Mbps): https://community.centminmod.com
-Report: "https://gtmetrix.com/reports/community.centminmod.com/ge9XBRHL"
-Fully Loaded Time: 4335 ms Total Page Size: 854050 (bytes) Requests: 66
-RUM Speed Index: 877
-Redirect: 0 ms Connect: 159 ms Backend: 208 ms
-TTFB: 367 ms DOM-int: 834 ms First-paint: 877 ms
-Contentful-paint: 877 ms DOM-loaded: 1078 ms Onload: 1084 ms
+PageSpeed Score: 93 YSlow Score: 88
+Report: https://gtmetrix.com/reports/community.centminmod.com/gbsDci7b
+Fully Loaded Time: 3168 ms Total Page Size: 756837 (bytes) Requests: 45
+RUM Speed Index: 1010
+Redirect: 0 ms Connect: 244 ms Backend: 221 ms
+TTFB: 465 ms DOM-int: 570 ms First-paint: 1010 ms
+Contentful-paint: 1010 ms DOM-loaded: 1029 ms Onload: 1083 ms
 ```

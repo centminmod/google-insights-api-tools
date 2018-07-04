@@ -97,7 +97,7 @@ gt_run() {
   onload_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.onload_time')
   first_contentful_paint_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.first_contentful_paint_time')
   page_elements=$(cat /tmp/gtmetrix-summary.log | jq '.results.page_elements')
-  report_url=$(cat /tmp/gtmetrix-summary.log | jq '.results.report_url')
+  report_url=$(cat /tmp/gtmetrix-summary.log | jq '.results.report_url'| sed -e 's|\"||g')
   redirect_duration=$(cat /tmp/gtmetrix-summary.log | jq '.results.redirect_duration')
   first_paint_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.first_paint_time')
   dom_content_loaded_duration=$(cat /tmp/gtmetrix-summary.log | jq '.results.dom_content_loaded_duration')
@@ -118,6 +118,7 @@ gt_run() {
   echo
   echo "--------------------------------------------------------------------------------"
   echo "GTMetrix Test (Dallas Chrome Broadband 5Mbps): ${prefix}://${domain}"
+  echo "PageSpeed Score: $pagespeed_score YSlow Score: $yslow_score"
   echo "Report: $report_url"
   echo "Fully Loaded Time: $fully_loaded_time ms Total Page Size: $page_bytes (bytes) Requests: $page_elements"
   echo "RUM Speed Index: $rum_speed_index"
