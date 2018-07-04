@@ -55,16 +55,10 @@ WPT_APIURL='https://www.webpagetest.org/runtest.php'
 WPT_APIKEY='YOUR_API_KEY'
 WPT_LOCATION='Dulles:Chrome.Cable'
 WPT_DULLES='y'
+WPT_CALIFORNIA='n'
 # wait time between API run and parsing
 # result log
 WPT_SLEEPTIME='30'
-# define specific testers for specific locales
-# for more consistent repeated testing runs
-# https://www.webpagetest.org/getTesters.php
-TESTER_DULLESCABLE='VM3-06'
-TESTER_CALICABLE='IP-AC1F07DF'
-
-
 
 # slack channel
 SLACK='n'
@@ -122,12 +116,27 @@ wpt_run() {
   prefix=$(echo $WPT_URL | awk -F '://' '{print $1}')
   domain=$(echo $WPT_URL | awk -F '://' '{print $2}')
   if [[ "$WPT_DULLES" = [yY] ]]; then
+    WPT_PROCEED='y'
     WPT_LOCATION='Dulles:Chrome.Cable'
     WPT_LOCATION_TXT='dulles.chrome.cable'
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='VM3-06'
+  elif [[ "$WPT_CALIFORNIA" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='ec2-us-west-1:Chrome.Cable'
+    WPT_LOCATION_TXT='california.ec2-us-west-1.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-8-84'
+  fi
+  if [[ "$WPT_PROCEED" = [yY] ]]; then
     WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"
     WPT_RESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}.log"
     WPT_SUMMARYRESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}-summary.log"
-    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=1&medianMetric=loadTime&f=xml&tester=${TESTER_DULLESCABLE}")
+    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=1&medianMetric=loadTime&f=xml&tester=${TESTER_CABLE}")
     echo "curl -s \"$WPT_TESTURL\"" > "$WPT_RESULT_LOG"
     curl -s "$WPT_TESTURL" >> "$WPT_RESULT_LOG"
     WPT_USER_RESULTURL=$(grep -oP '(?<=<userUrl>).*(?=</userUrl>)' "$WPT_RESULT_LOG")

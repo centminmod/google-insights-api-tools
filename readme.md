@@ -847,7 +847,14 @@ WPT='y'
 WPT_APIKEY='YOUR_WPT_API_KEY'
 ```
 
-Currently, tests are done only from Dulles, VA location for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 30 seconds delay until results are displayed. If results are still not available, another 30 second delay and recheck is triggered and so on until results are available.
+Currently, tests are done only from Dulles & California location for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 30 seconds delay until results are displayed. If results are still not available, another 30 second delay and recheck is triggered and so on until results are available.
+
+Dulles test with variables set in `/root/tools/google-insights-api-tools/gitools.ini` to
+
+```
+WPT_DULLES='y'
+WPT_CALIFORNIA='n'
+```
 
 ```
 cd /root/tools/google-insights-api-tools
@@ -881,6 +888,51 @@ ok----
 --------------------------------------------------------------------------------
 ```
 
+California test with variable set in `/root/tools/google-insights-api-tools/gitools.ini` to
+
+```
+WPT_DULLES='n'
+WPT_CALIFORNIA='y'
+```
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com          
+
+--------------------------------------------------------------------------------
+ec2-us-west-1:Chrome.Cable WPT Results
+--------------------------------------------------------------------------------
+Test ID: 180704_DX_a6a1d27c616668ec6ae373c527e92168
+https://www.webpagetest.org/result/180704_DX_a6a1d27c616668ec6ae373c527e92168/
+/home/wptresults/wpt-california.ec2-us-west-1.chrome.cable.040718-195523.log
+Ok (200)
+----
+firstPaint 603 
+loadTime 621 
+domInteractive 231 
+fullyLoaded 1621 
+requests 25 
+TTFB 191 
+domElements 2001 
+visualComplete 1100 
+render 600 
+SpeedIndex 605 
+visualComplete85 600 
+visualComplete90 600 
+visualComplete95 600 
+visualComplete99 600 
+chromeUserTiming.domInteractive 231 
+ok----
+--------------------------------------------------------------------------------
+```
+
 ### WebpageTest.org Slack Channel
 
+Dulles test
+
 ![](/images/wpt-dulles-slack-01.png)
+
+California test
+
+![](/images/wpt-california-slack-01.png)
