@@ -144,7 +144,7 @@ Page Load Distributions
 3.30 % loads for this page have an slow FCP (over 2963 milliseconds)
 91.50 % loads for this page have a fast DCL (less than 2120 milliseconds)
 5.70 % loads for this page have an average DCL (less than 4226 milliseconds)
-2.70 % loads for this page have an slow DCL (over 4226 milliseconds)
+2.70 % loads for this page have a slow DCL (over 4226 milliseconds)
 ```
 
 ### Command Output
@@ -162,7 +162,7 @@ Page Load Distributions
 3.30 % loads for this page have an slow FCP (over 2963 milliseconds)
 91.50 % loads for this page have a fast DCL (less than 2120 milliseconds)
 5.70 % loads for this page have an average DCL (less than 4226 milliseconds)
-2.70 % loads for this page have an slow DCL (over 4226 milliseconds)
+2.70 % loads for this page have a slow DCL (over 4226 milliseconds)
 ```
 
 ### Slack Channel
@@ -280,7 +280,7 @@ Page Load Distributions
 5.00 % loads for this page have an slow FCP (over 2073 milliseconds)
 80.70 % loads for this page have a fast DCL (less than 1366 milliseconds)
 14.40 % loads for this page have an average DCL (less than 2787 milliseconds)
-4.90 % loads for this page have an slow DCL (over 2787 milliseconds)
+4.90 % loads for this page have a slow DCL (over 2787 milliseconds)
 
 
 --------------------------------------------------------------------------------
@@ -341,7 +341,7 @@ Page Load Distributions
 3.30 % loads for this page have an slow FCP (over 2963 milliseconds)
 91.50 % loads for this page have a fast DCL (less than 2120 milliseconds)
 5.70 % loads for this page have an average DCL (less than 4226 milliseconds)
-2.70 % loads for this page have an slow DCL (over 4226 milliseconds)
+2.70 % loads for this page have a slow DCL (over 4226 milliseconds)
 ```
 
 ### Desktop Test origin
@@ -409,7 +409,7 @@ Page Load Distributions
 5.00 % loads for this page have an slow FCP (over 2073 milliseconds)
 80.70 % loads for this page have a fast DCL (less than 1366 milliseconds)
 14.40 % loads for this page have an average DCL (less than 2787 milliseconds)
-4.90 % loads for this page have an slow DCL (over 2787 milliseconds)
+4.90 % loads for this page have a slow DCL (over 2787 milliseconds)
 ```
 
 ### Desktop Test site only
@@ -477,7 +477,7 @@ Page Load Distributions
 5.00 % loads for this page have an slow FCP (over 2073 milliseconds)
 80.70 % loads for this page have a fast DCL (less than 1366 milliseconds)
 14.40 % loads for this page have an average DCL (less than 2787 milliseconds)
-4.90 % loads for this page have an slow DCL (over 2787 milliseconds)
+4.90 % loads for this page have a slow DCL (over 2787 milliseconds)
 ```
 
 ### Desktop Test default url only
@@ -739,5 +739,5 @@ Page Load Distributions
 16.40 % loads for this page have an slow FCP (over 2073 milliseconds)
 73.10 % loads for this page have a fast DCL (less than 1366 milliseconds)
 13.50 % loads for this page have an average DCL (less than 2787 milliseconds)
-13.50 % loads for this page have an slow DCL (over 2787 milliseconds)
+13.50 % loads for this page have a slow DCL (over 2787 milliseconds)
 ```
