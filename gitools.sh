@@ -57,6 +57,7 @@ WPT_LOCATION='Dulles:Chrome.Cable'
 WPT_DULLES='y'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
+WPT_SINGAPORE='n'
 # wait time between API run and parsing
 # result log
 WPT_SLEEPTIME='15'
@@ -140,6 +141,14 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-28-65'
+  elif [[ "$WPT_SINGAPORE" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='ec2-ap-southeast-1:Chrome.Cable'
+    WPT_LOCATION_TXT='singapore.ec2-ap-southeast-1.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-39-48'
   fi
   if [[ "$WPT_PROCEED" = [yY] ]]; then
     WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"

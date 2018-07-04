@@ -848,7 +848,8 @@ WPT_APIKEY='YOUR_WPT_API_KEY'
 ```
 
 * Currently, tests are done only from Dulles, California and Frankfurt location for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 15 seconds delay until results are displayed. If results are still not available, another 15 second delay and recheck is triggered and so on until results are available.
-* WPT tests are run from a specific tester id for the region listed at https://www.webpagetest.org/getTesters.php. So WPT tests are more comparable between test runs when using the same tester id as usually there are many testers within a specific region. Currently, for Dulles tester id `TESTER_CABLE='VM3-06'` and for California tester id `TESTER_CABLE='ip-172-31-8-84'` and for Frankfurt tester id `TESTER_CABLE='ip-172-31-28-65'` are used. Dulles region is the main test location so has the most tester server ids (32) ranging from `VM1-01 to VM1-08`, `VM2-01 to VM2-08`, `VM3-01 to VM3-08` and `VM4-01 to VM4-08`.
+* WPT tests are run from a specific tester id for the region listed at https://www.webpagetest.org/getTesters.php. So WPT tests are more comparable between test runs when using the same tester id as usually there are many testers within a specific region. 
+* Currently, for Dulles tester id `TESTER_CABLE='VM3-06'` and for California tester id `TESTER_CABLE='ip-172-31-8-84'` and for Frankfurt tester id `TESTER_CABLE='ip-172-31-28-65'` and for Singapore tester id `TESTER_CABLE='ip-172-31-39-48'` are used. Dulles region is the main test location so has the most tester server ids (32) ranging from `VM1-01 to VM1-08`, `VM2-01 to VM2-08`, `VM3-01 to VM3-08` and `VM4-01 to VM4-08`.
 
 Dulles test with variables set in `/root/tools/google-insights-api-tools/gitools.ini` to
 
@@ -856,6 +857,7 @@ Dulles test with variables set in `/root/tools/google-insights-api-tools/gitools
 WPT_DULLES='y'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
+WPT_SINGAPORE='n'
 ```
 
 ```
@@ -896,6 +898,7 @@ California test with variable set in `/root/tools/google-insights-api-tools/gito
 WPT_DULLES='n'
 WPT_CALIFORNIA='y'
 WPT_FRANKFURT='n'
+WPT_SINGAPORE='n'
 ```
 
 ```
@@ -936,6 +939,7 @@ Frankfurt test with variable set in `/root/tools/google-insights-api-tools/gitoo
 WPT_DULLES='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='y'
+WPT_SINGAPORE='n'
 ```
 
 ```
@@ -970,6 +974,47 @@ ok----
 --------------------------------------------------------------------------------
 ```
 
+Singapore test with variable set in `/root/tools/google-insights-api-tools/gitools.ini` to
+
+```
+WPT_DULLES='n'
+WPT_CALIFORNIA='n'
+WPT_FRANKFURT='n'
+WPT_SINGAPORE='y'
+```
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com
+
+--------------------------------------------------------------------------------
+ec2-ap-southeast-1:Chrome.Cable WPT Results
+--------------------------------------------------------------------------------
+Test ID: 180704_X4_3fb278c50ca48c6a253bb1b10fa0547d
+https://www.webpagetest.org/result/180704_X4_3fb278c50ca48c6a253bb1b10fa0547d/
+/home/wptresults/wpt-singapore.ec2-ap-southeast-1.chrome.cable.040718-220521.log
+Ok (200)
+----
+firstPaint 2116 
+loadTime 1978 
+domInteractive 1335 
+fullyLoaded 4060 
+requests 27 
+TTFB 970 
+domElements 1973 
+visualComplete 2400 
+render 2100 
+SpeedIndex 2103 
+visualComplete85 2100 
+visualComplete90 2100 
+visualComplete95 2100 
+visualComplete99 2100 
+chromeUserTiming.domInteractive 1335 
+ok----
+--------------------------------------------------------------------------------
+```
+
 ### WebpageTest.org Slack Channel
 
 Dulles test
@@ -983,3 +1028,7 @@ California test
 Frankfurt test
 
 ![](/images/wpt-frankfurt-slack-01.png)
+
+Singapore test
+
+![](/images/wpt-singapore-slack-01.png)
