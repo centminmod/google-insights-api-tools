@@ -834,7 +834,7 @@ Contentful-paint: 687 ms DOM-loaded: 911 ms Onload: 916 ms
 
 ## WebpageTest.org API Tests
 
-To run WebpageTest.org report via the [API](https://sites.google.com/a/webpagetest.org/docs/advanced-features/webpagetest-restful-apis), you need to have signed up for a [WebPageTest.org account](https://www.webpagetest.org/forums/member.php?action=register) to get API Key and set variables in `/root/tools/google-insights-api-tools/gitools.ini` that override `gitools.sh` default and set your WebpageTest.org API key from http://www.webpagetest.org/getkey.php. This routines code was borrowed from another one of my custom scripts which queried the WebpageTest.org API. I will be slowly porting the code over to `gitools.sh`.
+To run WebpageTest.org report via the [API](https://sites.google.com/a/webpagetest.org/docs/advanced-features/webpagetest-restful-apis), you need to have signed up for a [WebPageTest.org account](https://www.webpagetest.org/forums/member.php?action=register) to get API Key and set variables in `/root/tools/google-insights-api-tools/gitools.ini` that override `gitools.sh` default and set your WebpageTest.org API key from http://www.webpagetest.org/getkey.php. This test routine's code was borrowed from another one of my custom scripts which queried the WebpageTest.org API. I will be slowly porting the code over to `gitools.sh`.
 
 ```
 WPT='y'
