@@ -51,6 +51,7 @@ WPT_LABEL=$(date +"%d%m%y-%H%M%S")
 WPT_DIR='/home/wptresults'
 WPT_RESULT_TESTSTATUS_LOG='/tmp/wpt-teststatus-check.log'
 WPT_RUNS='1'
+WPT_LIGHTHOUSE='y'
 WPT_APIURL='https://www.webpagetest.org/runtest.php'
 WPT_APIKEY='YOUR_API_KEY'
 WPT_LOCATION='Dulles:Chrome.Cable'
@@ -168,11 +169,16 @@ wpt_run() {
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='VM3-06'
   fi
+  if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
+    wpt_lighthouse_opt='&lighthouse=1'
+  else
+    wpt_lighthouse_opt=""
+  fi
   if [[ "$WPT_PROCEED" = [yY] ]]; then
     WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"
     WPT_RESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}.log"
     WPT_SUMMARYRESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}-summary.log"
-    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=1&medianMetric=loadTime&f=xml&tester=${TESTER_CABLE}")
+    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=1&medianMetric=loadTime${wpt_lighthouse_opt}&f=xml&tester=${TESTER_CABLE}")
     echo "curl -s \"$WPT_TESTURL\"" > "$WPT_RESULT_LOG"
     curl -s "$WPT_TESTURL" >> "$WPT_RESULT_LOG"
     WPT_USER_RESULTURL=$(grep -oP '(?<=<userUrl>).*(?=</userUrl>)' "$WPT_RESULT_LOG")
@@ -187,15 +193,25 @@ wpt_run() {
       sleep "$WPT_SLEEPTIME"
       echo "$WPT_USER_RESULTURL"
     fi
+    if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
+      WPT_LIGHTHOUSE_URL="https://www.webpagetest.org/lighthouse.php?test=$WPT_TESTIDA"
+      echo "$WPT_LIGHTHOUSE_URL"
+    fi
     echo "$WPT_RESULT_LOG"
     WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_LOG")
     WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_LOG")
     if [[ "$WPT_RESULT_STATUSCODE" -eq '100' || "$WPT_RESULT_STATUSCODE" -eq '101' || "$WPT_RESULT_STATUSCODE" -eq '200' ]]; then
+      curl -s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
+      WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_TESTSTATUS_LOG")
+      WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_TESTSTATUS_LOG")
       # check test result xml result status if Ok 200, proceed otherwise if 
       # Test Started 100 status or Waiting behind another test 101 status is found,
       # wait WPT_SLEEPTIME more to proceed
       while [[ "$WPT_RESULT_STATUSCODE" -eq '100' || "$WPT_RESULT_STATUSCODE" -eq '101' ]]; do
         sleep "$WPT_SLEEPTIME"
+        if [[ "$WPT_RESULT_STATUSCODE" -eq '101' ]]; then
+          sleep "$WPT_SLEEPTIME"
+        fi
         curl -s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
         WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_TESTSTATUS_LOG")
         WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_TESTSTATUS_LOG")
@@ -211,7 +227,7 @@ wpt_run() {
         cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
         if [[ "$SLACK" = [yY] ]]; then
           send_message="$(cat $WPT_SUMMARYRESULT_LOG)"
-          slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$send_message"
+          slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_LIGHTHOUSE_URL\n$send_message"
         fi
         echo "----"
       else

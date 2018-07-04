@@ -1082,3 +1082,54 @@ Singapore test
 Sydney test
 
 ![](/images/wpt-sydney-slack-01.png)
+
+### WebpageTest.org Google Lighthouse
+
+As at July 5, 2018 Google Lighthouse reports are enabled by default via `WPT_LIGHTHOUSE='y` variable which you can disable by setting `WPT_LIGHTHOUSE='n` in `/root/tools/google-insights-api-tools/gitools.ini`
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com
+
+--------------------------------------------------------------------------------
+Dulles:Chrome.Cable WPT Results
+--------------------------------------------------------------------------------
+Test ID: 180704_1G_90cb192c0b25e13383e788eca2084b5a
+https://www.webpagetest.org/result/180704_1G_90cb192c0b25e13383e788eca2084b5a/
+https://www.webpagetest.org/lighthouse.php?test=180704_1G_90cb192c0b25e13383e788eca2084b5a
+/home/wptresults/wpt-dulles.chrome.cable.040718-224032.log
+Test Started 29 seconds ago
+Test Started 29 seconds ago (100)
+waiting on results...
+Test Started 44 seconds ago
+Test Started 44 seconds ago (100)
+waiting on results...
+Test Complete
+Test Complete (200)
+waiting on results...
+Test Complete
+Test Complete (200)
+----
+firstPaint 1037 
+loadTime 1277 
+domInteractive 1033 
+fullyLoaded 3624 
+requests 51 
+TTFB 418 
+domElements 1930 
+visualComplete 2000 
+render 1100 
+SpeedIndex 1125 
+visualComplete85 1100 
+visualComplete90 1100 
+visualComplete95 1300 
+visualComplete99 1300 
+chromeUserTiming.domInteractive 1033 
+ok----
+--------------------------------------------------------------------------------
+```
+
+Dulles test with Google Lighthouse report
+
+![](/images/wpt-dulles-slack-lighthouse-01.png)
