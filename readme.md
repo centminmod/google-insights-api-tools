@@ -16,6 +16,7 @@
   * [Command Output](#command-output)
   * [Slack Channel](#slack-channel)
   * [Cronjob Scheduled Runs](#cronjob-scheduled-runs)
+* [GTMetrix Report](#gtmetrix-report)
 
 
 ## Google PageSpeed Insights API Tools
@@ -85,7 +86,7 @@ cd google-insights-api-tools
 touch gitools.ini
 ```
 
-To set variables in `gitools.ini` that override `gitools.sh` default
+To set variables in `/root/tools/google-insights-api-tools/gitools.ini` that override `gitools.sh` default
 
 ```
 GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
@@ -740,4 +741,32 @@ Page Load Distributions
 73.10 % loads for this page have a fast DCL (less than 1366 milliseconds)
 13.50 % loads for this page have an average DCL (less than 2787 milliseconds)
 13.50 % loads for this page have a slow DCL (over 2787 milliseconds)
+```
+
+## GTMetrix Report
+
+To run GTMetrix report, you need to have signed up for a GTMetrix account and  set variables in `/root/tools/google-insights-api-tools/gitools.ini` that override `gitools.sh` default and set your GTMetrix account email and API key from https://gtmetrix.com/api/
+
+```
+GTMETRIX='y'
+GTEMAIL='YOUR_GTMETRIX_ACCOUNT_EMAIL'
+GTAPIKEY='YOUR_GTMETRIX_API_KEY'
+```
+
+Run `gitools.sh` gtmetrix option passing site to test https://community.centminmod.com. The site domain you pass must have either `http://` or `https://` prefix.
+
+```
+cd /root/tools/google-insights-api-tools
+./gitools.sh gtmetrix https://community.centminmod.com
+{"credits_left":80,"test_id":"PmXhQmla","poll_state_url":"https://gtmetrix.com/api/0.1/test/PmXhQmla"}
+waiting on results...
+
+--------------------------------------------------------------------------------
+GTMetrix Test (Dallas Chrome Broadband 5Mbps): https://community.centminmod.com
+Report: "https://gtmetrix.com/reports/community.centminmod.com/cKvuFkMp"
+Fully Loaded Time: 3789 ms Total Page Size: 799431 (bytes) Requests: 68
+RUM Speed Index: 780
+Redirect: 0 ms Connect: 191 ms Backend: 209 ms
+TTFB: 400 ms DOM-int: 534 ms First-paint: 780 ms
+Contentful-paint: 780 ms DOM-loaded: 890 ms Onload: 908 ms
 ```

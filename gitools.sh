@@ -3,13 +3,13 @@
 # quick Google PageSpeed Insights API tool
 # & gtmetrix api tool
 # written by George Liu (eva2000) https://centminmod.com
-# 
+#
 # https://developers.google.com/speed/docs/insights/v4/getting-started
 # https://gtmetrix.com/api/
 #########################################################
 # variables
 #############
-VER='0.4'
+VER='0.5'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -81,10 +81,10 @@ gt_run() {
   # location = 4 dallas
   curl -s --user $GTEMAIL:$GTAPIKEY --form url=${prefix}://${domain} --form x-metrix-adblock=0 --form x-metrix-video=1 --form browser=3 --form location=4 --form x-metrix-browser-width=$GTBROWSER_WIDTH --form x-metrix-browser-height=$GTBROWSER_HEIGHT --form x-metrix-throttle='5000/1000/30' https://gtmetrix.com/api/0.1/test | tee /tmp/gtmetrix.log
   echo "waiting on results..."
-  sleep 10s
+  sleep 30s
   gtmetrix_result=$(cat /tmp/gtmetrix.log | jq '.poll_state_url' | sed -e 's|\"||g')
   {
-  curl -s --user $gtemail:$gtapikey $gtmetrix_result | jq '.'
+  curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
   } > /tmp/gtmetrix-summary.log
   # waterfall=$(curl -s --user $gtemail:$gtapikey ${gtmetrix_result}/har | jq)
   
@@ -112,6 +112,7 @@ gt_run() {
   echo
   echo "--------------------------------------------------------------------------------"
   echo "GTMetrix Test (Dallas Chrome Broadband 5Mbps): ${prefix}://${domain}"
+  echo "Report: $report_url"
   echo "Fully Loaded Time: $fully_loaded_time ms Total Page Size: $page_bytes (bytes) Requests: $page_elements"
   echo "RUM Speed Index: $rum_speed_index"
   echo "Redirect: $redirect_duration ms Connect: $connect_duration ms Backend: $backend_duration ms"
