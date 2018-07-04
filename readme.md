@@ -847,7 +847,7 @@ WPT='y'
 WPT_APIKEY='YOUR_WPT_API_KEY'
 ```
 
-* Currently, tests are done only from Dulles & California location for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 30 seconds delay until results are displayed. If results are still not available, another 30 second delay and recheck is triggered and so on until results are available.
+* Currently, tests are done only from Dulles & California location for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 15 seconds delay until results are displayed. If results are still not available, another 15 second delay and recheck is triggered and so on until results are available.
 * WPT tests are run from a specific tester id for the region listed at https://www.webpagetest.org/getTesters.php. So WPT tests are more comparable between test runs when using the same tester id as usually there are many testers within a specific region. Currently, for Dulles tester id `TESTER_CABLE='VM3-06'` and for California tester id `TESTER_CABLE='ip-172-31-8-84'` are used. Dulles region is the main test location so has the most tester server ids (32) ranging from `VM1-01 to VM1-08`, `VM2-01 to VM2-08`, `VM3-01 to VM3-08` and `VM4-01 to VM4-08`.
 
 Dulles test with variables set in `/root/tools/google-insights-api-tools/gitools.ini` to

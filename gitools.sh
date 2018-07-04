@@ -59,7 +59,7 @@ WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 # wait time between API run and parsing
 # result log
-WPT_SLEEPTIME='30'
+WPT_SLEEPTIME='15'
 
 # slack channel
 SLACK='n'
@@ -163,14 +163,15 @@ wpt_run() {
     echo "$WPT_RESULT_LOG"
     WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_LOG")
     WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_LOG")
-    if [[ "$WPT_RESULT_STATUSCODE" -eq '100' || "$WPT_RESULT_STATUSCODE" -eq '200' ]]; then
+    if [[ "$WPT_RESULT_STATUSCODE" -eq '100' || "$WPT_RESULT_STATUSCODE" -eq '101' || "$WPT_RESULT_STATUSCODE" -eq '200' ]]; then
       # check test result xml result status if Ok 200, proceed otherwise if 
-      # Test Started 100 status is found wait WPT_SLEEPTIME more to proceed
-      while [[ "$WPT_RESULT_STATUSCODE" -eq '100' ]]; do
+      # Test Started 100 status or Waiting behind another test 101 status is found,
+      # wait WPT_SLEEPTIME more to proceed
+      while [[ "$WPT_RESULT_STATUSCODE" -eq '100' || "$WPT_RESULT_STATUSCODE" -eq '101' ]]; do
         sleep "$WPT_SLEEPTIME"
         curl -s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
-        WPT_RESULT_STATUS=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_TESTSTATUS_LOG")
-        WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_TESTSTATUS_LOG")
+        WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_TESTSTATUS_LOG")
+        WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_TESTSTATUS_LOG")
       done
       if [[ "$WPT_RESULT_STATUSCODE" -eq '200' ]]; then
         WPT_USER_RESULTXMLURL=$(grep -oP '(?<=<xmlUrl>).*(?=</xmlUrl>)' "$WPT_RESULT_LOG")
