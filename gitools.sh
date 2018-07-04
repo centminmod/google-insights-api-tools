@@ -83,9 +83,15 @@ gt_run() {
   echo "waiting on results..."
   sleep 30s
   gtmetrix_result=$(cat /tmp/gtmetrix.log | jq '.poll_state_url' | sed -e 's|\"||g')
-  {
-  curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
-  } > /tmp/gtmetrix-summary.log
+  if [[ "$JSON_OUTPUT" = [yY] ]]; then
+    {
+    curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+    } | tee /tmp/gtmetrix-summary.log
+  else
+    {
+    curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+    } > /tmp/gtmetrix-summary.log
+  fi
   # waterfall=$(curl -s --user $gtemail:$gtapikey ${gtmetrix_result}/har | jq)
   
   onload_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.onload_time')

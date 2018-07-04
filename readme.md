@@ -758,15 +758,52 @@ Run `gitools.sh` gtmetrix option passing site to test https://community.centminm
 ```
 cd /root/tools/google-insights-api-tools
 ./gitools.sh gtmetrix https://community.centminmod.com
-{"credits_left":80,"test_id":"PmXhQmla","poll_state_url":"https://gtmetrix.com/api/0.1/test/PmXhQmla"}
+{"credits_left":75,"test_id":"EriKGqen","poll_state_url":"https://gtmetrix.com/api/0.1/test/EriKGqen"}
 waiting on results...
+{
+  "resources": {
+    "video": "https://gtmetrix.com/api/0.1/test/EriKGqen/video",
+    "filmstrip": "https://gtmetrix.com/api/0.1/test/EriKGqen/filmstrip",
+    "pagespeed_files": "https://gtmetrix.com/api/0.1/test/EriKGqen/pagespeed-files",
+    "report_pdf_full": "https://gtmetrix.com/api/0.1/test/EriKGqen/report-pdf?full=1",
+    "pagespeed": "https://gtmetrix.com/api/0.1/test/EriKGqen/pagespeed",
+    "report_pdf": "https://gtmetrix.com/api/0.1/test/EriKGqen/report-pdf",
+    "har": "https://gtmetrix.com/api/0.1/test/EriKGqen/har",
+    "screenshot": "https://gtmetrix.com/api/0.1/test/EriKGqen/screenshot",
+    "yslow": "https://gtmetrix.com/api/0.1/test/EriKGqen/yslow"
+  },
+  "error": "",
+  "results": {
+    "onload_time": 1084,
+    "first_contentful_paint_time": 877,
+    "page_elements": 66,
+    "report_url": "https://gtmetrix.com/reports/community.centminmod.com/ge9XBRHL",
+    "redirect_duration": 0,
+    "first_paint_time": 877,
+    "dom_content_loaded_duration": null,
+    "dom_content_loaded_time": 1078,
+    "dom_interactive_time": 834,
+    "page_bytes": 854050,
+    "page_load_time": 1084,
+    "html_bytes": 16634,
+    "fully_loaded_time": 4335,
+    "html_load_time": 367,
+    "rum_speed_index": 877,
+    "yslow_score": 87,
+    "pagespeed_score": 89,
+    "backend_duration": 208,
+    "onload_duration": 2,
+    "connect_duration": 159
+  },
+  "state": "completed"
+}
 
 --------------------------------------------------------------------------------
 GTMetrix Test (Dallas Chrome Broadband 5Mbps): https://community.centminmod.com
-Report: "https://gtmetrix.com/reports/community.centminmod.com/cKvuFkMp"
-Fully Loaded Time: 3789 ms Total Page Size: 799431 (bytes) Requests: 68
-RUM Speed Index: 780
-Redirect: 0 ms Connect: 191 ms Backend: 209 ms
-TTFB: 400 ms DOM-int: 534 ms First-paint: 780 ms
-Contentful-paint: 780 ms DOM-loaded: 890 ms Onload: 908 ms
+Report: "https://gtmetrix.com/reports/community.centminmod.com/ge9XBRHL"
+Fully Loaded Time: 4335 ms Total Page Size: 854050 (bytes) Requests: 66
+RUM Speed Index: 877
+Redirect: 0 ms Connect: 159 ms Backend: 208 ms
+TTFB: 367 ms DOM-int: 834 ms First-paint: 877 ms
+Contentful-paint: 877 ms DOM-loaded: 1078 ms Onload: 1084 ms
 ```
