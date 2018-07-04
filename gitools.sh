@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='0.8'
+VER='0.9'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -58,6 +58,7 @@ WPT_DULLES='y'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
+WPT_SYDNEY='n'
 # wait time between API run and parsing
 # result log
 WPT_SLEEPTIME='15'
@@ -149,6 +150,14 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-39-48'
+  elif [[ "$WPT_SYDNEY" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='ec2-ap-southeast-2:Chrome.Cable'
+    WPT_LOCATION_TXT='sydney.ec2-ap-southeast-2.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-7-201'
   fi
   if [[ "$WPT_PROCEED" = [yY] ]]; then
     WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"
