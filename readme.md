@@ -22,6 +22,7 @@
   * [WebpageTest.org Slack Channel](#webpagetestorg-slack-channel)
   * [WebpageTest.org Google Lighthouse](#webpagetestorg-google-lighthouse)
   * [WebpageTest.org Command Line Options](#webpagetestorg-command-line-options)
+  * [WebpageTest.org Waterfall](#webpagetestorg-waterfall)
 
 
 ## Google PageSpeed Insights API Tools
@@ -1257,3 +1258,60 @@ cd /root/tools/google-insights-api-tools
 
 ./gitools.sh wpt https://community.centminmod.com sydney
 ```
+
+### WebpageTest.org Waterfall
+
+Latest version now includes the waterfall screenshot image as well
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dulles
+
+--------------------------------------------------------------------------------
+Dulles:Chrome.Cable WPT Results
+--------------------------------------------------------------------------------
+Test ID: 180705_SK_ARW
+https://www.webpagetest.org/result/180705_SK_ARW/
+https://www.webpagetest.org/lighthouse.php?test=180705_SK_ARW
+/home/wptresults/wpt-dulles.chrome.cable.050718-044704.log
+Test Started 27 seconds ago
+Test Started 27 seconds ago (100)
+waiting on results...
+Test Complete
+Test Complete (200)
+waiting on results...
+Test Complete
+Test Complete (200)
+----
+firstPaint 1235 
+loadTime 1511 
+domInteractive 1459 
+fullyLoaded 3112 
+requests 25 
+TTFB 496 
+domElements 1979 
+visualComplete 2300 
+render 1300 
+SpeedIndex 1326 
+visualComplete85 1300 
+visualComplete90 1300 
+visualComplete95 1500 
+visualComplete99 1500 
+chromeUserTiming.firstPaint 1235 
+chromeUserTiming.firstContentfulPaint 1235 
+chromeUserTiming.domInteractive 1459 
+chromeUserTiming.firstMeaningfulPaintCandidate 1479 
+chromeUserTiming.firstMeaningfulPaint 1479 
+chromeUserTiming.domComplete 1511 
+lighthouse.Performance.first-contentful-paint 1814 
+lighthouse.Performance.estimated-input-latency 38 
+lighthouse.Performance.speed-index 2068 
+lighthouse.Performance.first-meaningful-paint 2176 
+lighthouse.Performance.first-cpu-idle 4164 
+https://www.webpagetest.org/results/18/07/05/SK/ARW/1_waterfall.png
+ok----
+--------------------------------------------------------------------------------
+```
+
+![](/images/wpt-dulles-slack-waterfall-01.png)

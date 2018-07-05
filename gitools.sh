@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.1'
+VER='1.2'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -263,8 +263,8 @@ wpt_run() {
     WPT_SUMMARYRESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}-summary.log"
     # WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=${wpt_show_history}&medianMetric=loadTime${wpt_lighthouse_opt}&width=${WPT_RESOLUTION_WIDTH}&height=${WPT_RESOLUTION_HEIGHT}${ignore_ssl}&f=xml&tester=${TESTER_CABLE}")
     WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=${wpt_show_history}&medianMetric=loadTime${wpt_lighthouse_opt}${ignore_ssl}&f=xml&tester=${TESTER_CABLE}")
-    echo "curl -s \"$WPT_TESTURL\"" > "$WPT_RESULT_LOG"
-    curl -s "$WPT_TESTURL" >> "$WPT_RESULT_LOG"
+    echo "curl -4s \"$WPT_TESTURL\"" > "$WPT_RESULT_LOG"
+    curl -4s "$WPT_TESTURL" >> "$WPT_RESULT_LOG"
     WPT_USER_RESULTURL=$(grep -oP '(?<=<userUrl>).*(?=</userUrl>)' "$WPT_RESULT_LOG")
     WPT_USER_RESULTXMLURL=$(grep -oP '(?<=<xmlUrl>).*(?=</xmlUrl>)' "$WPT_RESULT_LOG")
     WPT_TESTIDA=$(grep -oP '(?<=<testId>).*(?=</testId>)' "$WPT_RESULT_LOG")
@@ -285,7 +285,7 @@ wpt_run() {
     WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_LOG")
     WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_LOG")
     if [[ "$WPT_RESULT_STATUSCODE" -eq '100' || "$WPT_RESULT_STATUSCODE" -eq '101' || "$WPT_RESULT_STATUSCODE" -eq '200' ]]; then
-      curl -s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
+      curl -4s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
       WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_TESTSTATUS_LOG")
       WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_TESTSTATUS_LOG")
       # check test result xml result status if Ok 200, proceed otherwise if 
@@ -296,7 +296,7 @@ wpt_run() {
         if [[ "$WPT_RESULT_STATUSCODE" -eq '101' ]]; then
           sleep "$WPT_SLEEPTIME"
         fi
-        curl -s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
+        curl -4s "https://www.webpagetest.org/testStatus.php?f=xml&test=$WPT_TESTIDA" > "$WPT_RESULT_TESTSTATUS_LOG"
         WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_TESTSTATUS_LOG")
         WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_TESTSTATUS_LOG")
         echo "$WPT_RESULT_STATUS ($WPT_RESULT_STATUSCODE)"
@@ -308,11 +308,15 @@ wpt_run() {
         echo "----"
         if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
           # additional lighthouse metrics to parse
-        echo "curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
-        curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
+          waterfall_url=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<waterfall>).*(?=</waterfall>)' | grep -v thumb)
+          echo "curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
+          curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
+          echo "$waterfall_url" >> "$WPT_SUMMARYRESULT_LOG"
         else
-        echo "curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
-        curl -s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
+          waterfall_url=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<waterfall>).*(?=</waterfall>)' | grep -v thumb)
+          echo "curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
+          curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
+          echo "$waterfall_url" >> "$WPT_SUMMARYRESULT_LOG"
         fi
 
         cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
@@ -338,32 +342,32 @@ gt_run() {
   domain=$(echo $fulldomain | awk -F '://' '{print $2}')
   # browser = 3 chrome
   # location = 4 dallas
-  curl -s --user $GTEMAIL:$GTAPIKEY --form url=${prefix}://${domain} --form x-metrix-adblock=0 --form x-metrix-video=$gtvideo_state --form browser=$GTBROWSER --form location=$GTLOCATION --form x-metrix-browser-width=$GTBROWSER_WIDTH --form x-metrix-browser-height=$GTBROWSER_HEIGHT --form x-metrix-throttle='5000/1000/30' https://gtmetrix.com/api/0.1/test | tee /tmp/gtmetrix.log
+  curl -4s --user $GTEMAIL:$GTAPIKEY --form url=${prefix}://${domain} --form x-metrix-adblock=0 --form x-metrix-video=$gtvideo_state --form browser=$GTBROWSER --form location=$GTLOCATION --form x-metrix-browser-width=$GTBROWSER_WIDTH --form x-metrix-browser-height=$GTBROWSER_HEIGHT --form x-metrix-throttle='5000/1000/30' https://gtmetrix.com/api/0.1/test | tee /tmp/gtmetrix.log
   echo "waiting on results..."
   sleep 30s
   gtmetrix_result=$(cat /tmp/gtmetrix.log | jq '.poll_state_url' | sed -e 's|\"||g')
   if [[ "$JSON_OUTPUT" = [yY] ]]; then
     {
-    result_state=$(curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.state'| sed -e 's|\"||g')
+    result_state=$(curl -4s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.state'| sed -e 's|\"||g')
     if [[ "$result_state" = 'completed' ]]; then
-      curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+      curl -4s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
     else
       sleep 15s
-      curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+      curl -4s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
     fi
     } | tee /tmp/gtmetrix-summary.log
   else
     {
-    result_state=$(curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.state'| sed -e 's|\"||g')
+    result_state=$(curl -4s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.state'| sed -e 's|\"||g')
     if [[ "$result_state" = 'completed' ]]; then
-      curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+      curl -4s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
     else
       sleep 15s
-      curl -s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
+      curl -4s --user $GTEMAIL:$GTAPIKEY $gtmetrix_result | jq '.'
     fi
     } > /tmp/gtmetrix-summary.log
   fi
-  # waterfall=$(curl -s --user $gtemail:$gtapikey ${gtmetrix_result}/har | jq)
+  # waterfall=$(curl -4s --user $gtemail:$gtapikey ${gtmetrix_result}/har | jq)
   
   onload_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.onload_time')
   first_contentful_paint_time=$(cat /tmp/gtmetrix-summary.log | jq '.results.first_contentful_paint_time')
