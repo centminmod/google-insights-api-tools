@@ -386,7 +386,7 @@ wpt_run() {
         cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
         if [[ "$SLACK" = [yY] ]]; then
           send_message="$(cat $WPT_SUMMARYRESULT_LOG)"
-          slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_LIGHTHOUSE_URL\n$send_message"
+          slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_LIGHTHOUSE_URL\n$WPT_HISTORY_URL\n$send_message"
         fi
         echo "----"
       else
