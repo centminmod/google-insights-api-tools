@@ -207,11 +207,15 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh wpt https://centminmod.com frankfurt
 ./gitools.sh wpt https://centminmod.com singapore
 ./gitools.sh wpt https://centminmod.com sydney
+./gitools.sh wpt https://centminmod.com dallas
+./gitools.sh wpt https://centminmod.com london
 ./gitools.sh wpt https://community.centminmod.com dulles
 ./gitools.sh wpt https://community.centminmod.com california
 ./gitools.sh wpt https://community.centminmod.com frankfurt
 ./gitools.sh wpt https://community.centminmod.com singapore
 ./gitools.sh wpt https://community.centminmod.com sydney
+./gitools.sh wpt https://community.centminmod.com dallas
+./gitools.sh wpt https://community.centminmod.com london
 ```
 
 ensure permissions are executeable
