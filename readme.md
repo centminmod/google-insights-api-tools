@@ -849,14 +849,15 @@ WPT='y'
 WPT_APIKEY='YOUR_WPT_API_KEY'
 ```
 
-* Currently, tests are done only from Dulles, California, Frankfurt, Singapore and Sydney locations for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 15 seconds delay until results are displayed. If results are still not available, another 15 second delay and recheck is triggered and so on until results are available.
+* Currently, tests are done only from Dulles, Dulles Motorola G4 3G, California, Frankfurt, Singapore and Sydney locations for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 15 seconds delay until results are displayed. If results are still not available, another 15 second delay and recheck is triggered and so on until results are available.
 * WPT tests are run from a specific tester id for the region listed at https://www.webpagetest.org/getTesters.php. So WPT tests are more comparable between test runs when using the same tester id as usually there are many testers within a specific region. 
-* Currently, for Dulles tester id `TESTER_CABLE='VM3-06'` and for California tester id `TESTER_CABLE='ip-172-31-8-84'` and for Frankfurt tester id `TESTER_CABLE='ip-172-31-28-65'` and for Singapore tester id `TESTER_CABLE='ip-172-31-39-48'` and for Sydney tester id `TESTER_CABLE='ip-172-31-7-201'` are used. Dulles region is the main test location so has the most tester server ids (32) ranging from `VM1-01 to VM1-08`, `VM2-01 to VM2-08`, `VM3-01 to VM3-08` and `VM4-01 to VM4-08`.
+* Currently, for Dulles tester id `TESTER_CABLE='VM3-06'` and for California tester id `TESTER_CABLE='ip-172-31-8-84'` and for Frankfurt tester id `TESTER_CABLE='ip-172-31-28-65'` and for Singapore tester id `TESTER_CABLE='ip-172-31-39-48'` and for Sydney tester id `TESTER_CABLE='ip-172-31-7-201'` and for Dulles Motorola G4 3G tester id `TESTER_CABLE='MotoG4_21'` are used. Dulles region is the main test location so has the most tester server ids (32) ranging from `VM1-01 to VM1-08`, `VM2-01 to VM2-08`, `VM3-01 to VM3-08` and `VM4-01 to VM4-08`.
 
 Dulles test with variables set in `/root/tools/google-insights-api-tools/gitools.ini` to
 
 ```
 WPT_DULLES='y'
+WPT_DULLES_3G='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
@@ -899,6 +900,7 @@ California test with variable set in `/root/tools/google-insights-api-tools/gito
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_3G='n'
 WPT_CALIFORNIA='y'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
@@ -941,6 +943,7 @@ Frankfurt test with variable set in `/root/tools/google-insights-api-tools/gitoo
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_3G='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='y'
 WPT_SINGAPORE='n'
@@ -983,6 +986,7 @@ Singapore test with variable set in `/root/tools/google-insights-api-tools/gitoo
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_3G='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='y'
@@ -1025,6 +1029,7 @@ Sydney test with variable set in `/root/tools/google-insights-api-tools/gitools.
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_3G='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
@@ -1061,6 +1066,51 @@ visualComplete99 2500
 chromeUserTiming.domInteractive 1249 
 ok----
 --------------------------------------------------------------------------------
+```
+
+Dulles Motorla G4 3G test test with variable set in `/root/tools/google-insights-api-tools/gitools.ini` to
+
+```
+WPT_DULLES='n'
+WPT_DULLES_3G='y'
+WPT_CALIFORNIA='n'
+WPT_FRANKFURT='n'
+WPT_SINGAPORE='n'
+WPT_SYDNEY='n'
+```
+
+Very long backlog queue !
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dulles-3g
+
+--------------------------------------------------------------------------------
+Dulles:MotoG4:3g WPT Results
+--------------------------------------------------------------------------------
+Test ID: 180705_MY_8MM
+https://www.webpagetest.org/result/180705_MY_8MM/
+https://www.webpagetest.org/lighthouse.php?test=180705_MY_8MM
+/home/wptresults/wpt-dulles-motog4-mobile.chrome.3g.050718-034125.log
+Waiting behind 5 other tests...
+Waiting behind 5 other tests... (101)
+waiting on results...
+Waiting behind 5 other tests...
+Waiting behind 5 other tests... (101)
+waiting on results...
+Waiting behind 5 other tests...
+Waiting behind 5 other tests... (101)
+waiting on results...
+Waiting behind 5 other tests...
+Waiting behind 5 other tests... (101)
+waiting on results...
+Waiting behind 5 other tests...
+Waiting behind 5 other tests... (101)
+waiting on results...
+Waiting behind 7 other tests...
+Waiting behind 7 other tests... (101)
+waiting on results...
 ```
 
 ### WebpageTest.org Slack Channel
@@ -1147,6 +1197,14 @@ Dulles test with Google Lighthouse report
 ### WebpageTest.org Command Line Options
 
 You can also pass the WebpageTets.org test region name on the command line for the following regions
+
+Dulles Motorola G4 3G test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dulles-3g
+```
 
 Dulles test
 

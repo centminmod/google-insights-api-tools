@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.0'
+VER='1.1'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -50,12 +50,15 @@ GTBROWSER='3'
 WPT_LABEL=$(date +"%d%m%y-%H%M%S")
 WPT_DIR='/home/wptresults'
 WPT_RESULT_TESTSTATUS_LOG='/tmp/wpt-teststatus-check.log'
+WPT_SHOW_HISTORY='y'
+WPT_IGNORE_SSL='y'
 WPT_RUNS='1'
 WPT_LIGHTHOUSE='y'
 WPT_APIURL='https://www.webpagetest.org/runtest.php'
 WPT_APIKEY='YOUR_API_KEY'
 WPT_LOCATION='Dulles:Chrome.Cable'
 WPT_DULLES='y'
+WPT_DULLES_3G='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
@@ -108,6 +111,18 @@ else
   gtvideo_state='0'
 fi
 
+if [[ "$WPT_IGNORE_SSL" = [yY] ]]; then
+  ignore_ssl='&ignoreSSL=1'
+else
+  ignore_ssl=""
+fi
+
+if [[ "$WPT_SHOW_HISTORY" = [yY] ]]; then
+  wpt_show_history='0'
+else
+  wpt_show_history='1'
+fi
+
 slacksend() {
   dt=$DT
   # message="$dt: This is posted to #$channel and comes from a bot named $username."
@@ -122,7 +137,9 @@ wpt_run() {
   WPT_RESOLUTION_HEIGHT=${4:-1200}
   prefix=$(echo $WPT_URL | awk -F '://' '{print $1}')
   domain=$(echo $WPT_URL | awk -F '://' '{print $2}')
-  if [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles' )" = 'dulles' ]]; then
+  if [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-3g' )" = 'dulles-3g' ]]; then
+    WPT_REGION_CMD='dulles-3g'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles' )" = 'dulles' ]]; then
     WPT_REGION_CMD='dulles'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'california' )" = 'california' ]]; then
     WPT_REGION_CMD='california'
@@ -135,7 +152,16 @@ wpt_run() {
   else
     WPT_REGION_CMD="none"
   fi
-  if [[ "$WPT_DULLES" = [yY] ]]; then
+  if [[ "$WPT_DULLES_3G" = [yY] ]]; then
+    WPT_SLEEPTIME='30'
+    WPT_PROCEED='y'
+    WPT_LOCATION='Dulles:MotoG4:3g'
+    WPT_LOCATION_TXT='dulles-motog4-mobile.chrome.3g'
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='MotoG4_21'
+  elif [[ "$WPT_DULLES" = [yY] ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION='Dulles:Chrome.Cable'
     WPT_LOCATION_TXT='dulles.chrome.cable'
@@ -177,7 +203,15 @@ wpt_run() {
     TESTER_CABLE='ip-172-31-7-201'
   fi
   # override options on command line
-  if [[ "$WPT_REGION_CMD" = 'dulles' ]]; then
+  if [[ "$WPT_REGION_CMD" = 'dulles-3g' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='Dulles:MotoG4:3g'
+    WPT_LOCATION_TXT='dulles-motog4-mobile.chrome.3g'
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='MotoG4_21'
+  elif [[ "$WPT_REGION_CMD" = 'dulles' ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION='Dulles:Chrome.Cable'
     WPT_LOCATION_TXT='dulles.chrome.cable'
@@ -227,7 +261,8 @@ wpt_run() {
     WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"
     WPT_RESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}.log"
     WPT_SUMMARYRESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}-summary.log"
-    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=1&medianMetric=loadTime${wpt_lighthouse_opt}&width=${WPT_RESOLUTION_WIDTH}&height=${WPT_RESOLUTION_HEIGHT}&f=xml&tester=${TESTER_CABLE}")
+    # WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=${wpt_show_history}&medianMetric=loadTime${wpt_lighthouse_opt}&width=${WPT_RESOLUTION_WIDTH}&height=${WPT_RESOLUTION_HEIGHT}${ignore_ssl}&f=xml&tester=${TESTER_CABLE}")
+    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=${wpt_show_history}&medianMetric=loadTime${wpt_lighthouse_opt}${ignore_ssl}&f=xml&tester=${TESTER_CABLE}")
     echo "curl -s \"$WPT_TESTURL\"" > "$WPT_RESULT_LOG"
     curl -s "$WPT_TESTURL" >> "$WPT_RESULT_LOG"
     WPT_USER_RESULTURL=$(grep -oP '(?<=<userUrl>).*(?=</userUrl>)' "$WPT_RESULT_LOG")
