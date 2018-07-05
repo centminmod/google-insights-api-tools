@@ -341,6 +341,10 @@ wpt_run() {
       WPT_LIGHTHOUSE_URL="https://www.webpagetest.org/lighthouse.php?test=$WPT_TESTIDA"
       echo "$WPT_LIGHTHOUSE_URL"
     fi
+    if [[ "$WPT_SHOW_HISTORY" = [yY] ]]; then
+      WPT_HISTORY_URL="https://www.webpagetest.org/testlog.php?days=1&filter=${domain}&all=on&video=on"
+      echo "$WPT_HISTORY_URL"
+    fi
     echo "$WPT_RESULT_LOG"
     WPT_RESULT_STATUSCODE=$(grep -oP '(?<=<statusCode>).*(?=</statusCode>)' "$WPT_RESULT_LOG")
     WPT_RESULT_STATUS=$(grep -oP '(?<=<statusText>).*(?=</statusText>)' "$WPT_RESULT_LOG")
