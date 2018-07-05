@@ -21,6 +21,7 @@
 * [WebpageTest.org API Tests](#webpagetestorg-api-tests)
   * [WebpageTest.org Slack Channel](#webpagetestorg-slack-channel)
   * [WebpageTest.org Google Lighthouse](#webpagetestorg-google-lighthouse)
+  * [WebpageTest.org Command Line Options](#webpagetestorg-command-line-options)
 
 
 ## Google PageSpeed Insights API Tools
@@ -1142,3 +1143,47 @@ ok----
 Dulles test with Google Lighthouse report
 
 ![](/images/wpt-dulles-slack-lighthouse-01.png)
+
+### WebpageTest.org Command Line Options
+
+You can also pass the WebpageTets.org test region name on the command line for the following regions
+
+Dulles test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dulles
+```
+
+California test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com california
+```
+
+Frankfurt test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com frankfurt
+```
+
+Singapore test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com singapore
+```
+
+Sydney test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com sydney
+```

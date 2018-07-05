@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='0.9'
+VER='1.0'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -117,8 +117,24 @@ slacksend() {
 
 wpt_run() {
   WPT_URL=$1
+  WPT_REGION=${2}
+  WPT_RESOLUTION_WIDTH=${3:-1920}
+  WPT_RESOLUTION_HEIGHT=${4:-1200}
   prefix=$(echo $WPT_URL | awk -F '://' '{print $1}')
   domain=$(echo $WPT_URL | awk -F '://' '{print $2}')
+  if [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles' )" = 'dulles' ]]; then
+    WPT_REGION_CMD='dulles'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'california' )" = 'california' ]]; then
+    WPT_REGION_CMD='california'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'frankfurt' )" = 'frankfurt' ]]; then
+    WPT_REGION_CMD='frankfurt'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'singapore' )" = 'singapore' ]]; then
+    WPT_REGION_CMD='singapore'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'sydney' )" = 'sydney' ]]; then
+    WPT_REGION_CMD='sydney'
+  else
+    WPT_REGION_CMD="none"
+  fi
   if [[ "$WPT_DULLES" = [yY] ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION='Dulles:Chrome.Cable'
@@ -159,8 +175,9 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-7-201'
-  else
-    # default dulles
+  fi
+  # override options on command line
+  if [[ "$WPT_REGION_CMD" = 'dulles' ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION='Dulles:Chrome.Cable'
     WPT_LOCATION_TXT='dulles.chrome.cable'
@@ -168,6 +185,38 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='VM3-06'
+  elif [[ "$WPT_REGION_CMD" = 'california' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='ec2-us-west-1:Chrome.Cable'
+    WPT_LOCATION_TXT='california.ec2-us-west-1.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-8-84'
+  elif [[ "$WPT_REGION_CMD" = 'frankfurt' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='ec2-eu-central-1:Chrome.Cable'
+    WPT_LOCATION_TXT='frankfurt.ec2-eu-central-1.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-28-65'
+  elif [[ "$WPT_REGION_CMD" = 'singapore' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='ec2-ap-southeast-1:Chrome.Cable'
+    WPT_LOCATION_TXT='singapore.ec2-ap-southeast-1.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-39-48'
+  elif [[ "$WPT_REGION_CMD" = 'sydney' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='ec2-ap-southeast-2:Chrome.Cable'
+    WPT_LOCATION_TXT='sydney.ec2-ap-southeast-2.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-7-201'
   fi
   if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
     wpt_lighthouse_opt='&lighthouse=1'
@@ -178,7 +227,7 @@ wpt_run() {
     WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"
     WPT_RESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}.log"
     WPT_SUMMARYRESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}-summary.log"
-    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=1&medianMetric=loadTime${wpt_lighthouse_opt}&f=xml&tester=${TESTER_CABLE}")
+    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=1&medianMetric=loadTime${wpt_lighthouse_opt}&width=${WPT_RESOLUTION_WIDTH}&height=${WPT_RESOLUTION_HEIGHT}&f=xml&tester=${TESTER_CABLE}")
     echo "curl -s \"$WPT_TESTURL\"" > "$WPT_RESULT_LOG"
     curl -s "$WPT_TESTURL" >> "$WPT_RESULT_LOG"
     WPT_USER_RESULTURL=$(grep -oP '(?<=<userUrl>).*(?=</userUrl>)' "$WPT_RESULT_LOG")
@@ -436,7 +485,7 @@ case $1 in
     ;;
   wpt )
     if [[ "$WPT" = [yY] ]]; then
-      wpt_run $2 $3
+      wpt_run $2 $3 $4 $5
     else
       echo "WPT='n' detected"
     fi
