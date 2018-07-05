@@ -201,8 +201,16 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh gtmetrix https://centminmod.com
 ./gitools.sh gtmetrix https://community.centminmod.com
 
-./gitools.sh wpt https://centminmod.com
-./gitools.sh wpt https://community.centminmod.com
+./gitools.sh wpt https://centminmod.com dulles
+./gitools.sh wpt https://centminmod.com california
+./gitools.sh wpt https://centminmod.com frankfurt
+./gitools.sh wpt https://centminmod.com singapore
+./gitools.sh wpt https://centminmod.com sydney
+./gitools.sh wpt https://community.centminmod.com dulles
+./gitools.sh wpt https://community.centminmod.com california
+./gitools.sh wpt https://community.centminmod.com frankfurt
+./gitools.sh wpt https://community.centminmod.com singapore
+./gitools.sh wpt https://community.centminmod.com sydney
 ```
 
 ensure permissions are executeable
@@ -1114,6 +1122,10 @@ waiting on results...
 ```
 
 ### WebpageTest.org Slack Channel
+
+Dulles Motorla G4 3G test
+
+![](/images/wpt-dulles-3g-slack-01.png)
 
 Dulles test
 
