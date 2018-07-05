@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.2'
+VER='1.3'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -59,10 +59,13 @@ WPT_APIKEY='YOUR_API_KEY'
 WPT_LOCATION='Dulles:Chrome.Cable'
 WPT_DULLES='y'
 WPT_DULLES_3G='n'
+WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
+WPT_DALLAS='n'
+WPT_LONDON='n'
 # wait time between API run and parsing
 # result log
 WPT_SLEEPTIME='15'
@@ -139,6 +142,8 @@ wpt_run() {
   domain=$(echo $WPT_URL | awk -F '://' '{print $2}')
   if [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-3g' )" = 'dulles-3g' ]]; then
     WPT_REGION_CMD='dulles-3g'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-s7-3g' )" = 'dulles-s7-3g' ]]; then
+    WPT_REGION_CMD='dulles-s7-3g'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles' )" = 'dulles' ]]; then
     WPT_REGION_CMD='dulles'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'california' )" = 'california' ]]; then
@@ -149,6 +154,10 @@ wpt_run() {
     WPT_REGION_CMD='singapore'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'sydney' )" = 'sydney' ]]; then
     WPT_REGION_CMD='sydney'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dallas' )" = 'dallas' ]]; then
+    WPT_REGION_CMD='dallas'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'london' )" = 'london' ]]; then
+    WPT_REGION_CMD='london'
   else
     WPT_REGION_CMD="none"
   fi
@@ -161,6 +170,15 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='MotoG4_21'
+  elif [[ "$WPT_DULLES_3G_S7" = [yY] ]]; then
+    WPT_SLEEPTIME='30'
+    WPT_PROCEED='y'
+    WPT_LOCATION='Dulles:GalaxyS7:3g'
+    WPT_LOCATION_TXT='dulles-galaxys7-mobile.chrome.3g'
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='Galaxy_S7_1'
   elif [[ "$WPT_DULLES" = [yY] ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION='Dulles:Chrome.Cable'
@@ -201,7 +219,24 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-7-201'
+  elif [[ "$WPT_DALLAS" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='Texas2:Chrome.Cable'
+    WPT_LOCATION_TXT='dallas.Texas2.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='Dallas'
+  elif [[ "$WPT_LONDON" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='London_EC2:Chrome.Cable'
+    WPT_LOCATION_TXT='london.London_EC2.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-8-123'
   fi
+  ########################################################################
   # override options on command line
   if [[ "$WPT_REGION_CMD" = 'dulles-3g' ]]; then
     WPT_PROCEED='y'
@@ -211,6 +246,15 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='MotoG4_21'
+  elif [[ "$WPT_REGION_CMD" = 'dulles-s7-3g' ]]; then
+    WPT_SLEEPTIME='30'
+    WPT_PROCEED='y'
+    WPT_LOCATION='Dulles:GalaxyS7:3g'
+    WPT_LOCATION_TXT='dulles-galaxys7-mobile.chrome.3g'
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='Galaxy_S7_1'
   elif [[ "$WPT_REGION_CMD" = 'dulles' ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION='Dulles:Chrome.Cable'
@@ -251,6 +295,22 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-7-201'
+  elif [[ "$WPT_REGION_CMD" = 'dallas' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='Texas2:Chrome.Cable'
+    WPT_LOCATION_TXT='dallas.Texas2.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='Dallas'
+  elif [[ "$WPT_REGION_CMD" = 'london' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION='London_EC2:Chrome.Cable'
+    WPT_LOCATION_TXT='london.London_EC2.chrome.cable'
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-8-123'
   fi
   if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
     wpt_lighthouse_opt='&lighthouse=1'

@@ -858,7 +858,7 @@ WPT='y'
 WPT_APIKEY='YOUR_WPT_API_KEY'
 ```
 
-* Currently, tests are done only from Dulles, Dulles Motorola G4 3G, California, Frankfurt, Singapore and Sydney locations for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 15 seconds delay until results are displayed. If results are still not available, another 15 second delay and recheck is triggered and so on until results are available.
+* Currently, tests are done only from Dulles, Dulles Motorola G4 3G, Dulles Galaxy S7, California, Frankfurt, Singapore, Sydney, Dallas & London locations for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 15 seconds delay until results are displayed. If results are still not available, another 15 second delay and recheck is triggered and so on until results are available.
 * WPT tests are run from a specific tester id for the region listed at https://www.webpagetest.org/getTesters.php. So WPT tests are more comparable between test runs when using the same tester id as usually there are many testers within a specific region. 
 * Currently, for Dulles tester id `TESTER_CABLE='VM3-06'` and for California tester id `TESTER_CABLE='ip-172-31-8-84'` and for Frankfurt tester id `TESTER_CABLE='ip-172-31-28-65'` and for Singapore tester id `TESTER_CABLE='ip-172-31-39-48'` and for Sydney tester id `TESTER_CABLE='ip-172-31-7-201'` and for Dulles Motorola G4 3G tester id `TESTER_CABLE='MotoG4_21'` are used. Dulles region is the main test location so has the most tester server ids (32) ranging from `VM1-01 to VM1-08`, `VM2-01 to VM2-08`, `VM3-01 to VM3-08` and `VM4-01 to VM4-08`.
 
@@ -867,10 +867,13 @@ Dulles test with variables set in `/root/tools/google-insights-api-tools/gitools
 ```
 WPT_DULLES='y'
 WPT_DULLES_3G='n'
+WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
+WPT_DALLAS='n'
+WPT_LONDON='n'
 ```
 
 ```
@@ -910,10 +913,13 @@ California test with variable set in `/root/tools/google-insights-api-tools/gito
 ```
 WPT_DULLES='n'
 WPT_DULLES_3G='n'
+WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='y'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
+WPT_DALLAS='n'
+WPT_LONDON='n'
 ```
 
 ```
@@ -953,10 +959,13 @@ Frankfurt test with variable set in `/root/tools/google-insights-api-tools/gitoo
 ```
 WPT_DULLES='n'
 WPT_DULLES_3G='n'
+WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='y'
 WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
+WPT_DALLAS='n'
+WPT_LONDON='n'
 ```
 
 ```
@@ -996,10 +1005,13 @@ Singapore test with variable set in `/root/tools/google-insights-api-tools/gitoo
 ```
 WPT_DULLES='n'
 WPT_DULLES_3G='n'
+WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='y'
 WPT_SYDNEY='n'
+WPT_DALLAS='n'
+WPT_LONDON='n'
 ```
 
 ```
@@ -1039,10 +1051,13 @@ Sydney test with variable set in `/root/tools/google-insights-api-tools/gitools.
 ```
 WPT_DULLES='n'
 WPT_DULLES_3G='n'
+WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
 WPT_SYDNEY='y'
+WPT_DALLAS='n'
+WPT_LONDON='n'
 ```
 
 ```
@@ -1077,15 +1092,18 @@ ok----
 --------------------------------------------------------------------------------
 ```
 
-Dulles Motorla G4 3G test test with variable set in `/root/tools/google-insights-api-tools/gitools.ini` to
+Dulles Motorla G4 3G test with variable set in `/root/tools/google-insights-api-tools/gitools.ini` to
 
 ```
 WPT_DULLES='n'
 WPT_DULLES_3G='y'
+WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
 WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
+WPT_DALLAS='n'
+WPT_LONDON='n'
 ```
 
 Very long backlog queue !
@@ -1093,7 +1111,7 @@ Very long backlog queue !
 ```
 cd /root/tools/google-insights-api-tools
 
-./gitools.sh wpt https://community.centminmod.com dulles-3g
+./gitools.sh wpt https://community.centminmod.com
 
 --------------------------------------------------------------------------------
 Dulles:MotoG4:3g WPT Results
@@ -1120,6 +1138,147 @@ waiting on results...
 Waiting behind 7 other tests...
 Waiting behind 7 other tests... (101)
 waiting on results...
+```
+
+Dallas test with variable set in `/root/tools/google-insights-api-tools/gitools.ini` to
+
+```
+WPT_DULLES='n'
+WPT_DULLES_3G='n'
+WPT_DULLES_3G_S7='n'
+WPT_CALIFORNIA='n'
+WPT_FRANKFURT='n'
+WPT_SINGAPORE='n'
+WPT_SYDNEY='n'
+WPT_DALLAS='y'
+WPT_LONDON='n'
+```
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com
+
+--------------------------------------------------------------------------------
+Texas2:Chrome.Cable WPT Results
+--------------------------------------------------------------------------------
+Test ID: 180705_HS_1N86
+https://www.webpagetest.org/result/180705_HS_1N86/
+https://www.webpagetest.org/lighthouse.php?test=180705_HS_1N86
+/home/wptresults/wpt-dallas.Texas2.chrome.cable.050718-222621.log
+Test Started 26 seconds ago
+Test Started 26 seconds ago (100)
+waiting on results...
+Test Complete
+Test Complete (200)
+waiting on results...
+Test Complete
+Test Complete (200)
+----
+firstPaint 867 
+loadTime 1041 
+domInteractive 565 
+fullyLoaded 2560 
+requests 25 
+TTFB 428 
+domElements 1967 
+visualComplete 1967 
+render 900 
+SpeedIndex 910 
+visualComplete85 900 
+visualComplete90 900 
+visualComplete95 900 
+visualComplete99 900 
+chromeUserTiming.domInteractive 564 
+chromeUserTiming.firstPaint 866 
+chromeUserTiming.firstContentfulPaint 866 
+chromeUserTiming.firstMeaningfulPaintCandidate 1011 
+chromeUserTiming.firstMeaningfulPaint 1011 
+chromeUserTiming.domComplete 1040 
+lighthouse.Performance.first-contentful-paint 1489 
+lighthouse.Performance.estimated-input-latency 50 
+lighthouse.Performance.speed-index 1720 
+lighthouse.Performance.first-meaningful-paint 2005 
+lighthouse.Performance.first-cpu-idle 4316 
+https://www.webpagetest.org/results/18/07/05/HS/1N86/1_waterfall.png
+ok----
+--------------------------------------------------------------------------------
+```
+
+London test with variable set in `/root/tools/google-insights-api-tools/gitools.ini` to
+
+```
+WPT_DULLES='n'
+WPT_DULLES_3G='n'
+WPT_DULLES_3G_S7='n'
+WPT_CALIFORNIA='n'
+WPT_FRANKFURT='n'
+WPT_SINGAPORE='n'
+WPT_SYDNEY='n'
+WPT_DALLAS='n'
+WPT_LONDON='y'
+```
+
+Experiencing a queue backlog but eventually completed
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com
+
+--------------------------------------------------------------------------------
+London_EC2:Chrome.Cable WPT Results
+--------------------------------------------------------------------------------
+Test ID: 180705_NX_1NC7
+https://www.webpagetest.org/result/180705_NX_1NC7/
+https://www.webpagetest.org/lighthouse.php?test=180705_NX_1NC7
+/home/wptresults/wpt-london.London_EC2.chrome.cable.050718-223146.log
+Waiting behind 5 other tests...
+Waiting behind 5 other tests... (101)
+waiting on results...
+Waiting behind 3 other tests...
+Waiting behind 3 other tests... (101)
+waiting on results...
+Waiting at the front of the queue...
+Waiting at the front of the queue... (101)
+waiting on results...
+Test Started 21 seconds ago
+Test Started 21 seconds ago (100)
+waiting on results...
+Test Complete
+Test Complete (200)
+waiting on results...
+Test Complete
+Test Complete (200)
+----
+firstPaint 1350 
+loadTime 1375 
+domInteractive 1089 
+fullyLoaded 2768 
+requests 28 
+TTFB 812 
+domElements 1978 
+visualComplete 2500 
+render 1300 
+SpeedIndex 1374 
+visualComplete85 1300 
+visualComplete90 1300 
+visualComplete95 2300 
+visualComplete99 2500 
+chromeUserTiming.domInteractive 1088 
+chromeUserTiming.firstPaint 1350 
+chromeUserTiming.firstContentfulPaint 1350 
+chromeUserTiming.domComplete 1375 
+chromeUserTiming.firstMeaningfulPaint 1449 
+chromeUserTiming.firstMeaningfulPaintCandidate 1449 
+lighthouse.Performance.first-contentful-paint 2296 
+lighthouse.Performance.estimated-input-latency 20 
+lighthouse.Performance.speed-index 2553 
+lighthouse.Performance.first-meaningful-paint 2733 
+lighthouse.Performance.first-cpu-idle 3669 
+https://www.webpagetest.org/results/18/07/05/NX/1NC7/1_waterfall.png
+ok----
+--------------------------------------------------------------------------------
 ```
 
 ### WebpageTest.org Slack Channel
@@ -1211,6 +1370,14 @@ Dulles test with Google Lighthouse report
 
 You can also pass the WebpageTets.org test region name on the command line for the following regions
 
+Dulles Galaxy S7 3G test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dulles-s7-3g
+```
+
 Dulles Motorola G4 3G test
 
 ```
@@ -1257,6 +1424,22 @@ Sydney test
 cd /root/tools/google-insights-api-tools
 
 ./gitools.sh wpt https://community.centminmod.com sydney
+```
+
+Dallas test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dallas
+```
+
+London test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com london
 ```
 
 ### WebpageTest.org Waterfall
