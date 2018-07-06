@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.4'
+VER='1.5'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -130,7 +130,11 @@ slacksend() {
   dt=$DT
   # message="$dt: This is posted to #$channel and comes from a bot named $username."
   message="$1"
-  curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"text\": \"$message\", \"icon_emoji\": \":$icon:\"}" $webhook_url
+  slack_fallback="$2"
+  slack_title="$slack_fallback"
+  slack_message_title="$slack_title"
+  # curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"text\": \"$message\", \"icon_emoji\": \":$icon:\"}" $webhook_url
+  curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"good\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
 }
 
 wpt_run() {
@@ -407,7 +411,7 @@ wpt_run() {
         cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
         if [[ "$SLACK" = [yY] ]]; then
           send_message="$(cat $WPT_SUMMARYRESULT_LOG)"
-          slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_USER_RESULTXMLURL\n$WPT_LIGHTHOUSE_URL\n$WPT_HISTORY_URL\n$send_message"
+          slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_USER_RESULTXMLURL\n$WPT_LIGHTHOUSE_URL\n$WPT_HISTORY_URL\n$send_message" "$DT - $WPT_LOCATION"
         fi
         echo "----"
       else
@@ -489,7 +493,7 @@ gt_run() {
   if [[ "$SLACK" = [yY] ]]; then
     if [[ "$pagespeed_score" ]]; then
       send_message="$(cat /tmp/gitool-gtmetrix-slack-summary.log)"
-      slacksend "$send_message"
+      slacksend "$send_message" "$DT - GTMetrix"
     fi
   fi
 
@@ -580,7 +584,7 @@ gi_run() {
     if [[ "$SLACK" = [yY] ]]; then
       if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
         send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
-        slacksend "${strategy}\n$send_message"
+        slacksend "${strategy}\n$send_message" "$DT - Google PageSpeed Insights"
       fi
     fi
     rm -rf /tmp/gitool-${strategy}.log
