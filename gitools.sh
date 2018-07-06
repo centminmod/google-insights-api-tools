@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.3'
+VER='1.4'
 DT=$(date +"%d%m%y-%H%M%S")
 
 
@@ -136,10 +136,31 @@ slacksend() {
 wpt_run() {
   WPT_URL=$1
   WPT_REGION=${2}
-  WPT_RESOLUTION_WIDTH=${3:-1920}
-  WPT_RESOLUTION_HEIGHT=${4:-1200}
+  WPT_SPEED=${3:-Cable}
+  WPT_SPEED=$(echo $WPT_SPEED | awk '{print tolower($0)}')
+  WPT_RESOLUTION_WIDTH=${4:-1920}
+  WPT_RESOLUTION_HEIGHT=${5:-1200}
   prefix=$(echo $WPT_URL | awk -F '://' '{print $1}')
   domain=$(echo $WPT_URL | awk -F '://' '{print $2}')
+  if [[ "$WPT_SPEED" = 'cable' ]]; then
+    WPT_SPEED='Cable'
+    WPT_SPEED_TXT='cable'
+  elif [[ "$WPT_SPEED" = '3g' ]]; then
+    WPT_SPEED='3G'
+    WPT_SPEED_TXT='3g'
+  elif [[ "$WPT_SPEED" = '4g' ]]; then
+    WPT_SPEED='4G'
+    WPT_SPEED_TXT='4g'
+  elif [[ "$WPT_SPEED" = 'lte' ]]; then
+    WPT_SPEED='LTE'
+    WPT_SPEED_TXT='lte'
+  elif [[ "$WPT_SPEED" = 'fios' ]]; then
+    WPT_SPEED='FIOS'
+    WPT_SPEED_TXT='fios'
+  else
+    WPT_SPEED='Cable'
+    WPT_SPEED_TXT='cable'
+  fi
   if [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-3g' )" = 'dulles-3g' ]]; then
     WPT_REGION_CMD='dulles-3g'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-s7-3g' )" = 'dulles-s7-3g' ]]; then
@@ -181,56 +202,56 @@ wpt_run() {
     TESTER_CABLE='Galaxy_S7_1'
   elif [[ "$WPT_DULLES" = [yY] ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='Dulles:Chrome.Cable'
-    WPT_LOCATION_TXT='dulles.chrome.cable'
+    WPT_LOCATION="Dulles:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="dulles.chrome.${WPT_SPEED_TXT}"
     # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='VM3-06'
   elif [[ "$WPT_CALIFORNIA" = [yY] ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='ec2-us-west-1:Chrome.Cable'
-    WPT_LOCATION_TXT='california.ec2-us-west-1.chrome.cable'
+    WPT_LOCATION="ec2-us-west-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="california.ec2-us-west-1.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-8-84'
   elif [[ "$WPT_FRANKFURT" = [yY] ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='ec2-eu-central-1:Chrome.Cable'
-    WPT_LOCATION_TXT='frankfurt.ec2-eu-central-1.chrome.cable'
+    WPT_LOCATION="ec2-eu-central-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="frankfurt.ec2-eu-central-1.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-28-65'
   elif [[ "$WPT_SINGAPORE" = [yY] ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='ec2-ap-southeast-1:Chrome.Cable'
-    WPT_LOCATION_TXT='singapore.ec2-ap-southeast-1.chrome.cable'
+    WPT_LOCATION="ec2-ap-southeast-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="singapore.ec2-ap-southeast-1.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-39-48'
   elif [[ "$WPT_SYDNEY" = [yY] ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='ec2-ap-southeast-2:Chrome.Cable'
-    WPT_LOCATION_TXT='sydney.ec2-ap-southeast-2.chrome.cable'
+    WPT_LOCATION="ec2-ap-southeast-2:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="sydney.ec2-ap-southeast-2.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-7-201'
   elif [[ "$WPT_DALLAS" = [yY] ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='Texas2:Chrome.Cable'
-    WPT_LOCATION_TXT='dallas.Texas2.chrome.cable'
+    WPT_LOCATION="Texas2:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="dallas.Texas2.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='Dallas'
   elif [[ "$WPT_LONDON" = [yY] ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='London_EC2:Chrome.Cable'
-    WPT_LOCATION_TXT='london.London_EC2.chrome.cable'
+    WPT_LOCATION="London_EC2:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="london.London_EC2.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
@@ -257,56 +278,56 @@ wpt_run() {
     TESTER_CABLE='Galaxy_S7_1'
   elif [[ "$WPT_REGION_CMD" = 'dulles' ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='Dulles:Chrome.Cable'
-    WPT_LOCATION_TXT='dulles.chrome.cable'
+    WPT_LOCATION="Dulles:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="dulles.chrome.${WPT_SPEED_TXT}"
     # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='VM3-06'
   elif [[ "$WPT_REGION_CMD" = 'california' ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='ec2-us-west-1:Chrome.Cable'
-    WPT_LOCATION_TXT='california.ec2-us-west-1.chrome.cable'
+    WPT_LOCATION="ec2-us-west-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="california.ec2-us-west-1.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-8-84'
   elif [[ "$WPT_REGION_CMD" = 'frankfurt' ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='ec2-eu-central-1:Chrome.Cable'
-    WPT_LOCATION_TXT='frankfurt.ec2-eu-central-1.chrome.cable'
+    WPT_LOCATION="ec2-eu-central-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="frankfurt.ec2-eu-central-1.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-28-65'
   elif [[ "$WPT_REGION_CMD" = 'singapore' ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='ec2-ap-southeast-1:Chrome.Cable'
-    WPT_LOCATION_TXT='singapore.ec2-ap-southeast-1.chrome.cable'
+    WPT_LOCATION="ec2-ap-southeast-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="singapore.ec2-ap-southeast-1.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-39-48'
   elif [[ "$WPT_REGION_CMD" = 'sydney' ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='ec2-ap-southeast-2:Chrome.Cable'
-    WPT_LOCATION_TXT='sydney.ec2-ap-southeast-2.chrome.cable'
+    WPT_LOCATION="ec2-ap-southeast-2:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="sydney.ec2-ap-southeast-2.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-7-201'
   elif [[ "$WPT_REGION_CMD" = 'dallas' ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='Texas2:Chrome.Cable'
-    WPT_LOCATION_TXT='dallas.Texas2.chrome.cable'
+    WPT_LOCATION="Texas2:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="dallas.Texas2.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='Dallas'
   elif [[ "$WPT_REGION_CMD" = 'london' ]]; then
     WPT_PROCEED='y'
-    WPT_LOCATION='London_EC2:Chrome.Cable'
-    WPT_LOCATION_TXT='london.London_EC2.chrome.cable'
+    WPT_LOCATION="London_EC2:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="london.London_EC2.chrome.${WPT_SPEED_TXT}"
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
@@ -588,7 +609,7 @@ case $1 in
     ;;
   wpt )
     if [[ "$WPT" = [yY] ]]; then
-      wpt_run $2 $3 $4 $5
+      wpt_run $2 $3 $4 $5 $6
     else
       echo "WPT='n' detected"
     fi

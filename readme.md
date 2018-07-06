@@ -202,20 +202,35 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh gtmetrix https://centminmod.com
 ./gitools.sh gtmetrix https://community.centminmod.com
 
-./gitools.sh wpt https://centminmod.com dulles
-./gitools.sh wpt https://centminmod.com california
-./gitools.sh wpt https://centminmod.com frankfurt
-./gitools.sh wpt https://centminmod.com singapore
-./gitools.sh wpt https://centminmod.com sydney
-./gitools.sh wpt https://centminmod.com dallas
-./gitools.sh wpt https://centminmod.com london
-./gitools.sh wpt https://community.centminmod.com dulles
-./gitools.sh wpt https://community.centminmod.com california
-./gitools.sh wpt https://community.centminmod.com frankfurt
-./gitools.sh wpt https://community.centminmod.com singapore
-./gitools.sh wpt https://community.centminmod.com sydney
-./gitools.sh wpt https://community.centminmod.com dallas
-./gitools.sh wpt https://community.centminmod.com london
+./gitools.sh wpt https://centminmod.com dulles cable
+./gitools.sh wpt https://centminmod.com california cable
+./gitools.sh wpt https://centminmod.com frankfurt cable
+./gitools.sh wpt https://centminmod.com singapore cable
+./gitools.sh wpt https://centminmod.com sydney cable
+./gitools.sh wpt https://centminmod.com dallas cable
+./gitools.sh wpt https://centminmod.com london cable
+./gitools.sh wpt https://community.centminmod.com dulles cable
+./gitools.sh wpt https://community.centminmod.com california cable
+./gitools.sh wpt https://community.centminmod.com frankfurt cable
+./gitools.sh wpt https://community.centminmod.com singapore cable
+./gitools.sh wpt https://community.centminmod.com sydney cable
+./gitools.sh wpt https://community.centminmod.com dallas cable
+./gitools.sh wpt https://community.centminmod.com london cable
+
+./gitools.sh wpt https://centminmod.com dulles 3g
+./gitools.sh wpt https://centminmod.com california 3g
+./gitools.sh wpt https://centminmod.com frankfurt 3g
+./gitools.sh wpt https://centminmod.com singapore 3g
+./gitools.sh wpt https://centminmod.com sydney 3g
+./gitools.sh wpt https://centminmod.com dallas 3g
+./gitools.sh wpt https://centminmod.com london 3g
+./gitools.sh wpt https://community.centminmod.com dulles 3g
+./gitools.sh wpt https://community.centminmod.com california 3g
+./gitools.sh wpt https://community.centminmod.com frankfurt 3g
+./gitools.sh wpt https://community.centminmod.com singapore 3g
+./gitools.sh wpt https://community.centminmod.com sydney 3g
+./gitools.sh wpt https://community.centminmod.com dallas 3g
+./gitools.sh wpt https://community.centminmod.com london 3g
 ```
 
 ensure permissions are executeable
@@ -1444,6 +1459,92 @@ London test
 cd /root/tools/google-insights-api-tools
 
 ./gitools.sh wpt https://community.centminmod.com london
+```
+
+You can also pass the speed profile for your tests now - supported options are `cable`, `3g`, `4g`, `lte` and `fios` on the command line for the following regions
+
+Dulles test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dulles cable
+./gitools.sh wpt https://community.centminmod.com dulles 3g
+./gitools.sh wpt https://community.centminmod.com dulles 4g
+./gitools.sh wpt https://community.centminmod.com dulles lte
+./gitools.sh wpt https://community.centminmod.com dulles fios
+```
+
+California test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com california cable
+./gitools.sh wpt https://community.centminmod.com california 3g
+./gitools.sh wpt https://community.centminmod.com california 4g
+./gitools.sh wpt https://community.centminmod.com california lte
+./gitools.sh wpt https://community.centminmod.com california fios
+```
+
+Frankfurt test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com frankfurt cable
+./gitools.sh wpt https://community.centminmod.com frankfurt 3g
+./gitools.sh wpt https://community.centminmod.com frankfurt 4g
+./gitools.sh wpt https://community.centminmod.com frankfurt lte
+./gitools.sh wpt https://community.centminmod.com frankfurt fios
+```
+
+Singapore test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com singapore cable
+./gitools.sh wpt https://community.centminmod.com singapore 3g
+./gitools.sh wpt https://community.centminmod.com singapore 4g
+./gitools.sh wpt https://community.centminmod.com singapore lte
+./gitools.sh wpt https://community.centminmod.com singapore fios
+```
+
+Sydney test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com sydney cable
+./gitools.sh wpt https://community.centminmod.com sydney 3g
+./gitools.sh wpt https://community.centminmod.com sydney 4g
+./gitools.sh wpt https://community.centminmod.com sydney lte
+./gitools.sh wpt https://community.centminmod.com sydney fios
+```
+
+Dallas test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dallas cable
+./gitools.sh wpt https://community.centminmod.com dallas 3g
+./gitools.sh wpt https://community.centminmod.com dallas 4g
+./gitools.sh wpt https://community.centminmod.com dallas lte
+./gitools.sh wpt https://community.centminmod.com dallas fios
+```
+
+London test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com london cable
+./gitools.sh wpt https://community.centminmod.com london 3g
+./gitools.sh wpt https://community.centminmod.com london 4g
+./gitools.sh wpt https://community.centminmod.com london lte
+./gitools.sh wpt https://community.centminmod.com london fios
 ```
 
 ### WebpageTest.org Waterfall
