@@ -532,10 +532,13 @@ gi_run() {
   domain=$(echo $fulldomain | awk -F '://' '{print $2}')
   if [[ "$origin_check" = 'origin' ]]; then
     origins='origin%3A'
+    origin_label='origin:'
   elif [[ "$origin_check" = 'site' ]]; then
     origins='site%3A'
+    origin_label='site:'
   elif [[ "$origin_check" = 'default' ]]; then
     origins='default'
+    origin_label=''
   else
     origins='default site%3A origin%3A'
   fi
@@ -544,9 +547,9 @@ gi_run() {
       o=""
       metric_opt='&fields=formattedResults%2CloadingExperience(initial_url%2Cmetrics%2Coverall_category)%2CpageStats%2CruleGroups'
     elif [[ "$o" = 'site%3A' ]]; then
-      metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)%2Cscreenshot%2Csnapshots'
+      metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)%2CpageStats%2Cscreenshot%2Csnapshots'
     elif [[ "$o" = 'origin%3A' ]]; then
-      metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)%2Cscreenshot%2Csnapshots'
+      metric_opt='&fields=loadingExperience(initial_url%2Cmetrics%2Coverall_category)%2CpageStats%2Cscreenshot%2Csnapshots'
     fi
     turl_echo="https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=${o}${prefix}%3A%2F%2F${domain}%2F&screenshot=${screenshot_state}&snapshots=${snapshots_state}&strategy=${strategy}${metric_opt}&key=YOUR_GOOGLE_API_KEY"
     turl="https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url=${o}${prefix}%3A%2F%2F${domain}%2F&screenshot=${screenshot_state}&snapshots=${snapshots_state}&strategy=${strategy}${metric_opt}&key=${GOOGLE_API_KEY}"
@@ -594,7 +597,7 @@ gi_run() {
       dcl_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportionc)*100" | bc))
     fi
     if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
-      echo "Test url: ${prefix}://$domain" | tee /tmp/gitool-${strategy}-summary.log
+      echo "Test url: ${origin_label}${prefix}://$domain" | tee /tmp/gitool-${strategy}-summary.log
       echo "FCP median: $fcp_median ($fcp_cat) ms DCL median: $dcl_median ms ($dcl_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fcl_distribution_proportiona_perc}% of page loads have a fast FCP (less than ${fcl_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
