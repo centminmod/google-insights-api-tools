@@ -21,7 +21,7 @@ TIMESTAMP=$(date +"%s")
 # GOOGLE_API_KEY variable within this script, you can set it in
 # gitools.ini config file which resides in same directory as gitools.sh
 GOOGLE_API_KEY=''
-
+PAGESPEED_COMPACT='y'
 CMD_OUTPUT='y'
 JSON_OUTPUT='y'
 SNAPSHOTS='n'
@@ -597,15 +597,27 @@ gi_run() {
       dcl_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $dcl_distribution_proportionc)*100" | bc))
     fi
     if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
-      echo "Test url: ${origin_label}${prefix}://$domain" | tee /tmp/gitool-${strategy}-summary.log
-      echo "FCP median: $fcp_median ($fcp_cat) ms DCL median: $dcl_median ms ($dcl_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${fcl_distribution_proportiona_perc}% of page loads have a fast FCP (less than ${fcl_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${fcl_distribution_proportionb_perc}% of page loads have an average FCP (less than ${fcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${fcl_distribution_proportionc_perc}% of page loads have a slow FCP (over ${fcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${dcl_distribution_proportiona_perc}% of page loads have a fast DCL (less than ${dcl_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${dcl_distribution_proportionb_perc}% of page loads have an average DCL (less than ${dcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${dcl_distribution_proportionc_perc}% of page loads have a slow DCL (over ${dcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+      if [[ "$PAGESPEED_COMPACT" = [yY] ]]; then
+        echo "Test url: ${origin_label}${prefix}://$domain" | tee /tmp/gitool-${strategy}-summary.log
+        echo "FCP: ${fcp_median}ms ($fcp_cat) DCL: ${dcl_median}ms ($dcl_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
+        # echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${fcl_distribution_proportiona_perc}% pages fast FCP (<${fcl_distribution_min}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${fcl_distribution_proportionb_perc}% pages average FCP (<${fcl_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${fcl_distribution_proportionc_perc}% pages slow FCP (>${fcl_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${dcl_distribution_proportiona_perc}% pages fast DCL (<${dcl_distribution_min}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${dcl_distribution_proportionb_perc}% pages average DCL (<${dcl_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${dcl_distribution_proportionc_perc}% pages slow DCL (>${dcl_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+      else
+        echo "Test url: ${origin_label}${prefix}://$domain" | tee /tmp/gitool-${strategy}-summary.log
+        echo "FCP median: $fcp_median ms ($fcp_cat) DCL median: $dcl_median ms ($dcl_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${fcl_distribution_proportiona_perc}% of page loads have a fast FCP (less than ${fcl_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${fcl_distribution_proportionb_perc}% of page loads have an average FCP (less than ${fcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${fcl_distribution_proportionc_perc}% of page loads have a slow FCP (over ${fcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${dcl_distribution_proportiona_perc}% of page loads have a fast DCL (less than ${dcl_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${dcl_distribution_proportionb_perc}% of page loads have an average DCL (less than ${dcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+        echo "${dcl_distribution_proportionc_perc}% of page loads have a slow DCL (over ${dcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+      fi
     fi
     echo
     if [[ "$SLACK" = [yY] ]]; then
