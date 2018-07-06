@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.6'
+VER='1.7'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -147,6 +147,8 @@ slacksend() {
   if [[ "$slack_test" = 'wpt' && "SLACK_LINKBUTTONS_WPT" = [yY] ]]; then
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", $slack_button_msg \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
   elif [[ "$slack_test" = 'psi' ]]; then
+    curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
+  elif [[ "$slack_test" = 'gt' ]]; then
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
   else
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
@@ -503,7 +505,7 @@ gt_run() {
 
   echo
   echo "--------------------------------------------------------------------------------"
-  echo "GTMetrix Test (Dallas Chrome Broadband 5Mbps): ${prefix}://${domain}" | tee /tmp/gitool-gtmetrix-slack-summary.log
+  echo "Dallas Chrome Broadband 5Mbps: ${prefix}://${domain}" | tee /tmp/gitool-gtmetrix-slack-summary.log
   echo "PageSpeed Score: $pagespeed_score YSlow Score: $yslow_score" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
   echo "Report: $report_url" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
   echo "Fully Loaded Time: $fully_loaded_time ms Total Page Size: $page_bytes (bytes) Requests: $page_elements" | tee -a /tmp/gitool-gtmetrix-slack-summary.log
@@ -515,7 +517,18 @@ gt_run() {
   if [[ "$SLACK" = [yY] ]]; then
     if [[ "$pagespeed_score" ]]; then
       send_message="$(cat /tmp/gitool-gtmetrix-slack-summary.log)"
-      slacksend "$send_message" "$DT - GTMetrix" gt
+      if [[ "$pagespeed_score" -ge '90' ]]; then
+        message_color='#23ab11'
+      elif [[ "$pagespeed_score" -ge '80' && "$pagespeed_score" -le '89' ]]; then
+        message_color='#71bb30'
+      elif [[ "$pagespeed_score" -ge '70' && "$pagespeed_score" -le '79' ]]; then
+        message_color='#cbb708'
+      elif [[ "$pagespeed_score" -ge '60' && "$pagespeed_score" -le '69' ]]; then
+        message_color='#e29b20'
+      elif [[ "$pagespeed_score" -le '59' ]]; then
+        message_color='#bb4a12'
+      fi
+      slacksend "$send_message" "$DT - GTMetrix" gt $message_color
     fi
   fi
 
