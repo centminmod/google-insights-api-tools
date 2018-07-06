@@ -22,6 +22,8 @@
   * [WebpageTest.org Slack Channel](#webpagetestorg-slack-channel)
   * [WebpageTest.org Google Lighthouse](#webpagetestorg-google-lighthouse)
   * [WebpageTest.org Command Line Options](#webpagetestorg-command-line-options)
+    * [WebpageTest.org Regions](#wpt-regions)
+    * [WebpageTest.org Speed Profiles](#wpt-speed-profiles)
   * [WebpageTest.org Waterfall](#webpagetestorg-waterfall)
 
 
@@ -1387,6 +1389,9 @@ Dulles test with Google Lighthouse report
 
 ### WebpageTest.org Command Line Options
 
+
+#### WPT Regions
+
 You can also pass the WebpageTets.org test region name on the command line for the following regions
 
 Dulles Galaxy S7 3G test
@@ -1460,6 +1465,8 @@ cd /root/tools/google-insights-api-tools
 
 ./gitools.sh wpt https://community.centminmod.com london
 ```
+
+##### WPT Speed Profiles
 
 You can also pass the speed profile for your tests now - supported options are `cable`, `3g`, `4g`, `lte` and `fios` on the command line for the following regions
 
