@@ -73,6 +73,7 @@ WPT_SLEEPTIME='15'
 
 # slack channel
 SLACK='n'
+SLACK_LINKBUTTONS_WPT='n'
 webhook_url=""       # Incoming Webhooks integration URL
 channel="general"    # Default channel to post messages. '#' is prepended
 username="psi-bot"   # Default username to post messages.
@@ -132,11 +133,18 @@ slacksend() {
   # message="$dt: This is posted to #$channel and comes from a bot named $username."
   message="$1"
   slack_fallback="$2"
+  slack_test="$3"
+  slack_button_msg="$4"
   slack_title="$slack_fallback"
   slack_message_title="$slack_title"
   slack_footer=$(basename "$0")
   # curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"text\": \"$message\", \"icon_emoji\": \":$icon:\"}" $webhook_url
-  curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
+  
+  if [[ "$slack_test" = 'wpt' && "SLACK_LINKBUTTONS_WPT" = [yY] ]]; then
+    curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", $slack_button_msg \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
+  else
+    curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
+  fi
 }
 
 wpt_run() {
@@ -413,7 +421,13 @@ wpt_run() {
         cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
         if [[ "$SLACK" = [yY] ]]; then
           send_message="$(cat $WPT_SUMMARYRESULT_LOG)"
-          slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_USER_RESULTXMLURL\n$WPT_LIGHTHOUSE_URL\n$WPT_HISTORY_URL\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED"
+          if [[ "$SLACK_LINKBUTTONS_WPT" = [yY] ]]; then
+            # slack_button_message="\"actions\": [ { \"type\": \"button\", \"name\": \"wpt-result-page\", \"text\": \"WPT Results\", \"url\": \"$WPT_USER_RESULTURL\", \"style\": \"primary\" }, { \"type\": \"button\", \"name\": \"wpt-xml-results-page\", \"text\": \"WPT XML Results\", \"url\": \"WPT_USER_RESULTXMLURL\", \"style\": \"primary\" }, { \"type\": \"button\", \"name\": \"lighthourse-results\", \"text\": \"Lighthouse Results\", \"url\": \"$WPT_LIGHTHOUSE_URL\", \"style\": \"primary\" }, { \"type\": \"button\", \"name\": \"wpt-history-log\", \"text\": \"WPT History Log\", \"url\": \"$WPT_HISTORY_URL\", \"style\": \"primary\" } ],"
+            slack_button_message="\\\"actions\\\": [ { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-result-page\\\", \\\"text\\\": \\\"WPT Results\\\", \\\"url\\\": \\\"$WPT_USER_RESULTURL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-xml-results-page\\\", \\\"text\\\": \\\"WPT XML Results\\\", \\\"url\\\": \\\"WPT_USER_RESULTXMLURL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"lighthourse-results\\\", \\\"text\\\": \\\"Lighthouse Results\\\", \\\"url\\\": \\\"$WPT_LIGHTHOUSE_URL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-history-log\\\", \\\"text\\\": \\\"WPT History Log\\\", \\\"url\\\": \\\"$WPT_HISTORY_URL\\\", \\\"style\\\": \\\"primary\\\" } ],"
+            slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED" wpt "$slack_button_message"
+          else
+            slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_USER_RESULTXMLURL\n$WPT_LIGHTHOUSE_URL\n$WPT_HISTORY_URL\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED" wpt
+          fi
         fi
         echo "----"
       else
@@ -495,7 +509,7 @@ gt_run() {
   if [[ "$SLACK" = [yY] ]]; then
     if [[ "$pagespeed_score" ]]; then
       send_message="$(cat /tmp/gitool-gtmetrix-slack-summary.log)"
-      slacksend "$send_message" "$DT - GTMetrix"
+      slacksend "$send_message" "$DT - GTMetrix" gt
     fi
   fi
 
@@ -586,7 +600,7 @@ gi_run() {
     if [[ "$SLACK" = [yY] ]]; then
       if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
         send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
-        slacksend "${strategy}\n$send_message" "$DT - Google PageSpeed Insights"
+        slacksend "${strategy}\n$send_message" "$DT - Google PageSpeed Insights" psi
       fi
     fi
     rm -rf /tmp/gitool-${strategy}.log
