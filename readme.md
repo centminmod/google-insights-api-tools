@@ -188,6 +188,10 @@ icon="ghost"         # Default emoji to post messages. Don't wrap it with ':'. S
 
 ![](/images/google-pagespeed-insight-api-gitool-slack-01b.png)
 
+Slack Android App
+
+![](/images/gitools-pagespeed-insights-gtmetrix-slack-format-updated-mobile-01b.jpg)
+
 ### Cronjob Scheduled Runs
 
 You can create a cronjob script to schedule `gitools.sh` runs for mobile domain name origin checks. Useful, if you have enabled [Slack Channel](#slack-channel) integration so can monitor your Google PageSpeed Insight results over time.
