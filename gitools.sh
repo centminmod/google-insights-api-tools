@@ -418,12 +418,27 @@ wpt_run() {
         if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
           # additional lighthouse metrics to parse
           wpt_ttfb=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<TTFB>).*(?=</TTFB>)' | tail -1)
+          wpt_firstpaint=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<firstPaint>).*(?=</firstPaint>)' | tail -1)
+          wpt_fullyloaded=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<fullyLoaded>).*(?=</fullyLoaded>)' | tail -1)
+          wpt_speedindex=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<SpeedIndex>).*(?=</SpeedIndex>)' | tail -1)
+          wpt_domi=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<domInteractive>).*(?=</domInteractive>)' | tail -1)
+          wpt_visualcomplete=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<visualComplete>).*(?=</visualComplete>)' | tail -1)
+          wpt_lighth_fcp=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<lighthouse.Performance.first-contentful-paint>).*(?=</lighthouse.Performance.first-contentful-paint>)' | tail -1)
+          wpt_lighth_fmp=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<lighthouse.Performance.first-meaningful-paint>).*(?=</lighthouse.Performance.first-meaningful-paint>)' | tail -1)
+          wpt_lighth_speedindex=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<lighthouse.Performance.speed-index>).*(?=</lighthouse.Performance.speed-index>)' | tail -1)
+          wpt_lighth_cpuidle=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<lighthouse.Performance.first-cpu-idle>).*(?=</lighthouse.Performance.first-cpu-idle>)' | tail -1)
+          wpt_lighth_inputlatency=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<lighthouse.Performance.estimated-input-latency>).*(?=</lighthouse.Performance.estimated-input-latency>)' | tail -1)
           waterfall_url=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<waterfall>).*(?=</waterfall>)' | grep -v thumb)
           echo "curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
           curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
           echo "$waterfall_url" >> "$WPT_SUMMARYRESULT_LOG"
         else
           wpt_ttfb=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<TTFB>).*(?=</TTFB>)' | tail -1)
+          wpt_firstpaint=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<firstPaint>).*(?=</firstPaint>)' | tail -1)
+          wpt_fullyloaded=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<fullyLoaded>).*(?=</fullyLoaded>)' | tail -1)
+          wpt_speedindex=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<SpeedIndex>).*(?=</SpeedIndex>)' | tail -1)
+          wpt_domi=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<domInteractive>).*(?=</domInteractive>)' | tail -1)
+          wpt_visualcomplete=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<visualComplete>).*(?=</visualComplete>)' | tail -1)
           waterfall_url=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<waterfall>).*(?=</waterfall>)' | grep -v thumb)
           echo "curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
           curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
