@@ -627,7 +627,7 @@ gi_run() {
   origin_check=$2
   prefix=$(echo $fulldomain | awk -F '://' '{print $1}')
   domain=$(echo $fulldomain | awk -F '://' '{print $2}')
-  if [[ "$origin_check" = 'origin' ]]; then
+  if [[ "$origin_check" = 'origin' || "$origin_check" = 'orgin' || "$origin_check" = 'orign' ]]; then
     origins='origin%3A'
     origin_label='origin:'
   elif [[ "$origin_check" = 'site' ]]; then
@@ -636,6 +636,10 @@ gi_run() {
   elif [[ "$origin_check" = 'default' ]]; then
     origins='default'
     origin_label=''
+  elif [[ "$origin_check" = 'mobile'  && -z "$strategy" ]] || [[ "$origin_check" = 'desktop' && -z "$strategy" ]]; then
+    origins='origin%3A'
+    origin_label='origin:'
+    strategy="$origin_check"
   else
     origins='default site%3A origin%3A'
   fi
