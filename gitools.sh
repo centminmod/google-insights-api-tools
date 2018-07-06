@@ -12,6 +12,7 @@
 #############
 VER='1.5'
 DT=$(date +"%d%m%y-%H%M%S")
+TIMESTAMP=$(date +"%s")
 
 
 # GET API Key from https://console.developers.google.com/
@@ -133,8 +134,9 @@ slacksend() {
   slack_fallback="$2"
   slack_title="$slack_fallback"
   slack_message_title="$slack_title"
+  slack_footer=$(basename "$0")
   # curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"text\": \"$message\", \"icon_emoji\": \":$icon:\"}" $webhook_url
-  curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"good\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
+  curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
 }
 
 wpt_run() {
