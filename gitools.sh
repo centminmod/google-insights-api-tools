@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.7'
+VER='1.8'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -149,6 +149,8 @@ slacksend() {
   elif [[ "$slack_test" = 'psi' ]]; then
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
   elif [[ "$slack_test" = 'gt' ]]; then
+    curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
+  elif [[ "$slack_test" = 'wpt' && "SLACK_LINKBUTTONS_WPT" != [yY] ]]; then
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
   else
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
@@ -415,11 +417,13 @@ wpt_run() {
         echo "----"
         if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
           # additional lighthouse metrics to parse
+          wpt_ttfb=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<TTFB>).*(?=</TTFB>)' | tail -1)
           waterfall_url=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<waterfall>).*(?=</waterfall>)' | grep -v thumb)
           echo "curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
           curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
           echo "$waterfall_url" >> "$WPT_SUMMARYRESULT_LOG"
         else
+          wpt_ttfb=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<TTFB>).*(?=</TTFB>)' | tail -1)
           waterfall_url=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<waterfall>).*(?=</waterfall>)' | grep -v thumb)
           echo "curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
           curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
@@ -434,7 +438,72 @@ wpt_run() {
             slack_button_message="\\\"actions\\\": [ { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-result-page\\\", \\\"text\\\": \\\"WPT Results\\\", \\\"url\\\": \\\"$WPT_USER_RESULTURL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-xml-results-page\\\", \\\"text\\\": \\\"WPT XML Results\\\", \\\"url\\\": \\\"WPT_USER_RESULTXMLURL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"lighthourse-results\\\", \\\"text\\\": \\\"Lighthouse Results\\\", \\\"url\\\": \\\"$WPT_LIGHTHOUSE_URL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-history-log\\\", \\\"text\\\": \\\"WPT History Log\\\", \\\"url\\\": \\\"$WPT_HISTORY_URL\\\", \\\"style\\\": \\\"primary\\\" } ],"
             slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED" wpt "$slack_button_message"
           else
-            slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_USER_RESULTXMLURL\n$WPT_LIGHTHOUSE_URL\n$WPT_HISTORY_URL\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED" wpt
+            if [[ "$WPT_SPEED" = 'Cable' ]]; then
+              if [[ "$wpt_ttfb" -le '500' ]]; then
+                message_color='#23ab11'
+              elif [[ "$wpt_ttfb" -ge '501' && "$wpt_ttfb" -le '600' ]]; then
+                message_color='#71bb30'
+              elif [[ "$wpt_ttfb" -ge '601' && "$wpt_ttfb" -le '700' ]]; then
+                message_color='#cbb708'
+              elif [[ "$wpt_ttfb" -ge '701' && "$wpt_ttfb" -le '800' ]]; then
+                message_color='#e29b20'
+              elif [[ "$wpt_ttfb" -ge '801' ]]; then
+                message_color='#bb4a12'
+              fi
+            fi
+            if [[ "$WPT_SPEED" = '3G' ]]; then
+              if [[ "$wpt_ttfb" -le '1324' ]]; then
+                message_color='#23ab11'
+              elif [[ "$wpt_ttfb" -ge '1325' && "$wpt_ttfb" -le '1424' ]]; then
+                message_color='#71bb30'
+              elif [[ "$wpt_ttfb" -ge '1425' && "$wpt_ttfb" -le '1524' ]]; then
+                message_color='#cbb708'
+              elif [[ "$wpt_ttfb" -ge '1525' && "$wpt_ttfb" -le '1624' ]]; then
+                message_color='#e29b20'
+              elif [[ "$wpt_ttfb" -ge '1625' ]]; then
+                message_color='#bb4a12'
+              fi
+            fi
+            if [[ "$WPT_SPEED" = '4G' ]]; then
+              if [[ "$wpt_ttfb" -le '804' ]]; then
+                message_color='#23ab11'
+              elif [[ "$wpt_ttfb" -ge '805' && "$wpt_ttfb" -le '904' ]]; then
+                message_color='#71bb30'
+              elif [[ "$wpt_ttfb" -ge '905' && "$wpt_ttfb" -le '1004' ]]; then
+                message_color='#cbb708'
+              elif [[ "$wpt_ttfb" -ge '1005' && "$wpt_ttfb" -le '1104' ]]; then
+                message_color='#e29b20'
+              elif [[ "$wpt_ttfb" -ge '1105' ]]; then
+                message_color='#bb4a12'
+              fi
+            fi
+            if [[ "$WPT_SPEED" = 'LTE' ]]; then
+              if [[ "$wpt_ttfb" -le '500' ]]; then
+                message_color='#23ab11'
+              elif [[ "$wpt_ttfb" -ge '501' && "$wpt_ttfb" -le '600' ]]; then
+                message_color='#71bb30'
+              elif [[ "$wpt_ttfb" -ge '601' && "$wpt_ttfb" -le '700' ]]; then
+                message_color='#cbb708'
+              elif [[ "$wpt_ttfb" -ge '701' && "$wpt_ttfb" -le '800' ]]; then
+                message_color='#e29b20'
+              elif [[ "$wpt_ttfb" -ge '801' ]]; then
+                message_color='#bb4a12'
+              fi
+            fi
+            if [[ "$WPT_SPEED" = 'FIOS' ]]; then
+              if [[ "$wpt_ttfb" -le '500' ]]; then
+                message_color='#23ab11'
+              elif [[ "$wpt_ttfb" -ge '501' && "$wpt_ttfb" -le '600' ]]; then
+                message_color='#71bb30'
+              elif [[ "$wpt_ttfb" -ge '601' && "$wpt_ttfb" -le '700' ]]; then
+                message_color='#cbb708'
+              elif [[ "$wpt_ttfb" -ge '701' && "$wpt_ttfb" -le '800' ]]; then
+                message_color='#e29b20'
+              elif [[ "$wpt_ttfb" -ge '801' ]]; then
+                message_color='#bb4a12'
+              fi
+            fi
+            slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n$WPT_USER_RESULTURL\n$WPT_USER_RESULTXMLURL\n$WPT_LIGHTHOUSE_URL\n$WPT_HISTORY_URL\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED" wpt $message_color
           fi
         fi
         echo "----"
