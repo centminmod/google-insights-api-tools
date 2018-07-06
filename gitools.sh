@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.5'
+VER='1.6'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -134,7 +134,11 @@ slacksend() {
   message="$1"
   slack_fallback="$2"
   slack_test="$3"
-  slack_button_msg="$4"
+  if [[ "SLACK_LINKBUTTONS_WPT" = [yY] ]]; then
+    slack_button_msg="$4"
+  else
+    message_color="$4"
+  fi
   slack_title="$slack_fallback"
   slack_message_title="$slack_title"
   slack_footer=$(basename "$0")
@@ -142,6 +146,8 @@ slacksend() {
   
   if [[ "$slack_test" = 'wpt' && "SLACK_LINKBUTTONS_WPT" = [yY] ]]; then
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", $slack_button_msg \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
+  elif [[ "$slack_test" = 'psi' ]]; then
+    curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
   else
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
   fi
@@ -562,6 +568,7 @@ gi_run() {
     fi
 
     # echo
+    overall_cat=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.overall_category" | sed -e 's|\"||g')
     fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.median")
     fcp_cat=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.category" | sed -e 's|\"||g')
     dcl_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.DOM_CONTENT_LOADED_EVENT_FIRED_MS.median")
@@ -600,7 +607,14 @@ gi_run() {
     if [[ "$SLACK" = [yY] ]]; then
       if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
         send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
-        slacksend "${strategy}\n$send_message" "$DT - Google PageSpeed Insights" psi
+        if [[ "$overall_cat" = 'FAST' ]]; then
+          message_color='good'
+        elif [[ "$overall_cat" = 'AVERAGE' ]]; then
+          message_color='warning'
+        elif [[ "$overall_cat" = 'SLOW' ]]; then
+          message_color='danger'
+        fi
+        slacksend "${strategy} ($overall_cat)\n$send_message" "$DT - Google PageSpeed Insights" psi "$message_color"
       fi
     fi
     rm -rf /tmp/gitool-${strategy}.log
