@@ -714,6 +714,12 @@ gi_run() {
       if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.urlBlocks')" = 'null' ]]; then
         gpsi_leveragebrowsercaching_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.summary.args | .[] .key' | sed -e 's|\"||g')
         gpsi_leveragebrowsercaching_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.summary.args | .[] .value' | sed -e 's|\"||g')
+      else
+        gpsi_leveragebrowsercaching=y
+        gpsi_leveragebrowsercaching_urls=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.urlBlocks | .[] .urls' |  jq '.[] .result.args | .[0] | .value')
+        gpsi_leveragebrowsercaching_urls=$(echo "$gpsi_leveragebrowsercaching_urls" | grep -v 'Cannot iterate over null')
+        gpsi_leveragebrowsercaching_urls=$(echo "$gpsi_leveragebrowsercaching_urls" | sed -e 's|\"||g')
+        gpsi_leveragebrowsercaching_summary="Leverage browser caching for following cacheable resources\n${gpsi_leveragebrowsercaching_urls}"
       fi
 
       gpsi_mainresourceserverresponsetime_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime')
@@ -723,6 +729,7 @@ gi_run() {
         gpsi_mainresourceserverresponsetime_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.summary.args | .[] .key' | sed -e 's|\"||g')
         gpsi_mainresourceserverresponsetime_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.summary.args | .[] .value' | sed -e 's|\"||g')
       else
+        gpsi_mainresourceserverresponsetime=y
         gpsi_mainresourceserverresponsetime_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.urlBlocks' | jq '.[] .header.args | .[0] .key' | sed -e 's|\"||g')
         gpsi_mainresourceserverresponsetime_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.urlBlocks' | jq '.[] .header.args | .[0] .value' | sed -e 's|\"||g')
         gpsi_mainresourceserverresponsetime_keylink=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.urlBlocks' | jq '.[] .header.args | .[1] .key' | sed -e 's|\"||g')
@@ -760,6 +767,7 @@ gi_run() {
         gpsi_minimizerenderblockingresources_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .key' | sed -e 's|\"||g')
         gpsi_minimizerenderblockingresources_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .value' | sed -e 's|\"||g')
       else
+        gpsi_minimizerenderblockingresources=y
         gpsi_minimizerenderblockingresources_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .key' | sed -e 's|\"||g')
         gpsi_minimizerenderblockingresources_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .value' | sed -e 's|\"||g')
         if [[ "$gpsi_minimizerenderblockingresources_key" = 'NUM_CSS' ]]; then
@@ -827,6 +835,12 @@ gi_run() {
         echo "${dcl_distribution_proportiona_perc}% pages fast DCL (<${dcl_distribution_min}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
         echo "${dcl_distribution_proportionb_perc}% pages average DCL (<${dcl_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
         echo "${dcl_distribution_proportionc_perc}% pages slow DCL (>${dcl_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+        if [[ "$gpsi_minimizerenderblockingresources" = [yY] ]]; then
+          echo -e "\n$gpsi_minimizerenderblockingresources_css_summary" | tee -a /tmp/gitool-${strategy}-summary.log
+        fi
+        if [[ "$gpsi_leveragebrowsercaching" = [yY] ]]; then
+          echo -e "\n$gpsi_leveragebrowsercaching_summary" | tee -a /tmp/gitool-${strategy}-summary.log
+        fi
       else
         echo "Test url: ${origin_label}${prefix}://$domain" | tee /tmp/gitool-${strategy}-summary.log
         echo "FCP median: $fcp_median ms ($fcp_cat) DCL median: $dcl_median ms ($dcl_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
@@ -837,6 +851,12 @@ gi_run() {
         echo "${dcl_distribution_proportiona_perc}% of page loads have a fast DCL (less than ${dcl_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
         echo "${dcl_distribution_proportionb_perc}% of page loads have an average DCL (less than ${dcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
         echo "${dcl_distribution_proportionc_perc}% of page loads have a slow DCL (over ${dcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+        if [[ "$gpsi_minimizerenderblockingresources" = [yY] ]]; then
+          echo -e "\n$gpsi_minimizerenderblockingresources_css_summary" | tee -a /tmp/gitool-${strategy}-summary.log
+        fi
+        if [[ "$gpsi_leveragebrowsercaching" = [yY] ]]; then
+          echo -e "\n$gpsi_leveragebrowsercaching_summary" | tee -a /tmp/gitool-${strategy}-summary.log
+        fi
       fi
     fi
     echo
