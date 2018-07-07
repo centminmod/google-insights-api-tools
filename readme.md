@@ -115,9 +115,25 @@ There are several parameters to pass on command line, desktop/mobile/all determi
 
 Usage:
 
+Google PageSpeed Insights
 ./gitools.sh desktop https://domain.com {default|origin|site}
 ./gitools.sh mobile https://domain.com {default|origin|site}
 ./gitools.sh all https://domain.com {default|origin|site}
+
+GTMetrix
+./gitools.sh gtmetrix https://domain.com
+
+WebpageTest
+
+supported region(s)
+dulles, california, frankfurt, singapore, sydney
+dallas, london, tokyo, hongkong, mumbia, brazil
+
+./gitools.sh wpt https://community.centminmod.com {region} cable
+./gitools.sh wpt https://community.centminmod.com {region} 3g
+./gitools.sh wpt https://community.centminmod.com {region} 4g
+./gitools.sh wpt https://community.centminmod.com {region} lte
+./gitools.sh wpt https://community.centminmod.com {region} fios
 ```
 
 ## Errors
@@ -883,7 +899,7 @@ WPT='y'
 WPT_APIKEY='YOUR_WPT_API_KEY'
 ```
 
-* Currently, tests are done only from Dulles, Dulles Motorola G4 3G, Dulles Galaxy S7, California, Frankfurt, Singapore, Sydney, Dallas & London locations for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 15 seconds delay until results are displayed. If results are still not available, another 15 second delay and recheck is triggered and so on until results are available.
+* Currently, tests are done only from Dulles, Dulles Motorola G4 3G, Dulles Galaxy S7, California, Frankfurt, Singapore, Sydney, Dallas, London, Tokyo, Hong Kong, Mumbia, and Brazil locations for Chrome Cable 5Mbps speed profile and will later be expanded to other profile/locations. Due to delays in processing results, there's a incremental 15 seconds delay until results are displayed. If results are still not available, another 15 second delay and recheck is triggered and so on until results are available.
 * WPT tests are run from a specific tester id for the region listed at https://www.webpagetest.org/getTesters.php. So WPT tests are more comparable between test runs when using the same tester id as usually there are many testers within a specific region. 
 * Currently, for Dulles tester id `TESTER_CABLE='VM3-06'` and for California tester id `TESTER_CABLE='ip-172-31-8-84'` and for Frankfurt tester id `TESTER_CABLE='ip-172-31-28-65'` and for Singapore tester id `TESTER_CABLE='ip-172-31-39-48'` and for Sydney tester id `TESTER_CABLE='ip-172-31-7-201'` and for Dulles Motorola G4 3G tester id `TESTER_CABLE='MotoG4_21'` are used. Dulles region is the main test location so has the most tester server ids (32) ranging from `VM1-01 to VM1-08`, `VM2-01 to VM2-08`, `VM3-01 to VM3-08` and `VM4-01 to VM4-08`.
 
@@ -899,6 +915,10 @@ WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
 WPT_DALLAS='n'
 WPT_LONDON='n'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
 ```
 
 ```
@@ -945,6 +965,10 @@ WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
 WPT_DALLAS='n'
 WPT_LONDON='n'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
 ```
 
 ```
@@ -991,6 +1015,10 @@ WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
 WPT_DALLAS='n'
 WPT_LONDON='n'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
 ```
 
 ```
@@ -1037,6 +1065,10 @@ WPT_SINGAPORE='y'
 WPT_SYDNEY='n'
 WPT_DALLAS='n'
 WPT_LONDON='n'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
 ```
 
 ```
@@ -1083,6 +1115,10 @@ WPT_SINGAPORE='n'
 WPT_SYDNEY='y'
 WPT_DALLAS='n'
 WPT_LONDON='n'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
 ```
 
 ```
@@ -1129,6 +1165,10 @@ WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
 WPT_DALLAS='n'
 WPT_LONDON='n'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
 ```
 
 Very long backlog queue !
@@ -1177,6 +1217,10 @@ WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
 WPT_DALLAS='y'
 WPT_LONDON='n'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
 ```
 
 ```
@@ -1242,6 +1286,10 @@ WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
 WPT_DALLAS='n'
 WPT_LONDON='y'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
 ```
 
 Experiencing a queue backlog but eventually completed
@@ -1470,6 +1518,38 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh wpt https://community.centminmod.com london
 ```
 
+Tokyo test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com tokyo
+```
+
+Hong Kong test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com hongkong
+```
+
+Mumbia test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com mumbia
+```
+
+Brazil test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com brazil
+```
+
 ##### WPT Speed Profiles
 
 You can also pass the speed profile for your tests now - supported options are `cable`, `3g`, `4g`, `lte` and `fios` on the command line for the following regions
@@ -1556,6 +1636,54 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh wpt https://community.centminmod.com london 4g
 ./gitools.sh wpt https://community.centminmod.com london lte
 ./gitools.sh wpt https://community.centminmod.com london fios
+```
+
+Tokyo test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com tokyo cable
+./gitools.sh wpt https://community.centminmod.com tokyo 3g
+./gitools.sh wpt https://community.centminmod.com tokyo 4g
+./gitools.sh wpt https://community.centminmod.com tokyo lte
+./gitools.sh wpt https://community.centminmod.com tokyo fios
+```
+
+Hong Kong test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com hongkong cable
+./gitools.sh wpt https://community.centminmod.com hongkong 3g
+./gitools.sh wpt https://community.centminmod.com hongkong 4g
+./gitools.sh wpt https://community.centminmod.com hongkong lte
+./gitools.sh wpt https://community.centminmod.com hongkong fios
+```
+
+Mumbia test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com mumbia cable
+./gitools.sh wpt https://community.centminmod.com mumbia 3g
+./gitools.sh wpt https://community.centminmod.com mumbia 4g
+./gitools.sh wpt https://community.centminmod.com mumbia lte
+./gitools.sh wpt https://community.centminmod.com mumbia fios
+```
+
+Brazil test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com brazil cable
+./gitools.sh wpt https://community.centminmod.com brazil 3g
+./gitools.sh wpt https://community.centminmod.com brazil 4g
+./gitools.sh wpt https://community.centminmod.com brazil lte
+./gitools.sh wpt https://community.centminmod.com brazil fios
 ```
 
 ### WebpageTest.org Waterfall

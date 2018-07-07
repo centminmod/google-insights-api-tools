@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.8'
+VER='1.9'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -69,6 +69,11 @@ WPT_SINGAPORE='n'
 WPT_SYDNEY='n'
 WPT_DALLAS='n'
 WPT_LONDON='n'
+WPT_TOKYO='n'
+WPT_HONGKONG='n'
+WPT_MUMBIA='n'
+WPT_BRAZIL='n'
+
 # wait time between API run and parsing
 # result log
 WPT_SLEEPTIME='15'
@@ -205,6 +210,14 @@ wpt_run() {
     WPT_REGION_CMD='dallas'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'london' )" = 'london' ]]; then
     WPT_REGION_CMD='london'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'tokyo' )" = 'tokyo' ]]; then
+    WPT_REGION_CMD='tokyo'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'hongkong' )" = 'hongkong' ]]; then
+    WPT_REGION_CMD='hongkong'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'mumbia' )" = 'mumbia' ]]; then
+    WPT_REGION_CMD='mumbia'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'brazil' )" = 'brazil' ]]; then
+    WPT_REGION_CMD='brazil'
   else
     WPT_REGION_CMD="none"
   fi
@@ -282,6 +295,38 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-8-123'
+  elif [[ "$WPT_TOKYO" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="ec2-ap-northeast-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="tokyo.ec2-ap-northeast-1.chrome.${WPT_SPEED_TXT}"
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-33-202'
+  elif [[ "$WPT_HONGKONG" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="HongKong:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="hongkong.HongKong.chrome.${WPT_SPEED_TXT}"
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='HK-webpagetest'
+  elif [[ "$WPT_MUMBIA" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="ap-south-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="mumbia.ap-south-1.chrome.${WPT_SPEED_TXT}"
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-15-217'
+  elif [[ "$WPT_BRAZIL" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="ec2-sa-east-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="brazil.ec2-sa-east-1.chrome.${WPT_SPEED_TXT}"
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-5-120'
   fi
   ########################################################################
   # override options on command line
@@ -358,6 +403,38 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='ip-172-31-8-123'
+  elif [[ "$WPT_REGION_CMD" = 'tokyo' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="ec2-ap-northeast-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="tokyo.ec2-ap-northeast-1.chrome.${WPT_SPEED_TXT}"
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-33-202'
+  elif [[ "$WPT_REGION_CMD" = 'hongkong' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="HongKong:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="hongkong.HongKong.chrome.${WPT_SPEED_TXT}"
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='HK-webpagetest'
+  elif [[ "$WPT_REGION_CMD" = 'mumbia' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="ap-south-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="mumbia.ap-south-1.chrome.${WPT_SPEED_TXT}"
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-15-217'
+  elif [[ "$WPT_REGION_CMD" = 'brazil' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="ec2-sa-east-1:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="brazil.ec2-sa-east-1.chrome.${WPT_SPEED_TXT}"
+   # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='ip-172-31-5-120'
   fi
   if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
     wpt_lighthouse_opt='&lighthouse=1'
@@ -915,9 +992,25 @@ case $1 in
   echo
   echo "Usage:"
   echo
+  echo "Google PageSpeed Insights"
   echo "$0 desktop https://domain.com {default|origin|site}"
   echo "$0 mobile https://domain.com {default|origin|site}"
   echo "$0 all https://domain.com {default|origin|site}"
+  echo
+  echo "GTMetrix"
+  echo "$0 gtmetrix https://domain.com"
+  echo
+  echo "WebpageTest"
+  echo
+  echo "supported region(s)"
+  echo "dulles, california, frankfurt, singapore, sydney"
+  echo "dallas, london, tokyo, hongkong, mumbia, brazil"
+  echo
+  echo "$0 wpt https://community.centminmod.com {region} cable"
+  echo "$0 wpt https://community.centminmod.com {region} 3g"
+  echo "$0 wpt https://community.centminmod.com {region} 4g"
+  echo "$0 wpt https://community.centminmod.com {region} lte"
+  echo "$0 wpt https://community.centminmod.com {region} fios"
   echo
     ;;
 esac
