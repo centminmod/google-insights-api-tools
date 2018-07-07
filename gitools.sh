@@ -22,6 +22,8 @@ TIMESTAMP=$(date +"%s")
 # gitools.ini config file which resides in same directory as gitools.sh
 GOOGLE_API_KEY=''
 PAGESPEED_COMPACT='y'
+# work in progress not ready
+PAGESPEED_SUGGESTION='n'
 CMD_OUTPUT='y'
 JSON_OUTPUT='y'
 SNAPSHOTS='n'
@@ -671,7 +673,7 @@ gi_run() {
       exit
     fi
 
-    if [[ "$origin_check" = 'default' ]]; then
+    if [[ "$PAGESPEED_SUGGESTION" = [yY] && "$origin_check" = 'default' ]]; then
       gpsi_speed_score=$(cat /tmp/gitool-${strategy}.log | jq '.ruleGroups.SPEED.score')
       gpsi_speed_score_label="Score: $gpsi_speed_score"
       gpsi_numberresources=$(cat /tmp/gitool-${strategy}.log | jq '.pageStats | .numberResources')
@@ -768,11 +770,13 @@ gi_run() {
         gpsi_minimizerenderblockingresources_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .value' | sed -e 's|\"||g')
       else
         gpsi_minimizerenderblockingresources=y
-        gpsi_minimizerenderblockingresources_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .key' | sed -e 's|\"||g')
-        gpsi_minimizerenderblockingresources_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .value' | sed -e 's|\"||g')
-        if [[ "$gpsi_minimizerenderblockingresources_key" = 'NUM_CSS' ]]; then
+        gpsi_minimizerenderblockingresources_keyone=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[0] .key' | sed -e 's|\"||g')
+        gpsi_minimizerenderblockingresources_valueone=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[0] .value' | sed -e 's|\"||g')
+        gpsi_minimizerenderblockingresources_keytwo=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[1] .key' | sed -e 's|\"||g')
+        gpsi_minimizerenderblockingresources_valuetwo=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[1] .value' | sed -e 's|\"||g')
+        if [[ "$gpsi_minimizerenderblockingresources_keyone" = 'NUM_CSS' ]]; then
           # number of render blocking css files found
-          gpsi_minimizerenderblockingresources_css="$gpsi_minimizerenderblockingresources_value"
+          gpsi_minimizerenderblockingresources_css="$gpsi_minimizerenderblockingresources_valueone"
           gpsi_minimizerenderblockingresources_css_urls=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.urlBlocks | .[] .urls' |  jq '.[] .result.args' | jq  '.[] .value')
           gpsi_minimizerenderblockingresources_css_urls=$(echo "$gpsi_minimizerenderblockingresources_css_urls" | grep -v 'Cannot iterate over null')
           gpsi_minimizerenderblockingresources_css_urls=$(echo "$gpsi_minimizerenderblockingresources_css_urls" | sed -e 's|\"||g')
@@ -795,6 +799,9 @@ gi_run() {
         gpsi_prioritizevisiblecontent_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.summary.args | .[] .key' | sed -e 's|\"||g')
         gpsi_prioritizevisiblecontent_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.summary.args | .[] .value' | sed -e 's|\"||g')
       fi
+    elif [[ "$PAGESPEED_SUGGESTION" != [yY] && "$origin_check" = 'default' ]]; then
+      gpsi_speed_score=$(cat /tmp/gitool-${strategy}.log | jq '.ruleGroups.SPEED.score')
+      gpsi_speed_score_label="Score: $gpsi_speed_score"      
     else
       gpsi_speed_score_label=""
     fi
