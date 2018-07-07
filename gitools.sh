@@ -51,6 +51,8 @@ GTBROWSER='3'
 
 # Webpagetest.org API Tests
 WPT_LABEL=$(date +"%d%m%y-%H%M%S")
+# json or xml
+WPT_FORMAT='json'
 WPT_DIR='/home/wptresults'
 WPT_RESULT_TESTSTATUS_LOG='/tmp/wpt-teststatus-check.log'
 WPT_SHOW_HISTORY='y'
@@ -139,6 +141,7 @@ slacksend() {
   dt=$DT
   # message="$dt: This is posted to #$channel and comes from a bot named $username."
   message="$1"
+  message_size=$(echo $message | wc -c)
   slack_fallback="$2"
   slack_test="$3"
   if [[ "SLACK_LINKBUTTONS_WPT" = [yY] ]]; then
@@ -526,7 +529,7 @@ wpt_run() {
 
         cat "$WPT_SUMMARYRESULT_LOG" | tee -a "$WPT_RESULT_LOG"
         if [[ "$SLACK" = [yY] ]]; then
-          send_message="$(cat $WPT_SUMMARYRESULT_LOG)"
+          send_message="$(cat $WPT_SUMMARYRESULT_LOG | grep -v 'chromeUserTiming')"
           if [[ "$SLACK_LINKBUTTONS_WPT" = [yY] ]]; then
             # slack_button_message="\"actions\": [ { \"type\": \"button\", \"name\": \"wpt-result-page\", \"text\": \"WPT Results\", \"url\": \"$WPT_USER_RESULTURL\", \"style\": \"primary\" }, { \"type\": \"button\", \"name\": \"wpt-xml-results-page\", \"text\": \"WPT XML Results\", \"url\": \"WPT_USER_RESULTXMLURL\", \"style\": \"primary\" }, { \"type\": \"button\", \"name\": \"lighthourse-results\", \"text\": \"Lighthouse Results\", \"url\": \"$WPT_LIGHTHOUSE_URL\", \"style\": \"primary\" }, { \"type\": \"button\", \"name\": \"wpt-history-log\", \"text\": \"WPT History Log\", \"url\": \"$WPT_HISTORY_URL\", \"style\": \"primary\" } ],"
             slack_button_message="\\\"actions\\\": [ { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-result-page\\\", \\\"text\\\": \\\"WPT Results\\\", \\\"url\\\": \\\"$WPT_USER_RESULTURL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-xml-results-page\\\", \\\"text\\\": \\\"WPT XML Results\\\", \\\"url\\\": \\\"WPT_USER_RESULTXMLURL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"lighthourse-results\\\", \\\"text\\\": \\\"Lighthouse Results\\\", \\\"url\\\": \\\"$WPT_LIGHTHOUSE_URL\\\", \\\"style\\\": \\\"primary\\\" }, { \\\"type\\\": \\\"button\\\", \\\"name\\\": \\\"wpt-history-log\\\", \\\"text\\\": \\\"WPT History Log\\\", \\\"url\\\": \\\"$WPT_HISTORY_URL\\\", \\\"style\\\": \\\"primary\\\" } ],"
