@@ -673,6 +673,7 @@ gi_run() {
 
     if [[ "$origin_check" = 'default' ]]; then
       gpsi_speed_score=$(cat /tmp/gitool-${strategy}.log | jq '.ruleGroups.SPEED.score')
+      gpsi_speed_score_label="Score: $gpsi_speed_score"
       gpsi_numberresources=$(cat /tmp/gitool-${strategy}.log | jq '.pageStats | .numberResources')
       gpsi_numberhosts=$(cat /tmp/gitool-${strategy}.log | jq '.pageStats | .numberHosts')
       gpsi_totalrequestbytes=$(cat /tmp/gitool-${strategy}.log | jq '.pageStats | .totalRequestBytes')
@@ -690,26 +691,34 @@ gi_run() {
 
       # filtered json arrays
       gpsi_results_formatted_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults')
+      
       gpsi_avoidlandingpageredirects_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .AvoidLandingPageRedirects')
       gpsi_avoidlandingpageredirects_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .AvoidLandingPageRedirects.localizedRuleName' | sed -e 's|\"||g')
       gpsi_avoidlandingpageredirects_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .AvoidLandingPageRedirects.ruleImpact' | sed -e 's|\"||g')
-      gpsi_avoidlandingpageredirects_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .AvoidLandingPageRedirects.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_avoidlandingpageredirects_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .AvoidLandingPageRedirects.summary.args | .[] .value' | sed -e 's|\"||g')
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .AvoidLandingPageRedirects.urlBlocks')" = 'null' ]]; then
+        gpsi_avoidlandingpageredirects_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .AvoidLandingPageRedirects.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_avoidlandingpageredirects_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .AvoidLandingPageRedirects.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
+      
       gpsi_enablegzipcompression_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .EnableGzipCompression')
       gpsi_enablegzipcompression_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .EnableGzipCompression.localizedRuleName' | sed -e 's|\"||g')
       gpsi_enablegzipcompression_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .EnableGzipCompression.ruleImpact' | sed -e 's|\"||g')
-      gpsi_enablegzipcompression_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .EnableGzipCompression.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_enablegzipcompression_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .EnableGzipCompression.summary.args | .[] .value' | sed -e 's|\"||g')
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .EnableGzipCompression.urlBlocks')" = 'null' ]]; then
+        gpsi_enablegzipcompression_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .EnableGzipCompression.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_enablegzipcompression_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .EnableGzipCompression.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
+      
       gpsi_leveragebrowsercaching_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching')
       gpsi_leveragebrowsercaching_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.localizedRuleName' | sed -e 's|\"||g')
       gpsi_leveragebrowsercaching_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.ruleImpact' | sed -e 's|\"||g')
-      gpsi_leveragebrowsercaching_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_leveragebrowsercaching_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.summary.args | .[] .value' | sed -e 's|\"||g')
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.urlBlocks')" = 'null' ]]; then
+        gpsi_leveragebrowsercaching_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_leveragebrowsercaching_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .LeverageBrowserCaching.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
 
       gpsi_mainresourceserverresponsetime_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime')
       gpsi_mainresourceserverresponsetime_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.localizedRuleName' | sed -e 's|\"||g')
       gpsi_mainresourceserverresponsetime_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.ruleImpact' | sed -e 's|\"||g')
-
       if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.urlBlocks')" = 'null' ]]; then
         gpsi_mainresourceserverresponsetime_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.summary.args | .[] .key' | sed -e 's|\"||g')
         gpsi_mainresourceserverresponsetime_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MainResourceServerResponseTime.summary.args | .[] .value' | sed -e 's|\"||g')
@@ -723,34 +732,52 @@ gi_run() {
       gpsi_minifycss_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyCss')
       gpsi_minifycss_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyCss.localizedRuleName' | sed -e 's|\"||g')
       gpsi_minifycss_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyCss.ruleImpact' | sed -e 's|\"||g')
-      gpsi_minifycss_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyCss.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_minifycss_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyCss.summary.args | .[] .value' | sed -e 's|\"||g')
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyCss.urlBlocks')" = 'null' ]]; then
+        gpsi_minifycss_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyCss.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_minifycss_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyCss.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
+
       gpsi_minifyhtml_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyHTML')
       gpsi_minifyhtml_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyHTML.localizedRuleName' | sed -e 's|\"||g')
       gpsi_minifyhtml_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyHTML.ruleImpact' | sed -e 's|\"||g')
-      gpsi_minifyhtml_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyHTML.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_minifyhtml_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyHTML.summary.args | .[] .value' | sed -e 's|\"||g')
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyHTML.urlBlocks')" = 'null' ]]; then
+        gpsi_minifyhtml_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyHTML.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_minifyhtml_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyHTML.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
+
       gpsi_minifyjavascript_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyJavaScript')
       gpsi_minifyjavascript_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyJavaScript.localizedRuleName' | sed -e 's|\"||g')
       gpsi_minifyjavascript_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyJavaScript.ruleImpact' | sed -e 's|\"||g')
-      gpsi_minifyjavascript_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyJavaScript.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_minifyjavascript_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyJavaScript.summary.args | .[] .value' | sed -e 's|\"||g')
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyJavaScript.urlBlocks')" = 'null' ]]; then
+        gpsi_minifyjavascript_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyJavaScript.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_minifyjavascript_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinifyJavaScript.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
+
       gpsi_minimizerenderblockingresources_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources')
       gpsi_minimizerenderblockingresources_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.localizedRuleName' | sed -e 's|\"||g')
       gpsi_minimizerenderblockingresources_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.ruleImpact' | sed -e 's|\"||g')
-      gpsi_minimizerenderblockingresources_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_minimizerenderblockingresources_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .value' | sed -e 's|\"||g')
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.urlBlocks')" = 'null' ]]; then
+        gpsi_minimizerenderblockingresources_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_minimizerenderblockingresources_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
+
       gpsi_optimizeimages_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages')
       gpsi_optimizeimages_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages.localizedRuleName' | sed -e 's|\"||g')
       gpsi_optimizeimages_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages.ruleImpact' | sed -e 's|\"||g')
-      gpsi_optimizeimages_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_optimizeimages_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages.summary.args | .[] .value' | sed -e 's|\"||g')
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages.urlBlocks')" = 'null' ]]; then
+        gpsi_optimizeimages_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_optimizeimages_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
+
       gpsi_prioritizevisiblecontent_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent')
       gpsi_prioritizevisiblecontent_localname=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.localizedRuleName' | sed -e 's|\"||g')
       gpsi_prioritizevisiblecontent_ruleimpact=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.ruleImpact' | sed -e 's|\"||g')
-      gpsi_prioritizevisiblecontent_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.summary.args | .[] .key' | sed -e 's|\"||g')
-      gpsi_prioritizevisiblecontent_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.summary.args | .[] .value' | sed -e 's|\"||g')
-
+      if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.urlBlocks')" = 'null' ]]; then
+        gpsi_prioritizevisiblecontent_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_prioritizevisiblecontent_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .PrioritizeVisibleContent.summary.args | .[] .value' | sed -e 's|\"||g')
+      fi
+    else
+      gpsi_speed_score_label=""
     fi
     overall_cat=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.overall_category" | sed -e 's|\"||g')
     fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.median")
@@ -779,7 +806,8 @@ gi_run() {
     fi
     if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
       if [[ "$PAGESPEED_COMPACT" = [yY] ]]; then
-        echo "Test url: ${origin_label}${prefix}://$domain" | tee /tmp/gitool-${strategy}-summary.log
+        echo "${strategy} ($overall_cat) $gpsi_speed_score_label" | tee /tmp/gitool-${strategy}-summary.log
+        echo "Test url: ${origin_label}${prefix}://$domain" | tee -a /tmp/gitool-${strategy}-summary.log
         echo "FCP: ${fcp_median}ms ($fcp_cat) DCL: ${dcl_median}ms ($dcl_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
         # echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
         echo "${fcl_distribution_proportiona_perc}% pages fast FCP (<${fcl_distribution_min}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
@@ -811,7 +839,7 @@ gi_run() {
         elif [[ "$overall_cat" = 'SLOW' ]]; then
           message_color='danger'
         fi
-        slacksend "${strategy} ($overall_cat)\n$send_message" "$DT - Google PageSpeed Insights" psi "$message_color"
+        slacksend "$send_message" "$DT - Google PageSpeed Insights" psi "$message_color"
       fi
     fi
     rm -rf /tmp/gitool-${strategy}.log
