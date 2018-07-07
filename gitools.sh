@@ -759,6 +759,17 @@ gi_run() {
       if [[ "$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.urlBlocks')" = 'null' ]]; then
         gpsi_minimizerenderblockingresources_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .key' | sed -e 's|\"||g')
         gpsi_minimizerenderblockingresources_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .value' | sed -e 's|\"||g')
+      else
+        gpsi_minimizerenderblockingresources_key=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .key' | sed -e 's|\"||g')
+        gpsi_minimizerenderblockingresources_value=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.summary.args | .[] .value' | sed -e 's|\"||g')
+        if [[ "$gpsi_minimizerenderblockingresources_key" = 'NUM_CSS' ]]; then
+          # number of render blocking css files found
+          gpsi_minimizerenderblockingresources_css="$gpsi_minimizerenderblockingresources_value"
+          gpsi_minimizerenderblockingresources_css_urls=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .MinimizeRenderBlockingResources.urlBlocks | .[] .urls' |  jq '.[] .result.args' | jq  '.[] .value')
+          gpsi_minimizerenderblockingresources_css_urls=$(echo "$gpsi_minimizerenderblockingresources_css_urls" | grep -v 'Cannot iterate over null')
+          gpsi_minimizerenderblockingresources_css_urls=$(echo "$gpsi_minimizerenderblockingresources_css_urls" | sed -e 's|\"||g')
+          gpsi_minimizerenderblockingresources_css_summary="page has $gpsi_minimizerenderblockingresources_css blocking CSS resources\n${gpsi_minimizerenderblockingresources_css_urls}"
+        fi
       fi
 
       gpsi_optimizeimages_json=$(cat /tmp/gitool-${strategy}.log | jq '.formattedResults.ruleResults | .OptimizeImages')
