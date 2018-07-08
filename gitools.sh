@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='1.9'
+VER='2.0'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -55,6 +55,8 @@ WPT_LABEL=$(date +"%d%m%y-%H%M%S")
 WPT_FORMAT='json'
 WPT_DIR='/home/wptresults'
 WPT_RESULT_TESTSTATUS_LOG='/tmp/wpt-teststatus-check.log'
+# WPT_MODE median or average results
+WPT_MODE='median'
 WPT_SHOW_HISTORY='y'
 WPT_IGNORE_SSL='y'
 WPT_RUNS='1'
@@ -511,8 +513,8 @@ wpt_run() {
           wpt_lighth_cpuidle=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<lighthouse.Performance.first-cpu-idle>).*(?=</lighthouse.Performance.first-cpu-idle>)' | tail -1)
           wpt_lighth_inputlatency=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<lighthouse.Performance.estimated-input-latency>).*(?=</lighthouse.Performance.estimated-input-latency>)' | tail -1)
           waterfall_url=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<waterfall>).*(?=</waterfall>)' | grep -v thumb)
-          echo "curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
-          curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|<lighthouse.Performance.|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
+          echo "curl -4s "$WPT_USER_RESULTXMLURL" | sed -n \"/<$WPT_MODE>/,/<\/$WPT_MODE>/p\" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 -m26 -m27 -m28 -m29 -m30 -m31 -m32 -m33 -m34 -m35 'loadTime|TTFB|<requests>|render|<fullyLoaded>|<domElements>|<firstPaint>|<domInteractive>|<domContentLoadedEventStart>|<domContentLoadedEventEnd>|<SpeedIndex>|<visualComplete>|<requestsFull>|<requestsDoc>|<bytesInDoc>|<bytesIn>|<score_cdn>|<score_gzip>|<score_compress>|<score_keep-alive>|<score_cache>|<lighthouse.Performance.first|<lighthouse.Performance.estimated|<lighthouse.Performance.speed|<lighthouse.BestPractices>|<lighthouse.Accessibility>|<lighthouse.ProgressiveWebApp>|<lighthouse.SEO>|<lighthouse.Performance>|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete' | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' | sort" >> "$WPT_RESULT_LOG"
+          curl -4s "$WPT_USER_RESULTXMLURL" | sed -n "/<$WPT_MODE>/,/<\/$WPT_MODE>/p" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 -m26 -m27 -m28 -m29 -m30 -m31 -m32 -m33 -m34 -m35 'loadTime|TTFB|<requests>|render|<fullyLoaded>|<domElements>|<firstPaint>|<domInteractive>|<domContentLoadedEventStart>|<domContentLoadedEventEnd>|<SpeedIndex>|<visualComplete>|<requestsFull>|<requestsDoc>|<bytesInDoc>|<bytesIn>|<score_cdn>|<score_gzip>|<score_compress>|<score_keep-alive>|<score_cache>|<lighthouse.Performance.first|<lighthouse.Performance.estimated|<lighthouse.Performance.speed|<lighthouse.BestPractices>|<lighthouse.Accessibility>|<lighthouse.ProgressiveWebApp>|<lighthouse.SEO>|<lighthouse.Performance>|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete' | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' | sort > "$WPT_SUMMARYRESULT_LOG"
           echo "$waterfall_url" >> "$WPT_SUMMARYRESULT_LOG"
         else
           wpt_ttfb=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<TTFB>).*(?=</TTFB>)' | tail -1)
@@ -522,8 +524,8 @@ wpt_run() {
           wpt_domi=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<domInteractive>).*(?=</domInteractive>)' | tail -1)
           wpt_visualcomplete=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<visualComplete>).*(?=</visualComplete>)' | tail -1)
           waterfall_url=$(curl -4s "$WPT_USER_RESULTXMLURL" | grep -oP '(?<=<waterfall>).*(?=</waterfall>)' | grep -v thumb)
-          echo "curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |'" >> "$WPT_RESULT_LOG"
-          curl -4s "$WPT_USER_RESULTXMLURL" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 'loadTime|TTFB|requests>|render|fullyLoaded>|domElements|firstPaint>|domInteractive|SpeedIndex|visualComplete|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete'  | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' > "$WPT_SUMMARYRESULT_LOG"
+          echo "curl -4s "$WPT_USER_RESULTXMLURL" | sed -n \"/<$WPT_MODE>/,/<\/$WPT_MODE>/p\" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 -m26 -m27 -m28 -m29 -m30 'loadTime|TTFB|<requests>|render|<fullyLoaded>|<domElements>|<firstPaint>|firstMeaningfulPaint>|firstContentfulPaint>|<domInteractive>|<domContentLoadedEventStart>|<domContentLoadedEventEnd>|<SpeedIndex>|<visualComplete>|<requestsFull>|<requestsDoc>|<bytesInDoc>|<bytesIn>|<score_cdn>|<score_gzip>|<score_compress>|<score_keep-alive>|<score_cache>|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete' | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' | sort" >> "$WPT_RESULT_LOG"
+          curl -4s "$WPT_USER_RESULTXMLURL" | sed -n "/<$WPT_MODE>/,/<\/$WPT_MODE>/p" | egrep -m1 -m2 -m3 -m4 -m5 -m6 -m7 -m8 -m9 -m10 -m11 -m12 -m13 -m14 -m15 -m16 -m17 -m18 -m19 -m20 -m21 -m22 -m23 -m24 -m25 -m26 -m27 -m28 -m29 -m30 'loadTime|TTFB|<requests>|render|<fullyLoaded>|<domElements>|<firstPaint>|firstMeaningfulPaint>|firstContentfulPaint>|<domInteractive>|<domContentLoadedEventStart>|<domContentLoadedEventEnd>|<SpeedIndex>|<visualComplete>|<requestsFull>|<requestsDoc>|<bytesInDoc>|<bytesIn>|<score_cdn>|<score_gzip>|<score_compress>|<score_keep-alive>|<score_cache>|chromeUserTiming.firstContentfulPaint|chromeUserTiming.firstMeaningfulPaint|chromeUserTiming.domComplete' | sed -e 's|<||' -e 's|>| |g' -e 's|<\/.*| |' | sort > "$WPT_SUMMARYRESULT_LOG"
           echo "$waterfall_url" >> "$WPT_SUMMARYRESULT_LOG"
         fi
 
