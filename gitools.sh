@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='2.0'
+VER='2.1'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -184,6 +184,9 @@ wpt_run() {
   elif [[ "$WPT_SPEED" = '3g' ]]; then
     WPT_SPEED='3G'
     WPT_SPEED_TXT='3g'
+  elif [[ "$WPT_SPEED" = '3g-fast' || "$WPT_SPEED" = '3gfast' ]]; then
+    WPT_SPEED='3GFast'
+    WPT_SPEED_TXT='3gfast'
   elif [[ "$WPT_SPEED" = '4g' ]]; then
     WPT_SPEED='4G'
     WPT_SPEED_TXT='4g'
@@ -1014,6 +1017,7 @@ case $1 in
   echo
   echo "$0 wpt https://community.centminmod.com {region} cable"
   echo "$0 wpt https://community.centminmod.com {region} 3g"
+  echo "$0 wpt https://community.centminmod.com {region} 3gfast"
   echo "$0 wpt https://community.centminmod.com {region} 4g"
   echo "$0 wpt https://community.centminmod.com {region} lte"
   echo "$0 wpt https://community.centminmod.com {region} fios"
