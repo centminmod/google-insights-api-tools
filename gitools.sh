@@ -606,7 +606,7 @@ wpt_run() {
               fi
             fi
             # slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n<$WPT_USER_RESULTURL|WPT Result Page>\n<$WPT_USER_RESULTXMLURL|WPT XML Result>\n<$WPT_LIGHTHOUSE_URL|Lighthouse Result Page>\n<$WPT_HISTORY_URL|WPT History Log>\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED" wpt $message_color
-            slacksend "Webpagetest.org Test: $WPT_LOCATION\n$WPT_URL\n<$WPT_USER_RESULTURL|WPT Result Page>\t<$WPT_USER_RESULTXMLURL|WPT XML Result>\n<$WPT_HISTORY_URL|WPT History Log>\t<$WPT_LIGHTHOUSE_URL|Lighthouse Result Page>\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED" wpt $message_color
+            slacksend "Webpagetest: $WPT_LOCATION_TXT\n$WPT_URL\n<$WPT_USER_RESULTURL|WPT Result Page>\t<$WPT_USER_RESULTXMLURL|WPT XML Result>\n<$WPT_HISTORY_URL|WPT History Log>\t<$WPT_LIGHTHOUSE_URL|Lighthouse Result Page>\n$send_message" "$DT - $WPT_LOCATION $WPT_SPEED" wpt $message_color
           fi
         fi
         echo "----"
