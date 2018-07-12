@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='2.1'
+VER='2.2'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -563,6 +563,19 @@ wpt_run() {
               elif [[ "$wpt_ttfb" -ge '1525' && "$wpt_ttfb" -le '1624' ]]; then
                 message_color='#e29b20'
               elif [[ "$wpt_ttfb" -ge '1625' ]]; then
+                message_color='#bb4a12'
+              fi
+            fi
+            if [[ "$WPT_SPEED" = '3GFast' ]]; then
+              if [[ "$wpt_ttfb" -le '704' ]]; then
+                message_color='#23ab11'
+              elif [[ "$wpt_ttfb" -ge '705' && "$wpt_ttfb" -le '804' ]]; then
+                message_color='#71bb30'
+              elif [[ "$wpt_ttfb" -ge '805' && "$wpt_ttfb" -le '904' ]]; then
+                message_color='#cbb708'
+              elif [[ "$wpt_ttfb" -ge '905' && "$wpt_ttfb" -le '1004' ]]; then
+                message_color='#e29b20'
+              elif [[ "$wpt_ttfb" -ge '1005' ]]; then
                 message_color='#bb4a12'
               fi
             fi
