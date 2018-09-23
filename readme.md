@@ -232,6 +232,9 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh wpt https://centminmod.com sydney cable
 ./gitools.sh wpt https://centminmod.com dallas cable
 ./gitools.sh wpt https://centminmod.com london cable
+./gitools.sh wpt https://centminmod.com tokyo cable
+./gitools.sh wpt https://centminmod.com mumbia cable
+./gitools.sh wpt https://centminmod.com brazil cable
 ./gitools.sh wpt https://community.centminmod.com dulles cable
 ./gitools.sh wpt https://community.centminmod.com california cable
 ./gitools.sh wpt https://community.centminmod.com frankfurt cable
@@ -239,6 +242,9 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh wpt https://community.centminmod.com sydney cable
 ./gitools.sh wpt https://community.centminmod.com dallas cable
 ./gitools.sh wpt https://community.centminmod.com london cable
+./gitools.sh wpt https://community.centminmod.com tokyo cable
+./gitools.sh wpt https://community.centminmod.com mumbia cable
+./gitools.sh wpt https://community.centminmod.com brazil cable
 
 ./gitools.sh wpt https://centminmod.com dulles 3g
 ./gitools.sh wpt https://centminmod.com california 3g
