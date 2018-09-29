@@ -10,7 +10,7 @@
 #########################################################
 # variables
 #############
-VER='2.2'
+VER='2.3'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -286,7 +286,7 @@ wpt_run() {
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
-    TESTER_CABLE='ip-172-31-7-201'
+    TESTER_CABLE='ip-172-31-34-123'
   elif [[ "$WPT_DALLAS" = [yY] ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION="Texas2:Chrome.${WPT_SPEED}"
@@ -326,7 +326,7 @@ wpt_run() {
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
-    TESTER_CABLE='ip-172-31-15-217'
+    TESTER_CABLE='ip-172-31-15-248'
   elif [[ "$WPT_BRAZIL" = [yY] ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION="ec2-sa-east-1:Chrome.${WPT_SPEED}"
@@ -334,7 +334,7 @@ wpt_run() {
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
-    TESTER_CABLE='ip-172-31-5-120'
+    TESTER_CABLE='ip-172-31-30-204'
   fi
   ########################################################################
   # override options on command line
@@ -394,7 +394,7 @@ wpt_run() {
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
-    TESTER_CABLE='ip-172-31-7-201'
+    TESTER_CABLE='ip-172-31-34-123'
   elif [[ "$WPT_REGION_CMD" = 'dallas' ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION="Texas2:Chrome.${WPT_SPEED}"
@@ -434,7 +434,7 @@ wpt_run() {
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
-    TESTER_CABLE='ip-172-31-15-217'
+    TESTER_CABLE='ip-172-31-15-248'
   elif [[ "$WPT_REGION_CMD" = 'brazil' ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION="ec2-sa-east-1:Chrome.${WPT_SPEED}"
@@ -442,7 +442,7 @@ wpt_run() {
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
-    TESTER_CABLE='ip-172-31-5-120'
+    TESTER_CABLE='ip-172-31-30-204'
   fi
   if [[ "$WPT_LIGHTHOUSE" = [yY] ]]; then
     wpt_lighthouse_opt='&lighthouse=1'
