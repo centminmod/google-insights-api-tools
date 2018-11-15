@@ -746,9 +746,14 @@ gi_run_five() {
     curl -4s $turl > /tmp/gitool-${strategy}.log
   fi
   err=$?
+  # check for Internal 500 Errors
+  BACKEND_ERRORCODE=$(cat /tmp/gitool-${strategy}.log | jq '.error.code')
+  if [[ "$BACKEND_ERRORCODE" != 'null' ]]; then
+    err=1   
+  fi
   if [[ "$err" -ne '0' || "$(wc -l < /tmp/gitool-${strategy}.log)" -lt '2' ]]; then
     echo
-    echo "error: aborting..."
+    echo "$BACKEND_ERRORCODE error: aborting..."
     exit
   fi
   overall_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.overall_category")
