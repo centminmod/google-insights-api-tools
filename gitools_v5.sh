@@ -776,9 +776,21 @@ gi_run_five() {
     fidelay_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fidelay_distribution_proportionb)*100" | bc))
     fidelay_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fidelay_distribution_proportionc)*100" | bc))
   fi
+  # lighthouse metrics
+  LH_WEIGHTS=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.categories.performance.auditRefs[] | "\(.id) \(.weight)"' | sort -rk2 | head -n5 | column -t)
+  LH_SCORE=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.categories.performance.score')
+  LH_SCOREPERC=$(printf "%.0f\n" $(echo "$(printf "%.3f\n" $LH_SCORE)*100" | bc))
+
+  if [[ "$LH_SCOREPERC" -ge '90' ]]; then
+    psi_speed_score='fast'
+  elif [[ "$LH_SCOREPERC" -ge '50' && "$LH_SCOREPERC" -le '89' ]]; then
+    psi_speed_score='average'
+  elif [[ "$LH_SCOREPERC" -le '49' ]]; then
+    psi_speed_score='slow'
+  fi
   if [[ "$fcp_median" != 'null' || "$fidelay_median" != 'null' ]]; then
     if [[ "$PAGESPEED_COMPACT" = [yY] ]]; then
-      echo "${strategy} ($overall_cat)" | tee /tmp/gitool-${strategy}-summary.log
+      echo "${strategy} CrUX Rating: ${overall_cat}" | tee /tmp/gitool-${strategy}-summary.log
       echo "Test url: ${prefix}://$domain" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "FCP: ${fcp_median}ms ($fcp_cat) FID: ${fidelay_median}ms ($fidelay_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
       # echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
@@ -800,15 +812,44 @@ gi_run_five() {
       echo "${fidelay_distribution_proportionc_perc}% of page loads have a slow FID (over ${fidelay_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
     fi
   fi
+
+  echo "" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "PageSpeed Insights v5 Score: $LH_SCOREPERC ($psi_speed_score)" | tee -a /tmp/gitool-${strategy}-summary.log
+  if [[ "$PAGESPEED_COMPACT" != [yY] ]]; then
+    echo "PageSpeed Insights v5 Score Weighting" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "$LH_WEIGHTS" | tee -a /tmp/gitool-${strategy}-summary.log
+  fi
+
+  # LH_FCP
+  LH_FCP=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstContentfulPaint')
+  # LH_FMP
+  LH_FMP=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstMeaningfulPaint')
+  # LH_SI
+  LH_SI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .speedIndex')
+  # LH_FCI
+  LH_FCI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstCPUIdle')
+  # LH_TTI
+  LH_TTI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .interactive')
+  # LH_FID
+  LH_FID=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .estimatedInputLatency')
+
+  echo "First-Contentful-Paint: $LH_FCP" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "First-Meaningful-Paint: $LH_FMP" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Speed-Index: $LH_SI" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "First-CPU-Idle: $LH_FCI" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Time-to-Interactive: $LH_TTI" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Estimated-Input-Latency: $LH_FID" | tee -a /tmp/gitool-${strategy}-summary.log
+
   echo
   if [[ "$SLACK" = [yY] ]]; then
     if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
       send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
-      if [[ "$overall_cat" = 'FAST' ]]; then
+      # LH_SCOREPERC_EVAL=$(echo $LH_SCOREPERC | cut -d . -f1)
+      if [[ "$LH_SCOREPERC" -ge '90' ]]; then
         message_color='good'
-      elif [[ "$overall_cat" = 'AVERAGE' ]]; then
+      elif [[ "$LH_SCOREPERC" -ge '50' && "$LH_SCOREPERC" -le '89' ]]; then
         message_color='warning'
-      elif [[ "$overall_cat" = 'SLOW' ]]; then
+      elif [[ "$LH_SCOREPERC" -le '49' ]]; then
         message_color='danger'
       fi
       slacksend "$send_message" "$DT - Google PageSpeed Insights v5" psi "$message_color"
