@@ -756,6 +756,7 @@ gi_run_five() {
     echo "$BACKEND_ERRORCODE error: aborting..."
     exit
   fi
+  ttfb_rootdoc=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits| .["time-to-first-byte"].displayValue'| sed -e 's|Root document took ||')
   overall_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.overall_category")
   fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.percentile")
   fcp_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.category")
@@ -844,6 +845,7 @@ gi_run_five() {
   echo "First-CPU-Idle: $LH_FCI" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Time-to-Interactive: $LH_TTI" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Estimated-Input-Latency: $LH_FID" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Time-To-First-Byte: $ttfb_rootdoc" | tee -a /tmp/gitool-${strategy}-summary.log
 
   echo
   if [[ "$SLACK" = [yY] ]]; then
