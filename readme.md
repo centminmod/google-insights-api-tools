@@ -138,7 +138,7 @@ dallas, london, tokyo, hongkong, mumbia, brazil
 ./gitools_v5.sh wpt https://community.centminmod.com {region} fios
 ```
 
-Example output with `JSON_OUTPUT='n'` set
+Example output with `JSON_OUTPUT='n'` set for `mobile` test
 
 ```
 ./gitools_v5.sh mobile https://community.centminmod.com
@@ -169,6 +169,36 @@ ok
 Results sent to custom Slack Channel
 
 ![](/images/gitools_v5-mobile-slack-151118-01.png)
+
+Example output with `JSON_OUTPUT='n'` set for `desktop` test
+
+```
+./gitools_v5.sh desktop https://community.centminmod.com
+
+--------------------------------------------------------------------------------
+curl -4s https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https%3A%2F%2Fcommunity.centminmod.com&strategy=desktop&key=YOUR_GOOGLE_API_KEY
+desktop CrUX Rating: SLOW
+Test url: https://community.centminmod.com
+FCP: 2998ms (SLOW) FID: 63ms (AVERAGE)
+29.60% pages fast FCP (<1000ms)
+52.50% pages average FCP (<2500ms)
+17.90% pages slow FCP (>2500ms)
+94.00% pages fast FID (<50ms)
+4.20% pages average FID (<250ms)
+1.70% pages slow FID (>250ms)
+
+PageSpeed Insights v5 Score: 99 (fast)
+First-Contentful-Paint: 660
+First-Meaningful-Paint: 680
+Speed-Index: 2778
+First-CPU-Idle: 1331
+Time-to-Interactive: 1510
+Estimated-Input-Latency: 14
+```
+
+Results sent to custom Slack Channel
+
+![](/images/gitools_v5-desktop-slack-151118-01.png)
 
 
 ## Google PageSpeed Insights API v4 Usage
