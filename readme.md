@@ -5,7 +5,8 @@
   * [Steps to creating API Key Credentials](#steps-to-creating-api-key-credentials)
 * [Notes](#notes)
 * [Install](#install)
-* [Usage](#usage)
+* [Google PageSpeed Insights API v5 Usage](#google-pagespeed-insights-api-v5-usage)
+* [Google PageSpeed Insights API v4 Usage](#google-pagespeed-insights-api-v4-usage)
   * [Both Desktop & Mobile Test origin](#both-desktop--mobile-test-origin)
   * [Desktop Test origin](#desktop-test-origin)
   * [Desktop Test site only](#desktop-test-site-only)
@@ -106,7 +107,71 @@ channel='YOUR_SLACK_CHANNEL_NAME'
 icon='ghost'
 ```
 
-## Usage
+## Google PageSpeed Insights API v5 Usage
+
+In November 2018, [Google PageSpeed Insights API v5](https://developers.google.com/speed/docs/insights/v5/reference/pagespeedapi/runpagespeed) was released. Details discussed [here](https://community.centminmod.com/threads/google-pagespeed-insights-v5-update.16016/). I created `gitools_v5.sh` to work with Google PageSpeed Insights API v5.
+
+```
+./gitools_v5.sh 
+
+Usage:
+
+Google PageSpeed Insights v5
+./gitools_v5.sh desktop https://domain.com
+./gitools_v5.sh mobile https://domain.com
+./gitools_v5.sh all https://domain.com
+
+GTMetrix
+./gitools_v5.sh gtmetrix https://domain.com
+
+WebpageTest
+
+supported region(s)
+dulles, california, frankfurt, singapore, sydney
+dallas, london, tokyo, hongkong, mumbia, brazil
+
+./gitools_v5.sh wpt https://community.centminmod.com {region} cable
+./gitools_v5.sh wpt https://community.centminmod.com {region} 3g
+./gitools_v5.sh wpt https://community.centminmod.com {region} 3gfast
+./gitools_v5.sh wpt https://community.centminmod.com {region} 4g
+./gitools_v5.sh wpt https://community.centminmod.com {region} lte
+./gitools_v5.sh wpt https://community.centminmod.com {region} fios
+```
+
+Example output with `JSON_OUTPUT='n'` set
+
+```
+./gitools_v5.sh mobile https://community.centminmod.com
+
+--------------------------------------------------------------------------------
+curl -4s https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https%3A%2F%2Fcommunity.centminmod.com&strategy=mobile&key=YOUR_GOOGLE_API_KEY
+mobile CrUX Rating: SLOW
+Test url: https://community.centminmod.com
+FCP: 3046ms (SLOW) FID: 184ms (AVERAGE)
+30.10% pages fast FCP (<1000ms)
+50.00% pages average FCP (<2500ms)
+19.90% pages slow FCP (>2500ms)
+83.20% pages fast FID (<50ms)
+13.50% pages average FID (<250ms)
+3.40% pages slow FID (>250ms)
+
+PageSpeed Insights v5 Score: 79 (average)
+First-Contentful-Paint: 2895
+First-Meaningful-Paint: 3362
+Speed-Index: 2895
+First-CPU-Idle: 5126
+Time-to-Interactive: 5289
+Estimated-Input-Latency: 70
+
+ok
+```
+
+Results sent to custom Slack Channel
+
+![](/images/gitools_v5-mobile-slack-151118-01.png)
+
+
+## Google PageSpeed Insights API v4 Usage
 
 There are several parameters to pass on command line, desktop/mobile/all determines which type of site you want to test and default/origin/site determines if you want to test the entire domain and all pages (origin) or just the url page itself (default) or just the pages on specific site (site). The site domain you pass must have either `http://` or `https://` prefix.
 
