@@ -165,6 +165,8 @@ slacksend() {
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", $slack_button_msg \"color\": \"good\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
   elif [[ "$slack_test" = 'psi' ]]; then
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
+  elif [[ "$slack_test" = 'psi-md' ]]; then
+    curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"text\": \"${message}\", \"mrkdwn_in\": [\"text\", \"pretext\"] }] }" $webhook_url
   elif [[ "$slack_test" = 'gt' ]]; then
     curl -X POST --data-urlencode "payload={\"channel\": \"#$channel\", \"username\": \"$username\", \"icon_emoji\": \":$icon:\", \"attachments\": [ { \"fallback\": \"${slack_fallback}\", \"color\": \"$message_color\", \"ts\": \"$TIMESTAMP\", \"footer\": \"$slack_footer\", \"fields\": [{ \"title\": \"$slack_message_title\", \"value\": \"${message}\", \"short\": false }] } ]}" $webhook_url
   elif [[ "$slack_test" = 'wpt' && "SLACK_LINKBUTTONS_WPT" != [yY] ]]; then
@@ -786,6 +788,8 @@ gi_run_five() {
   LH_WEIGHTS=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.categories.performance.auditRefs[] | "\(.id) \(.weight)"' | sort -rk2 | head -n5 | column -t)
   LH_SCORE=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.categories.performance.score')
   LH_SCOREPERC=$(printf "%.0f\n" $(echo "$(printf "%.3f\n" $LH_SCORE)*100" | bc))
+  LH_JSBOOTUPTIME=$(cat /tmp/gitool-${strategy}.log  | jq -r '.lighthouseResult.audits | .["bootup-time"].displayValue')
+  LH_JSBOOTUPURLS=$(cat /tmp/gitool-${strategy}.log  | jq -r '.lighthouseResult.audits | .["bootup-time"].details.items[] | "\(.url) \(.total) \(.scripting) \(.scriptParseCompile)"'| awk '{printf("%s %0.2f %0.2f %0.2f\n", $1,$2,$3,$4)}')
 
   if [[ "$LH_SCOREPERC" -ge '90' ]]; then
     psi_speed_score='fast'
@@ -847,10 +851,16 @@ gi_run_five() {
   echo "Estimated-Input-Latency: $LH_FID" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Time-To-First-Byte: $ttfb_rootdoc" | tee -a /tmp/gitool-${strategy}-summary.log
 
+  echo "" | tee -a /tmp/gitool-${strategy}-summary-js.log
+  echo "JavaScript-execution-time: $LH_JSBOOTUPTIME" | tee -a /tmp/gitool-${strategy}-summary-js.log
+  echo "URL  Total  Script-Evaluation  Script-Parse" | tee -a /tmp/gitool-${strategy}-summary-js.log
+  echo "$LH_JSBOOTUPURLS" | column -t | tee -a /tmp/gitool-${strategy}-summary-js.log
+
   echo
   if [[ "$SLACK" = [yY] ]]; then
     if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
       send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
+      send_messagejs="$(cat /tmp/gitool-${strategy}-summary-js.log)"
       # LH_SCOREPERC_EVAL=$(echo $LH_SCOREPERC | cut -d . -f1)
       if [[ "$LH_SCOREPERC" -ge '90' ]]; then
         message_color='good'
@@ -860,10 +870,12 @@ gi_run_five() {
         message_color='danger'
       fi
       slacksend "$send_message" "$DT - Google PageSpeed Insights v5" psi "$message_color"
+      slacksend "$send_messagejs" "$DT - Google PageSpeed Insights v5" psi-md "$message_color"
     fi
   fi
   rm -rf /tmp/gitool-${strategy}.log
   rm -rf /tmp/gitool-${strategy}-summary.log
+  rm -rf /tmp/gitool-${strategy}-summary-js.log
 }
 
 ####################
