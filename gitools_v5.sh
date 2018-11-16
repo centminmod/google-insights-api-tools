@@ -785,6 +785,9 @@ gi_run_five() {
     fidelay_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fidelay_distribution_proportionc)*100" | bc))
   fi
   # lighthouse metrics
+  LH_VER=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.lighthouseVersion')
+  LH_AGENT=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.userAgent')
+  LH_AGENTNETWORK=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.environment.networkUserAgent')
   LH_WEIGHTS=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.categories.performance.auditRefs[] | "\(.id) \(.weight)"' | sort -rk2 | head -n5 | column -t)
   LH_SCORE=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.categories.performance.score')
   LH_SCOREPERC=$(printf "%.0f\n" $(echo "$(printf "%.3f\n" $LH_SCORE)*100" | bc))
@@ -843,6 +846,7 @@ gi_run_five() {
   # LH_FID
   LH_FID=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .estimatedInputLatency')
 
+  echo "Lighthouse Version: $LH_VER" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "First-Contentful-Paint: $LH_FCP" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "First-Meaningful-Paint: $LH_FMP" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Speed-Index: $LH_SI" | tee -a /tmp/gitool-${strategy}-summary.log
@@ -858,7 +862,7 @@ gi_run_five() {
 
   echo
   if [[ "$SLACK" = [yY] ]]; then
-    if [[ "$fcp_median" != 'null' || "$dcl_median" != 'null' ]]; then
+    if [[ "$fcp_median" != 'null' || "$fidelay_median" != 'null' ]]; then
       send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
       send_messagejs="$(cat /tmp/gitool-${strategy}-summary-js.log)"
       # LH_SCOREPERC_EVAL=$(echo $LH_SCOREPERC | cut -d . -f1)
