@@ -758,8 +758,6 @@ gi_run_five() {
     echo "$BACKEND_ERRORCODE error: aborting..."
     exit
   fi
-  ttfb_rootdoc=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits| .["time-to-first-byte"].displayValue'| sed -e 's|Root document took ||')
-  tt_pageweight=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits | .["total-byte-weight"].displayValue'| sed -e 's|Total size was ||')
   overall_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.overall_category")
   fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.percentile")
   fcp_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.category")
@@ -794,6 +792,11 @@ gi_run_five() {
   LH_SCOREPERC=$(printf "%.0f\n" $(echo "$(printf "%.3f\n" $LH_SCORE)*100" | bc))
   LH_JSBOOTUPTIME=$(cat /tmp/gitool-${strategy}.log  | jq -r '.lighthouseResult.audits | .["bootup-time"].displayValue')
   LH_JSBOOTUPURLS=$(cat /tmp/gitool-${strategy}.log  | jq -r '.lighthouseResult.audits | .["bootup-time"].details.items[] | "\(.url) \(.total) \(.scripting) \(.scriptParseCompile)"'| awk '{printf("%s %0.2f %0.2f %0.2f\n", $1,$2,$3,$4)}')
+
+  ttfb_rootdoc=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits| .["time-to-first-byte"].displayValue'| sed -e 's|Root document took ||')
+  tt_pageweight=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits | .["total-byte-weight"].displayValue'| sed -e 's|Total size was ||')
+  render_blocking_savings=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits | .["render-blocking-resources"].displayValue' | sed -e 's|Potential savings of ||')
+  render_blocking_urls=$(cat /tmp/gitool-${strategy}.log  | jq -r '.lighthouseResult.audits | .["render-blocking-resources"].details.items[] | "\(.url) \(.totalBytes) \(.wastedMs)"')
 
   if [[ "$LH_SCOREPERC" -ge '90' ]]; then
     psi_speed_score='fast'
@@ -862,11 +865,17 @@ gi_run_five() {
   echo "URL  Total  Script-Evaluation  Script-Parse" | tee -a /tmp/gitool-${strategy}-summary-js.log
   echo "$LH_JSBOOTUPURLS" | column -t | tee -a /tmp/gitool-${strategy}-summary-js.log
 
+  echo "" | tee -a /tmp/gitool-${strategy}-summary-renderblock.log
+  echo "Eliminate Render Blocking Resource Potential Savings: $render_blocking_savings" | tee -a /tmp/gitool-${strategy}-summary-renderblock.log
+  echo "URL  Size   Potential-Savings" | tee -a /tmp/gitool-${strategy}-summary-renderblock.log
+  echo "$render_blocking_urls" | column -t | tee -a /tmp/gitool-${strategy}-summary-renderblock.log
+
   echo
   if [[ "$SLACK" = [yY] ]]; then
     if [[ "$fcp_median" != 'null' || "$fidelay_median" != 'null' ]]; then
       send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
       send_messagejs="$(cat /tmp/gitool-${strategy}-summary-js.log)"
+      send_message_renderblock="$(cat /tmp/gitool-${strategy}-summary-renderblock.log)"
       # LH_SCOREPERC_EVAL=$(echo $LH_SCOREPERC | cut -d . -f1)
       if [[ "$LH_SCOREPERC" -ge '90' ]]; then
         message_color='good'
@@ -877,11 +886,13 @@ gi_run_five() {
       fi
       slacksend "$send_message" "$DT - Google PageSpeed Insights v5" psi "$message_color"
       slacksend "$send_messagejs" "$DT - Google PageSpeed Insights v5" psi-md "$message_color"
+      slacksend "$send_message_renderblock" "$DT - Google PageSpeed Insights v5" psi-md "$message_color"
     fi
   fi
   rm -rf /tmp/gitool-${strategy}.log
   rm -rf /tmp/gitool-${strategy}-summary.log
   rm -rf /tmp/gitool-${strategy}-summary-js.log
+  rm -rf /tmp/gitool-${strategy}-summary-renderblock.log
 }
 
 ####################
