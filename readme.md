@@ -155,20 +155,28 @@ FCP: 3046ms (SLOW) FID: 184ms (AVERAGE)
 13.50% pages average FID (<250ms)
 3.40% pages slow FID (>250ms)
 
-PageSpeed Insights v5 Score: 79 (average)
-First-Contentful-Paint: 2895
-First-Meaningful-Paint: 3362
-Speed-Index: 2895
-First-CPU-Idle: 5126
-Time-to-Interactive: 5289
-Estimated-Input-Latency: 70
+PageSpeed Insights v5 Score: 82 (average)
+First-Contentful-Paint: 2445
+First-Meaningful-Paint: 3810
+Speed-Index: 2445
+First-CPU-Idle: 5014
+Time-to-Interactive: 5280
+Estimated-Input-Latency: 33
+Time-To-First-Byte: 70 ms
 
-ok
+JavaScript-execution-time: 1.4 s
+URL  Total  Script-Evaluation  Script-Parse
+https://community.centminmod.com/js/jquery/jquery-1.11.0.min.js                       433.29  362.70  31.23
+https://pagead2.googlesyndication.com/pagead/js/r20181107/r20180604/show_ads_impl.js  290.67  223.94  47.56
+https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js                        232.26  183.74  28.20
+https://stats.g.doubleclick.net/dc.js                                                 210.35  36.61   13.91
+https://pagead2.googlesyndication.com/pagead/js/r20181107/r20100101/osd.js            149.50  117.28  30.82
+https://community.centminmod.com/js/xenforo/xenforo.js?_v=874b23ae                    98.37   47.62   42.16
 ```
 
 Results sent to custom Slack Channel
 
-![](/images/gitools_v5-mobile-slack-151118-01.png)
+![](/images/gitools_v5-mobile-slack-161118-01.png)
 
 Example output with `JSON_OUTPUT='n'` set for `desktop` test
 
@@ -187,18 +195,26 @@ FCP: 2998ms (SLOW) FID: 63ms (AVERAGE)
 4.20% pages average FID (<250ms)
 1.70% pages slow FID (>250ms)
 
-PageSpeed Insights v5 Score: 99 (fast)
-First-Contentful-Paint: 660
-First-Meaningful-Paint: 680
-Speed-Index: 2778
-First-CPU-Idle: 1331
-Time-to-Interactive: 1510
-Estimated-Input-Latency: 14
+PageSpeed Insights v5 Score: 100 (fast)
+First-Contentful-Paint: 790
+First-Meaningful-Paint: 790
+Speed-Index: 1854
+First-CPU-Idle: 1167
+Time-to-Interactive: 1202
+Estimated-Input-Latency: 13
+Time-To-First-Byte: 560 ms
+
+JavaScript-execution-time: 0.5 s
+URL  Total  Script-Evaluation  Script-Parse
+https://community.centminmod.com/js/jquery/jquery-1.11.0.min.js                       206.91  144.15  7.40
+https://community.centminmod.com/                                                     185.70  41.73   1.71
+https://pagead2.googlesyndication.com/pagead/js/r20181107/r20180604/show_ads_impl.js  89.61   62.74   19.31
+https://pagead2.googlesyndication.com/pagead/js/r20181107/r20100101/osd.js            56.60   48.29   7.88
 ```
 
 Results sent to custom Slack Channel
 
-![](/images/gitools_v5-desktop-slack-151118-01.png)
+![](/images/gitools_v5-desktop-slack-161118-01.png)
 
 
 ## Google PageSpeed Insights API v4 Usage
