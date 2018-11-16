@@ -759,6 +759,7 @@ gi_run_five() {
     exit
   fi
   ttfb_rootdoc=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits| .["time-to-first-byte"].displayValue'| sed -e 's|Root document took ||')
+  tt_pageweight=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits | .["total-byte-weight"].displayValue'| sed -e 's|Total size was ||')
   overall_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.overall_category")
   fcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.percentile")
   fcp_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.metrics.FIRST_CONTENTFUL_PAINT_MS.category")
@@ -847,6 +848,7 @@ gi_run_five() {
   LH_FID=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .estimatedInputLatency')
 
   echo "Lighthouse Version: $LH_VER" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Total-Page-Size: $tt_pageweight" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "First-Contentful-Paint: $LH_FCP" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "First-Meaningful-Paint: $LH_FMP" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Speed-Index: $LH_SI" | tee -a /tmp/gitool-${strategy}-summary.log
