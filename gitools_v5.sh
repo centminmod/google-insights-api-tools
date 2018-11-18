@@ -872,7 +872,7 @@ gi_run_five() {
 
   echo
   if [[ "$SLACK" = [yY] ]]; then
-    if [[ "$fcp_median" != 'null' || "$fidelay_median" != 'null' ]]; then
+    if [[ "$fcp_median" != 'null' || "$fidelay_median" != 'null' || "$LH_SCORE" != 'null' ]]; then
       send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
       send_messagejs="$(cat /tmp/gitool-${strategy}-summary-js.log)"
       send_message_renderblock="$(cat /tmp/gitool-${strategy}-summary-renderblock.log)"
