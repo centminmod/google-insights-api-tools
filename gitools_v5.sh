@@ -831,7 +831,7 @@ gi_run_five() {
   fi
 
   echo "" | tee -a /tmp/gitool-${strategy}-summary.log
-  echo "PageSpeed Insights v5 Score: $LH_SCOREPERC ($psi_speed_score)" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "PageSpeed Insights v5 Score (${strategy}): $LH_SCOREPERC ($psi_speed_score)" | tee -a /tmp/gitool-${strategy}-summary.log
   if [[ "$PAGESPEED_COMPACT" != [yY] ]]; then
     echo "PageSpeed Insights v5 Score Weighting" | tee -a /tmp/gitool-${strategy}-summary.log
     echo "$LH_WEIGHTS" | tee -a /tmp/gitool-${strategy}-summary.log
