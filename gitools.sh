@@ -7,6 +7,10 @@
 # https://developers.google.com/speed/docs/insights/v4/getting-started
 # https://gtmetrix.com/api/
 # https://sites.google.com/a/webpagetest.org/docs/advanced-features/webpagetest-restful-apis
+#
+# WPT API locations & testers
+# https://www.webpagetest.org/getLocations.php?k=A&f=html
+# https://www.webpagetest.org/getTesters.php?k=A&f=html
 #########################################################
 # variables
 #############

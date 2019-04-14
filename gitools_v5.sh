@@ -8,6 +8,10 @@
 # https://developers.google.com/speed/docs/insights/v5/reference/pagespeedapi/runpagespeed
 # https://gtmetrix.com/api/
 # https://sites.google.com/a/webpagetest.org/docs/advanced-features/webpagetest-restful-apis
+#
+# WPT API locations & testers
+# https://www.webpagetest.org/getLocations.php?k=A&f=html
+# https://www.webpagetest.org/getTesters.php?k=A&f=html
 #########################################################
 # variables
 #############
@@ -70,7 +74,9 @@ WPT_APIURL='https://www.webpagetest.org/runtest.php'
 WPT_APIKEY='YOUR_API_KEY'
 WPT_LOCATION='Dulles:Chrome.Cable'
 WPT_DULLES='y'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='n'
+WPT_DULLES_3G_IPHONEEIGHT='n'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
 WPT_FRANKFURT='n'
@@ -209,8 +215,12 @@ wpt_run() {
   fi
   if [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-3g' )" = 'dulles-3g' ]]; then
     WPT_REGION_CMD='dulles-3g'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-iphone8-3g' )" = 'dulles-iphone8-3g' ]]; then
+    WPT_REGION_CMD='dulles-iphone8-3g'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-s7-3g' )" = 'dulles-s7-3g' ]]; then
     WPT_REGION_CMD='dulles-s7-3g'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles-thinkpad' )" = 'dulles-thinkpad' ]]; then
+    WPT_REGION_CMD='dulles-thinkpad'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'dulles' )" = 'dulles' ]]; then
     WPT_REGION_CMD='dulles'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'california' )" = 'california' ]]; then
@@ -245,6 +255,15 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='MotoG4_22'
+  elif [[ "$WPT_DULLES_3G_IPHONEEIGHT" = [yY] ]]; then
+    WPT_SLEEPTIME='30'
+    WPT_PROCEED='y'
+    WPT_LOCATION='Dulles_iPhone8:iPhone 8 iOS 12:3g'
+    WPT_LOCATION_TXT='dulles-iphone8-mobile.iOS12.3g'
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='iPhone8_1'
   elif [[ "$WPT_DULLES_3G_S7" = [yY] ]]; then
     WPT_SLEEPTIME='30'
     WPT_PROCEED='y'
@@ -262,6 +281,14 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='VM04-07'
+  elif [[ "$WPT_DULLES_THINKPAD" = [yY] ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="Dulles_Thinkpad:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="dulles-thinkpad.chrome.${WPT_SPEED_TXT}"
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='Thinkpad-8'
   elif [[ "$WPT_CALIFORNIA" = [yY] ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION="ec2-us-west-1:Chrome.${WPT_SPEED}"
@@ -353,6 +380,15 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='MotoG4_22'
+  elif [[ "$WPT_REGION_CMD" = 'dulles-iphone8-3g' ]]; then
+    WPT_SLEEPTIME='30'
+    WPT_PROCEED='y'
+    WPT_LOCATION='Dulles_iPhone8:iPhone 8 iOS 12:3g'
+    WPT_LOCATION_TXT='dulles-iphone8-mobile.iOS12.3g'
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='iPhone8_1'
   elif [[ "$WPT_REGION_CMD" = 'dulles-s7-3g' ]]; then
     WPT_SLEEPTIME='30'
     WPT_PROCEED='y'
@@ -370,6 +406,14 @@ wpt_run() {
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
     TESTER_CABLE='VM04-07'
+  elif [[ "$WPT_REGION_CMD" = 'dulles-thinkpad' ]]; then
+    WPT_PROCEED='y'
+    WPT_LOCATION="Dulles_Thinkpad:Chrome.${WPT_SPEED}"
+    WPT_LOCATION_TXT="dulles-thinkpad.chrome.${WPT_SPEED_TXT}"
+    # define specific testers for specific locales
+    # for more consistent repeated testing runs
+    # https://www.webpagetest.org/getTesters.php
+    TESTER_CABLE='Thinkpad-8'
   elif [[ "$WPT_REGION_CMD" = 'california' ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION="ec2-us-west-1:Chrome.${WPT_SPEED}"
