@@ -329,7 +329,7 @@ wpt_run() {
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
-    TESTER_CABLE='ip-172-31-45-223'
+    TESTER_CABLE='EC2AMAZ-CO5OM1I'
   elif [[ "$WPT_TOKYO" = [yY] ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION="ec2-ap-northeast-1:Chrome.${WPT_SPEED}"
@@ -454,7 +454,7 @@ wpt_run() {
    # define specific testers for specific locales
     # for more consistent repeated testing runs
     # https://www.webpagetest.org/getTesters.php
-    TESTER_CABLE='ip-172-31-45-223'
+    TESTER_CABLE='EC2AMAZ-CO5OM1I'
   elif [[ "$WPT_REGION_CMD" = 'tokyo' ]]; then
     WPT_PROCEED='y'
     WPT_LOCATION="ec2-ap-northeast-1:Chrome.${WPT_SPEED}"
