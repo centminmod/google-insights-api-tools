@@ -337,6 +337,7 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh gtmetrix https://community.centminmod.com
 
 ./gitools.sh wpt https://centminmod.com dulles cable
+./gitools.sh wpt https://centminmod.com dulles-thinkpad cable
 ./gitools.sh wpt https://centminmod.com california cable
 ./gitools.sh wpt https://centminmod.com frankfurt cable
 ./gitools.sh wpt https://centminmod.com singapore cable
@@ -347,6 +348,7 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh wpt https://centminmod.com mumbia cable
 ./gitools.sh wpt https://centminmod.com brazil cable
 ./gitools.sh wpt https://community.centminmod.com dulles cable
+./gitools.sh wpt https://community.centminmod.com dulles-thinkpad cable
 ./gitools.sh wpt https://community.centminmod.com california cable
 ./gitools.sh wpt https://community.centminmod.com frankfurt cable
 ./gitools.sh wpt https://community.centminmod.com singapore cable
@@ -1025,6 +1027,7 @@ Dulles test with variables set in `/root/tools/google-insights-api-tools/gitools
 
 ```
 WPT_DULLES='y'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='n'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
@@ -1075,6 +1078,7 @@ California test with variable set in `/root/tools/google-insights-api-tools/gito
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='n'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='y'
@@ -1125,6 +1129,7 @@ Frankfurt test with variable set in `/root/tools/google-insights-api-tools/gitoo
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='n'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
@@ -1175,6 +1180,7 @@ Singapore test with variable set in `/root/tools/google-insights-api-tools/gitoo
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='n'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
@@ -1225,6 +1231,7 @@ Sydney test with variable set in `/root/tools/google-insights-api-tools/gitools.
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='n'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
@@ -1275,6 +1282,7 @@ Dulles Motorla G4 3G test with variable set in `/root/tools/google-insights-api-
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='y'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
@@ -1327,6 +1335,7 @@ Dallas test with variable set in `/root/tools/google-insights-api-tools/gitools.
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='n'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
@@ -1396,6 +1405,7 @@ London test with variable set in `/root/tools/google-insights-api-tools/gitools.
 
 ```
 WPT_DULLES='n'
+WPT_DULLES_THINKPAD='n'
 WPT_DULLES_3G='n'
 WPT_DULLES_3G_S7='n'
 WPT_CALIFORNIA='n'
@@ -1588,6 +1598,14 @@ cd /root/tools/google-insights-api-tools
 ./gitools.sh wpt https://community.centminmod.com dulles
 ```
 
+Dulles Thinkpad test
+
+```
+cd /root/tools/google-insights-api-tools
+
+./gitools.sh wpt https://community.centminmod.com dulles-thinkpad
+```
+
 California test
 
 ```
@@ -1678,6 +1696,7 @@ Dulles test
 cd /root/tools/google-insights-api-tools
 
 ./gitools.sh wpt https://community.centminmod.com dulles cable
+./gitools.sh wpt https://community.centminmod.com dulles-thinkpad cable
 ./gitools.sh wpt https://community.centminmod.com dulles 3g
 ./gitools.sh wpt https://community.centminmod.com dulles 3gfast
 ./gitools.sh wpt https://community.centminmod.com dulles 4g
