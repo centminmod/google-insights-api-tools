@@ -15,7 +15,7 @@
 #########################################################
 # variables
 #############
-VER='2.5'
+VER='2.6'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -817,6 +817,21 @@ gi_run_five() {
   fidelay_distribution_proportiona=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_INPUT_DELAY_MS.distributions" | jq '.[0] | .proportion')
   fidelay_distribution_proportionb=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_INPUT_DELAY_MS.distributions" | jq '.[1] | .proportion')
   fidelay_distribution_proportionc=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_INPUT_DELAY_MS.distributions" | jq '.[2] | .proportion')
+  if [[ "$overall_cat" = 'null' ]]; then
+    overall_cat=''
+  fi
+  if [[ "$fcp_cat" = 'null' ]]; then
+    fcp_cat=''
+  fi
+  if [[ "$fidelay_cat" = 'null' ]]; then
+    fidelay_cat=''
+  fi
+  if [[ "$fcl_distribution_min" = 'null' || "$fidelay_distribution_min" = 'null' ]]; then
+    fcl_distribution_min=''
+    fcl_distribution_max=''
+    fidelay_distribution_min=''
+    fidelay_distribution_max=''
+  fi
   if [[ "$fcp_median" != 'null' ]]; then
     fcl_distribution_proportiona_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fcl_distribution_proportiona)*100" | bc))
     fcl_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fcl_distribution_proportionb)*100" | bc))
@@ -882,17 +897,17 @@ gi_run_five() {
   fi
 
   # LH_FCP
-  LH_FCP=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstContentfulPaint')
+  LH_FCP=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstContentfulPaint'| grep -v null)
   # LH_FMP
-  LH_FMP=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstMeaningfulPaint')
+  LH_FMP=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstMeaningfulPaint'| grep -v null)
   # LH_SI
-  LH_SI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .speedIndex')
+  LH_SI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .speedIndex'| grep -v null)
   # LH_FCI
-  LH_FCI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstCPUIdle')
+  LH_FCI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .firstCPUIdle'| grep -v null)
   # LH_TTI
-  LH_TTI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .interactive')
+  LH_TTI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .interactive'| grep -v null)
   # LH_FID
-  LH_FID=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .estimatedInputLatency')
+  LH_FID=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .estimatedInputLatency'| grep -v null)
 
   echo "Lighthouse Version: $LH_VER" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Total-Page-Size: $tt_pageweight" | tee -a /tmp/gitool-${strategy}-summary.log
