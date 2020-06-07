@@ -823,7 +823,9 @@ gi_run_six() {
   cls_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.percentile")
   cls_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.category")
   cls_distribution_min=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[1] | .min')
+  cls_distribution_min=$(echo $(printf "%.2f\n" $(echo "scale=2; $cls_distribution_min/100" | bc)))
   cls_distribution_max=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[1] | .max')
+  cls_distribution_max=$(echo $(printf "%.2f\n" $(echo "scale=2; $cls_distribution_max/100" | bc)))
   cls_distribution_proportiona=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[0] | .proportion')
   cls_distribution_proportionb=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[1] | .proportion')
   cls_distribution_proportionc=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[2] | .proportion')
@@ -923,9 +925,9 @@ gi_run_six() {
       echo "${fidelay_distribution_proportionb_perc}% pages average FID (<${fidelay_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fidelay_distribution_proportionc_perc}% pages slow FID (>${fidelay_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
 
-      echo "${cls_distribution_proportiona_perc}% pages fast CLS (<${cls_distribution_min} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${cls_distribution_proportionb_perc}% pages average CLS (<${cls_distribution_max} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${cls_distribution_proportionc_perc}% pages slow CLS (>${cls_distribution_max} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportiona_perc}% pages fast CLS (<${cls_distribution_min})" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportionb_perc}% pages average CLS (<${cls_distribution_max})" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportionc_perc}% pages slow CLS (>${cls_distribution_max})" | tee -a /tmp/gitool-${strategy}-summary.log
 
       echo "${lcp_distribution_proportiona_perc}% pages fast LCP (<${lcp_distribution_min}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${lcp_distribution_proportionb_perc}% pages average LCP (<${lcp_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
@@ -941,9 +943,9 @@ gi_run_six() {
       echo "${fidelay_distribution_proportionb_perc}% of page loads have an average FID (less than ${fidelay_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fidelay_distribution_proportionc_perc}% of page loads have a slow FID (over ${fidelay_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
 
-      echo "${cls_distribution_proportiona_perc}% of page loads have a fast CLS (less than ${cls_distribution_min} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${cls_distribution_proportionb_perc}% of page loads have an average CLS (less than ${cls_distribution_max} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "${cls_distribution_proportionc_perc}% of page loads have a slow CLS (over ${cls_distribution_max} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportiona_perc}% of page loads have a fast CLS (less than ${cls_distribution_min})" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportionb_perc}% of page loads have an average CLS (less than ${cls_distribution_max})" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportionc_perc}% of page loads have a slow CLS (over ${cls_distribution_max})" | tee -a /tmp/gitool-${strategy}-summary.log
 
       echo "${lcp_distribution_proportiona_perc}% of page loads have a fast LCP (less than ${lcp_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${lcp_distribution_proportionb_perc}% of page loads have an average LCP (less than ${lcp_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
