@@ -1,6 +1,6 @@
 #!/bin/bash
 #########################################################
-# quick Google PageSpeed Insights API tool v4 & v5
+# quick Google PageSpeed Insights API tool v4 & v5 & v6
 # & gtmetrix api tool & webpagetest.org api usage
 # written by George Liu (eva2000) https://centminmod.com
 #
@@ -15,7 +15,7 @@
 #########################################################
 # variables
 #############
-VER='2.7'
+VER='2.8'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -26,7 +26,8 @@ TIMESTAMP=$(date +"%s")
 # GOOGLE_API_KEY variable within this script, you can set it in
 # gitools.ini config file which resides in same directory as gitools.sh
 GOOGLE_API_KEY=''
-# Insight API v4 or v5
+# Insight API v4 or v5 
+# note v6 uses v5 api endpoint
 PAGESPEED_INSIGHTAPIVER='5'
 PAGESPEED_COMPACT='y'
 # work in progress not ready
@@ -36,7 +37,7 @@ JSON_OUTPUT='y'
 SNAPSHOTS='n'
 SCREENSHOT='n'
 PSI_FOUR_URL='https://www.googleapis.com/pagespeedonline/v4/runPagespeed'
-PSI_FIVE_URL='https://www.googleapis.com/pagespeedonline/v5/runPagespeed'
+PSI_SIX_URL='https://www.googleapis.com/pagespeedonline/v5/runPagespeed'
 
 # Gtmetrix API settings
 GTMETRIX='n'
@@ -774,13 +775,13 @@ gt_run() {
 }
 
 ####################
-gi_run_five() {
+gi_run_six() {
   strategy=$2
   fulldomain=$1
   prefix=$(echo $fulldomain | awk -F '://' '{print $1}')
   domain=$(echo $fulldomain | awk -F '://' '{print $2}')
-  turl_echo="${PSI_FIVE_URL}?url=${prefix}%3A%2F%2F${domain}&strategy=${strategy}&key=YOUR_GOOGLE_API_KEY"
-  turl="${PSI_FIVE_URL}?url=${prefix}%3A%2F%2F${domain}&strategy=${strategy}&key=${GOOGLE_API_KEY}"
+  turl_echo="${PSI_SIX_URL}?url=${prefix}%3A%2F%2F${domain}&strategy=${strategy}&key=YOUR_GOOGLE_API_KEY"
+  turl="${PSI_SIX_URL}?url=${prefix}%3A%2F%2F${domain}&strategy=${strategy}&key=${GOOGLE_API_KEY}"
   echo
   echo "--------------------------------------------------------------------------------"
   if [[ "$CMD_OUTPUT" = [yY] ]]; then
@@ -817,6 +818,25 @@ gi_run_five() {
   fidelay_distribution_proportiona=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_INPUT_DELAY_MS.distributions" | jq '.[0] | .proportion')
   fidelay_distribution_proportionb=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_INPUT_DELAY_MS.distributions" | jq '.[1] | .proportion')
   fidelay_distribution_proportionc=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.FIRST_INPUT_DELAY_MS.distributions" | jq '.[2] | .proportion')
+
+  # cls
+  cls_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.percentile")
+  cls_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.category")
+  cls_distribution_min=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[1] | .min')
+  cls_distribution_max=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[1] | .max')
+  cls_distribution_proportiona=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[0] | .proportion')
+  cls_distribution_proportionb=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[1] | .proportion')
+  cls_distribution_proportionc=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE.distributions" | jq '.[2] | .proportion')
+
+  # lcp
+  lcp_median=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.LARGEST_CONTENTFUL_PAINT_MS.percentile")
+  lcp_cat=$(cat /tmp/gitool-${strategy}.log | jq -r ".loadingExperience.metrics.LARGEST_CONTENTFUL_PAINT_MS.category")
+  lcp_distribution_min=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.LARGEST_CONTENTFUL_PAINT_MS.distributions" | jq '.[1] | .min')
+  lcp_distribution_max=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.LARGEST_CONTENTFUL_PAINT_MS.distributions" | jq '.[1] | .max')
+  lcp_distribution_proportiona=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.LARGEST_CONTENTFUL_PAINT_MS.distributions" | jq '.[0] | .proportion')
+  lcp_distribution_proportionb=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.LARGEST_CONTENTFUL_PAINT_MS.distributions" | jq '.[1] | .proportion')
+  lcp_distribution_proportionc=$(cat /tmp/gitool-${strategy}.log | jq ".loadingExperience.metrics.LARGEST_CONTENTFUL_PAINT_MS.distributions" | jq '.[2] | .proportion')
+
   if [[ "$overall_cat" = 'null' ]]; then
     overall_cat=''
   fi
@@ -826,11 +846,23 @@ gi_run_five() {
   if [[ "$fidelay_cat" = 'null' ]]; then
     fidelay_cat=''
   fi
+  if [[ "$cls_cat" = 'null' ]]; then
+    cls_cat=''
+  fi
+  if [[ "$lcp_cat" = 'null' ]]; then
+    lcp_cat=''
+  fi
   if [[ "$fcl_distribution_min" = 'null' || "$fidelay_distribution_min" = 'null' ]]; then
     fcl_distribution_min=''
     fcl_distribution_max=''
     fidelay_distribution_min=''
     fidelay_distribution_max=''
+  fi
+  if [[ "$cls_distribution_min" = 'null' || "$lcp_distribution_min" = 'null' ]]; then
+    cls_distribution_min=''
+    cls_distribution_max=''
+    lcp_distribution_min=''
+    lcp_distribution_max=''
   fi
   if [[ "$fcp_median" != 'null' ]]; then
     fcl_distribution_proportiona_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fcl_distribution_proportiona)*100" | bc))
@@ -842,6 +874,16 @@ gi_run_five() {
     fidelay_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fidelay_distribution_proportionb)*100" | bc))
     fidelay_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $fidelay_distribution_proportionc)*100" | bc))
   fi
+  if [[ "$cls_median" != 'null' ]]; then
+    cls_distribution_proportiona_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $cls_distribution_proportiona)*100" | bc))
+    cls_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $cls_distribution_proportionb)*100" | bc))
+    cls_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $cls_distribution_proportionc)*100" | bc))
+  fi
+  if [[ "$lcp_median" != 'null' ]]; then
+    lcp_distribution_proportiona_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $lcp_distribution_proportiona)*100" | bc))
+    lcp_distribution_proportionb_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $lcp_distribution_proportionb)*100" | bc))
+    lcp_distribution_proportionc_perc=$(printf "%.2f\n" $(echo "$(printf "%.3f\n" $lcp_distribution_proportionc)*100" | bc))
+  fi
   # lighthouse metrics
   LH_VER=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.lighthouseVersion')
   LH_AGENT=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.userAgent')
@@ -852,10 +894,14 @@ gi_run_five() {
   LH_JSBOOTUPTIME=$(cat /tmp/gitool-${strategy}.log  | jq -r '.lighthouseResult.audits | .["bootup-time"].displayValue')
   LH_JSBOOTUPURLS=$(cat /tmp/gitool-${strategy}.log  | jq -r '.lighthouseResult.audits | .["bootup-time"].details.items[] | "\(.url) \(.total) \(.scripting) \(.scriptParseCompile)"'| awk '{printf("%s %0.2f %0.2f %0.2f\n", $1,$2,$3,$4)}')
 
-  ttfb_rootdoc=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits| .["time-to-first-byte"].displayValue'| sed -e 's|Root document took ||')
+  ttfb_rootdoc=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits| .["server-response-time"].displayValue'| sed -e 's|Root document took ||')
   tt_pageweight=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits | .["total-byte-weight"].displayValue'| sed -e 's|Total size was ||')
-  render_blocking_savings=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits | .["render-blocking-resources"].displayValue' | sed -e 's|Potential savings of ||')
+  render_blocking_savings=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits | .["render-blocking-resources"].details.overallSavingsMs' | sed -e 's|Potential savings of ||')
   render_blocking_urls=$(cat /tmp/gitool-${strategy}.log  | jq -r '.lighthouseResult.audits | .["render-blocking-resources"].details.items[] | "\(.url) \(.totalBytes) \(.wastedMs)"')
+
+  # v6
+  domsize=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits| .["dom-size"].displayValue')
+  lcp_element=$(cat /tmp/gitool-${strategy}.log | jq -r '.lighthouseResult.audits| .["largest-contentful-paint-element"].details.items[] | "\(.node.snippet)\n\(.node.selector)"')
 
   if [[ "$LH_SCOREPERC" -ge '90' ]]; then
     psi_speed_score='fast'
@@ -868,7 +914,7 @@ gi_run_five() {
     if [[ "$PAGESPEED_COMPACT" = [yY] ]]; then
       echo "${strategy} CrUX Rating: ${overall_cat}" | tee /tmp/gitool-${strategy}-summary.log
       echo "Test url: ${prefix}://$domain" | tee -a /tmp/gitool-${strategy}-summary.log
-      echo "FCP: ${fcp_median}ms ($fcp_cat) FID: ${fidelay_median}ms ($fidelay_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "FCP: ${fcp_median}ms ($fcp_cat) LCP: ${lcp_median}ms ($lcp_cat) FID: ${fidelay_median}ms ($fidelay_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
       # echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fcl_distribution_proportiona_perc}% pages fast FCP (<${fcl_distribution_min}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fcl_distribution_proportionb_perc}% pages average FCP (<${fcl_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
@@ -876,9 +922,17 @@ gi_run_five() {
       echo "${fidelay_distribution_proportiona_perc}% pages fast FID (<${fidelay_distribution_min}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fidelay_distribution_proportionb_perc}% pages average FID (<${fidelay_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fidelay_distribution_proportionc_perc}% pages slow FID (>${fidelay_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+
+      echo "${cls_distribution_proportiona_perc}% pages fast CLS (<${cls_distribution_min} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportionb_perc}% pages average CLS (<${cls_distribution_max} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportionc_perc}% pages slow CLS (>${cls_distribution_max} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
+
+      echo "${lcp_distribution_proportiona_perc}% pages fast LCP (<${lcp_distribution_min}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${lcp_distribution_proportionb_perc}% pages average LCP (<${lcp_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${lcp_distribution_proportionc_perc}% pages slow LCP (>${lcp_distribution_max}ms)" | tee -a /tmp/gitool-${strategy}-summary.log
     else
       echo "Test url: ${prefix}://$domain" | tee /tmp/gitool-${strategy}-summary.log
-      echo "FCP median: $fcp_median ms ($fcp_cat) FID median: $fidelay_median ms ($fidelay_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "FCP median: $fcp_median ms ($fcp_cat) LCP median: $lcp_median ms ($lcp_cat) FID median: $fidelay_median ms ($fidelay_cat)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "Page Load Distributions" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fcl_distribution_proportiona_perc}% of page loads have a fast FCP (less than ${fcl_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fcl_distribution_proportionb_perc}% of page loads have an average FCP (less than ${fcl_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
@@ -886,13 +940,21 @@ gi_run_five() {
       echo "${fidelay_distribution_proportiona_perc}% of page loads have a fast FID (less than ${fidelay_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fidelay_distribution_proportionb_perc}% of page loads have an average FID (less than ${fidelay_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
       echo "${fidelay_distribution_proportionc_perc}% of page loads have a slow FID (over ${fidelay_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+
+      echo "${cls_distribution_proportiona_perc}% of page loads have a fast CLS (less than ${cls_distribution_min} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportionb_perc}% of page loads have an average CLS (less than ${cls_distribution_max} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${cls_distribution_proportionc_perc}% of page loads have a slow CLS (over ${cls_distribution_max} /100)" | tee -a /tmp/gitool-${strategy}-summary.log
+
+      echo "${lcp_distribution_proportiona_perc}% of page loads have a fast LCP (less than ${lcp_distribution_min} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${lcp_distribution_proportionb_perc}% of page loads have an average LCP (less than ${lcp_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
+      echo "${lcp_distribution_proportionc_perc}% of page loads have a slow LCP (over ${lcp_distribution_max} milliseconds)" | tee -a /tmp/gitool-${strategy}-summary.log
     fi
   fi
 
   echo "" | tee -a /tmp/gitool-${strategy}-summary.log
-  echo -e "PageSpeed Insights v5 Score (${strategy}): $LH_SCOREPERC ($psi_speed_score)\n${prefix}://$domain" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo -e "PageSpeed Insights v6 Score (${strategy}): $LH_SCOREPERC ($psi_speed_score)\n${prefix}://$domain" | tee -a /tmp/gitool-${strategy}-summary.log
   if [[ "$PAGESPEED_COMPACT" != [yY] ]]; then
-    echo "PageSpeed Insights v5 Score Weighting" | tee -a /tmp/gitool-${strategy}-summary.log
+    echo "PageSpeed Insights v6 Score Weighting" | tee -a /tmp/gitool-${strategy}-summary.log
     echo "$LH_WEIGHTS" | tee -a /tmp/gitool-${strategy}-summary.log
   fi
 
@@ -908,14 +970,24 @@ gi_run_five() {
   LH_TTI=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .interactive'| grep -v null)
   # LH_FID
   LH_FID=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .estimatedInputLatency'| grep -v null)
+  # LH_CLS
+  LH_CLS=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .cumulativeLayoutShift'| grep -v null)
+  LH_CLS=$(echo $(printf "%.2f\n" $(echo "scale=2; $LH_CLS/100" | bc)))
+  # LH_LCP
+  LH_LCP=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .largestContentfulPaint'| grep -v null)
+  # LH_TBT
+  LH_TBT=$(cat /tmp/gitool-${strategy}.log  | jq '.lighthouseResult.audits.metrics.details.items[] | .totalBlockingTime'| grep -v null)
 
   echo "Lighthouse Version: $LH_VER" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Cumulative-Layout-Shift: $LH_CLS" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Time-to-Interactive: $LH_TTI" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Speed-Index: $LH_SI" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Largest-Contentful-Paint: $LH_LCP" | tee -a /tmp/gitool-${strategy}-summary.log
+  echo "Total-Blocking-Time: $LH_TBT" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Total-Page-Size: $tt_pageweight" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "First-Contentful-Paint: $LH_FCP" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "First-Meaningful-Paint: $LH_FMP" | tee -a /tmp/gitool-${strategy}-summary.log
-  echo "Speed-Index: $LH_SI" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "First-CPU-Idle: $LH_FCI" | tee -a /tmp/gitool-${strategy}-summary.log
-  echo "Time-to-Interactive: $LH_TTI" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Estimated-Input-Latency: $LH_FID" | tee -a /tmp/gitool-${strategy}-summary.log
   echo "Time-To-First-Byte: $ttfb_rootdoc" | tee -a /tmp/gitool-${strategy}-summary.log
 
@@ -931,7 +1003,7 @@ gi_run_five() {
 
   echo
   if [[ "$SLACK" = [yY] ]]; then
-    if [[ "$fcp_median" != 'null' || "$fidelay_median" != 'null' || "$LH_SCORE" != 'null' ]]; then
+    if [[ "$fcp_median" != 'null' || "$fidelay_median" != 'null' || "$cls_median" != 'null' || "$lcp_median" != 'null' || "$LH_SCORE" != 'null' ]]; then
       send_message="$(cat /tmp/gitool-${strategy}-summary.log)"
       send_messagejs="$(cat /tmp/gitool-${strategy}-summary-js.log)"
       send_message_renderblock="$(cat /tmp/gitool-${strategy}-summary-renderblock.log)"
@@ -943,9 +1015,9 @@ gi_run_five() {
       elif [[ "$LH_SCOREPERC" -le '49' ]]; then
         message_color='danger'
       fi
-      slacksend "$send_message" "$DT - Google PageSpeed Insights v5" psi "$message_color"
-      slacksend "$send_messagejs" "$DT - Google PageSpeed Insights v5" psi-md "$message_color"
-      slacksend "$send_message_renderblock" "$DT - Google PageSpeed Insights v5" psi-md "$message_color"
+      slacksend "$send_message" "$DT - Google PageSpeed Insights v6" psi "$message_color"
+      slacksend "$send_messagejs" "$DT - Google PageSpeed Insights v6" psi-md "$message_color"
+      slacksend "$send_message_renderblock" "$DT - Google PageSpeed Insights v6" psi-md "$message_color"
     fi
   fi
   rm -rf /tmp/gitool-${strategy}.log
@@ -1223,14 +1295,14 @@ case $1 in
     if [[ "$PAGESPEED_INSIGHTAPIVER" -eq '4' ]]; then
       gi_run $2 $3 desktop
     elif [[ "$PAGESPEED_INSIGHTAPIVER" -eq '5' ]]; then
-      gi_run_five $2 desktop
+      gi_run_six $2 desktop
     fi
     ;;
   mobile )
     if [[ "$PAGESPEED_INSIGHTAPIVER" -eq '4' ]]; then
       gi_run $2 $3 mobile
     elif [[ "$PAGESPEED_INSIGHTAPIVER" -eq '5' ]]; then
-      gi_run_five $2 mobile
+      gi_run_six $2 mobile
     fi
     ;;
   all )
@@ -1238,8 +1310,8 @@ case $1 in
       gi_run $2 $3 desktop
       gi_run $2 $3 mobile
     elif [[ "$PAGESPEED_INSIGHTAPIVER" -eq '5' ]]; then
-      gi_run_five $2 desktop
-      gi_run_five $2 mobile
+      gi_run_six $2 desktop
+      gi_run_six $2 mobile
     fi
     ;;
   gtmetrix )
@@ -1266,7 +1338,7 @@ case $1 in
     echo "$0 mobile https://domain.com {default|origin|site}"
     echo "$0 all https://domain.com {default|origin|site}"
   elif [[ "$PAGESPEED_INSIGHTAPIVER" -eq '5' ]]; then
-    echo "Google PageSpeed Insights v5"
+    echo "Google PageSpeed Insights v6"
     echo "$0 desktop https://domain.com"
     echo "$0 mobile https://domain.com"
     echo "$0 all https://domain.com"
