@@ -5,6 +5,7 @@
   * [Steps to creating API Key Credentials](#steps-to-creating-api-key-credentials)
 * [Notes](#notes)
 * [Install](#install)
+* [Google PageSpeed Insights API v6 Usage](#google-pagespeed-insights-api-v6-usage)
 * [Google PageSpeed Insights API v5 Usage](#google-pagespeed-insights-api-v5-usage)
 * [Google PageSpeed Insights API v4 Usage](#google-pagespeed-insights-api-v4-usage)
   * [Both Desktop & Mobile Test origin](#both-desktop--mobile-test-origin)
@@ -106,6 +107,82 @@ webhook_url='YOUR_SLACK_WEBHOOK_URL'
 channel='YOUR_SLACK_CHANNEL_NAME'
 icon='ghost'
 ```
+
+## Google PageSpeed Insights API v6 Usage
+
+In May 2020, [Google Lighthouse v6](https://web.dev/lighthouse-whats-new-6.0/) was released and added new metrics to measure. I created `gitools_v6.sh` to work with Google PageSpeed Insights API v6 which reveals these new metrics. Note the API end point still uses `v5`.
+
+```
+./gitools_v6.sh 
+
+Usage:
+
+Google PageSpeed Insights v6
+./gitools_v6.sh desktop https://domain.com
+./gitools_v6.sh mobile https://domain.com
+./gitools_v6.sh all https://domain.com
+
+GTMetrix
+./gitools_v6.sh gtmetrix https://domain.com
+
+WebpageTest
+
+supported region(s)
+dulles, california, frankfurt, singapore, sydney
+dallas, london, tokyo, hongkong, mumbia, brazil
+
+./gitools_v6.sh wpt https://community.centminmod.com {region} cable
+./gitools_v6.sh wpt https://community.centminmod.com {region} 3g
+./gitools_v6.sh wpt https://community.centminmod.com {region} 3gfast
+./gitools_v6.sh wpt https://community.centminmod.com {region} 4g
+./gitools_v6.sh wpt https://community.centminmod.com {region} lte
+./gitools_v6.sh wpt https://community.centminmod.com {region} fios
+```
+
+Example output with `JSON_OUTPUT='n'` set for `mobile` test
+
+```
+./gitools_v6.sh mobile https://community.centminmod.com
+
+--------------------------------------------------------------------------------
+curl -4s https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https%3A%2F%2Fcommunity.centminmod.com&strategy=mobile&key=YOUR_GOOGLE_API_KEY
+mobile CrUX Rating: AVERAGE
+Test url: https://community.centminmod.com
+FCP: 2048ms (AVERAGE) LCP: 2375ms (FAST) FID: 22ms (FAST)
+29.00% pages fast FCP (<1000ms)
+62.30% pages average FCP (<3000ms)
+8.60% pages slow FCP (>3000ms)
+96.20% pages fast FID (<100ms)
+2.70% pages average FID (<300ms)
+1.10% pages slow FID (>300ms)
+91.40% pages fast CLS (<0.10)
+4.00% pages average CLS (<0.25)
+4.60% pages slow CLS (>0.25)
+77.40% pages fast LCP (<2500ms)
+12.40% pages average LCP (<4000ms)
+10.30% pages slow LCP (>4000ms)
+
+PageSpeed Insights v6 Score (mobile): 71 (average)
+https://community.centminmod.com
+Lighthouse Version: 6.0.0
+Cumulative-Layout-Shift: 0.00
+Time-to-Interactive: 6046
+Speed-Index: 3159
+Largest-Contentful-Paint: 3150
+Total-Blocking-Time: 691
+Total-Page-Size: 434 KB
+First-Contentful-Paint: 2250
+First-Meaningful-Paint: 2250
+First-CPU-Idle: 5963
+Estimated-Input-Latency: 74
+Time-To-First-Byte: 200 ms
+
+JavaScript-execution-time: 2.2 s
+```
+
+Results sent to custom Slack Channel
+
+![](/images/gitools_v6-mobile-slack-130620-01.png)
 
 ## Google PageSpeed Insights API v5 Usage
 
