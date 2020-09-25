@@ -130,6 +130,7 @@ WebpageTest
 supported region(s)
 dulles, california, frankfurt, singapore, sydney
 dallas, london, tokyo, hongkong, mumbia, brazil
+melbourne, bangkok, jakarta, tawan, capetown
 
 ./gitools_v6.sh wpt https://community.centminmod.com {region} cable
 ./gitools_v6.sh wpt https://community.centminmod.com {region} 3g
@@ -206,6 +207,7 @@ WebpageTest
 supported region(s)
 dulles, california, frankfurt, singapore, sydney
 dallas, london, tokyo, hongkong, mumbia, brazil
+melbourne, bangkok, jakarta, tawan, capetown
 
 ./gitools_v5.sh wpt https://community.centminmod.com {region} cable
 ./gitools_v5.sh wpt https://community.centminmod.com {region} 3g
@@ -316,6 +318,7 @@ WebpageTest
 supported region(s)
 dulles, california, frankfurt, singapore, sydney
 dallas, london, tokyo, hongkong, mumbia, brazil
+melbourne, bangkok, jakarta, tawan, capetown
 
 ./gitools.sh wpt https://community.centminmod.com {region} cable
 ./gitools.sh wpt https://community.centminmod.com {region} 3g

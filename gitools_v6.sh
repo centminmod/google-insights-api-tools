@@ -1433,7 +1433,8 @@ case $1 in
   echo
   echo "supported region(s)"
   echo "dulles, california, frankfurt, singapore, sydney"
-  echo "dallas, london, tokyo, hongkong, mumbia, brazil"
+  echo "dallas, london, tokyo, hongkong, mumbia, brazil,"
+  echo "melbourne, bangkok, jakarta, tawan, capetown"
   echo
   echo "$0 wpt https://community.centminmod.com {region} cable"
   echo "$0 wpt https://community.centminmod.com {region} 3g"
