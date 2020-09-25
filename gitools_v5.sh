@@ -88,6 +88,11 @@ WPT_TOKYO='n'
 WPT_HONGKONG='n'
 WPT_MUMBIA='n'
 WPT_BRAZIL='n'
+WPT_MELBOURNE='n'
+WPT_BANGKOK='n'
+WPT_JAKARTA='n'
+WPT_TAIWAN='n'
+WPT_CAPETOWN='n'
 
 # wait time between API run and parsing
 # result log
@@ -243,6 +248,16 @@ wpt_run() {
     WPT_REGION_CMD='mumbia'
   elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'brazil' )" = 'brazil' ]]; then
     WPT_REGION_CMD='brazil'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'melbourne' )" = 'melbourne' ]]; then
+    WPT_REGION_CMD='melbourne'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'bangkok' )" = 'bangkok' ]]; then
+    WPT_REGION_CMD='bangkok'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'jakarta' )" = 'jakarta' ]]; then
+    WPT_REGION_CMD='jakarta'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'taiwan' )" = 'taiwan' ]]; then
+    WPT_REGION_CMD='taiwan'
+  elif [[ "$(echo $WPT_REGION | awk '{print tolower($0)}' | grep -o 'capetown' )" = 'capetown' ]]; then
+    WPT_REGION_CMD='capetown'
   else
     WPT_REGION_CMD="none"
   fi
