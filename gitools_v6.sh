@@ -15,7 +15,7 @@
 #########################################################
 # variables
 #############
-VER='3.0'
+VER='3.1'
 DT=$(date +"%d%m%y-%H%M%S")
 TIMESTAMP=$(date +"%s")
 
@@ -67,6 +67,8 @@ WPT_DIR='/home/wptresults'
 WPT_RESULT_TESTSTATUS_LOG='/tmp/wpt-teststatus-check.log'
 # WPT_MODE median or average results
 WPT_MODE='median'
+WPT_KEEPUA='y'
+WPT_IGNORESSL='n'
 WPT_SHOW_HISTORY='y'
 WPT_IGNORE_SSL='y'
 WPT_RUNS='1'
@@ -596,17 +598,28 @@ wpt_run() {
   else
     wpt_lighthouse_opt=""
   fi
+  if [[ "$WPT_KEEPUA" = [yY] ]]; then
+    wpt_keepua_opt='&keepua=1'
+  else
+    wpt_keepua_opt=""
+  fi
+  if [[ "$WPT_IGNORESSL" = [yY] ]]; then
+    wpt_ignoressl_opt='&ignoreSSL=1'
+  else
+    wpt_ignoressl_opt=""
+  fi
   if [[ "$WPT_PROCEED" = [yY] ]]; then
     WPT_LABEL="$WPT_LOCATION_TXT.$(date +"%d%m%y-%H%M%S")"
     WPT_RESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}.log"
     WPT_SUMMARYRESULT_LOG="${WPT_DIR}/wpt-${WPT_LABEL}-summary.log"
-    # WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=${wpt_show_history}&medianMetric=loadTime${wpt_lighthouse_opt}&width=${WPT_RESOLUTION_WIDTH}&height=${WPT_RESOLUTION_HEIGHT}${ignore_ssl}&f=xml&tester=${TESTER_CABLE}")
-    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=${wpt_show_history}&medianMetric=loadTime${wpt_lighthouse_opt}${ignore_ssl}&f=xml&tester=${TESTER_CABLE}")
+    # WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=${wpt_show_history}&medianMetric=loadTime${wpt_lighthouse_opt}${wpt_keepua_opt}${wpt_ignoressl_opt}&width=${WPT_RESOLUTION_WIDTH}&height=${WPT_RESOLUTION_HEIGHT}${ignore_ssl}&f=xml&tester=${TESTER_CABLE}")
+    WPT_TESTURL=$(echo "${WPT_APIURL}?k=$WPT_APIKEY&url=$WPT_URL&label=$WPT_LABEL&location=$WPT_LOCATION&runs=${WPT_RUNS}&fvonly=1&video=1&private=${wpt_show_history}&medianMetric=loadTime${wpt_lighthouse_opt}${wpt_keepua_opt}${wpt_ignoressl_opt}${ignore_ssl}&f=xml&tester=${TESTER_CABLE}")
     echo "curl -4s \"$WPT_TESTURL\"" > "$WPT_RESULT_LOG"
     curl -4s "$WPT_TESTURL" >> "$WPT_RESULT_LOG"
     WPT_USER_RESULTURL=$(grep -oP '(?<=<userUrl>).*(?=</userUrl>)' "$WPT_RESULT_LOG")
     WPT_USER_RESULTXMLURL=$(grep -oP '(?<=<xmlUrl>).*(?=</xmlUrl>)' "$WPT_RESULT_LOG")
     WPT_TESTIDA=$(grep -oP '(?<=<testId>).*(?=</testId>)' "$WPT_RESULT_LOG")
+    WPT_USER_RESULTJSONURL="https://www.webpagetest.org/jsonResult.php?test=${WPT_TESTIDA}&pretty=1"
     echo
     echo "--------------------------------------------------------------------------------"
     echo "$WPT_LOCATION WPT Results"
